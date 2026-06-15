@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Admin Control Center - Pine Hills School</title>
+    <!-- Google Fonts, FontAwesome & Excel Sheet Reader Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --primary-blue: #002d72;
+            --accent-blue: #1d4ed8;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
+            --text-muted: #64748b;
+            --success: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f1f5f9; color: var(--dark-bg); display: flex; min-height: 100vh; }
+
+        /* Sidebar Design */
+        .sidebar { width: 260px; background: var(--primary-blue); color: var(--white); padding: 25px 15px; display: flex; flex-direction: column; gap: 20px; }
+        .sidebar h2 { font-size: 20px; font-weight: 800; text-align: center; border-bottom: 2px dashed rgba(255,255,255,0.2); padding-bottom: 15px; }
+        .nav-tabs { display: flex; flex-direction: column; gap: 8px; list-style: none; }
+        .nav-btn { width: 100%; padding: 12px 15px; border: none; background: none; color: #cbd5e1; font-size: 14px; font-weight: 600; text-align: left; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: rgba(255,255,255,0.15); color: var(--white); }
+
+        /* Main Workspace */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .header-title { margin-bottom: 30px; }
+        .header-title h1 { color: var(--primary-blue); font-size: 28px; font-weight: 800; }
+        .header-title p { color: var(--text-muted); font-size: 14px; }
+
+        /* Admin Panels / Cards */
+        .admin-panel { background: var(--white); border-radius: 16px; padding: 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); display: none; }
+        .admin-panel.active-panel { display: block; }
+
+        /* Form Controls */
+        .grid-form { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
+        .form-box { display: flex; flex-direction: column; gap: 6px; }
+        .form-box.full { grid-column: span 2; }
+        .form-box label { font-size: 13px; font-weight: 600; }
+        .form-box input, .form-box textarea, .form-box select { padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
+        .form-box input:focus { border-color: var(--accent-blue); }
+
+        .btn-prime { background: var(--primary-blue); color: var(--white); border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-prime:hover { background: var(--accent-blue); }
+
+        /* File Upload Zone */
+        .upload-zone { border: 3px dashed #cbd5e1; padding: 30px; text-align: center; border-radius: 12px; background: var(--light-bg); cursor: pointer; margin-bottom: 20px; transition: all 0.2s; }
+        .upload-zone:hover { border-color: var(--primary-blue); background: #f0f4f8; }
+        .upload-zone i { font-size: 40px; color: var(--text-muted); margin-bottom: 10px; }
+
+        /* Realtime Data Table */
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+        .admin-table th { background: var(--primary-blue); color: var(--white); padding: 12px; font-weight: 600; }
+        .admin-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        .admin-table tr:nth-child(even) { background: var(--light-bg); }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar">
+        <h2>PHS Admin Live</h2>
+        <ul class="nav-tabs">
+            <li><button class="nav-btn active" onclick="switchPanel('activityPanel', this)"><i class="fa-solid fa-gamepad"></i> Student Activity</button></li>
+            <li><button class="nav-btn" onclick="switchPanel('monthlyTestPanel', this)"><i class="fa-solid fa-file-invoice"></i> Monthly Tests</button></li>
+            <li><button class="nav-btn" onclick="switchPanel('resultPanel', this)"><i class="fa-solid fa-graduation-cap"></i> Annual Results</button></li>
+        </ul>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="main-content">
+        
+        <!-- SECTION 1: Student Activity Manager -->
+        <div id="activityPanel" class="admin-panel active-panel">
+            <div class="header-title">
+                <h1>Student Activity Manager</h1>
+                <p>Add and publish extracurricular student performance notes directly to live Firebase storage.</p>
+            </div>
+            
+            <form id="activityForm" onsubmit="saveActivityToFirebase(event)">
+                <div class="grid-form">
+                    <div class="form-box">
+                        <label>Student Full Name</label>
+                        <input type="text" id="actName" value="Fahad Ahmed" required>
+                    </div>
+                    <div class="form-box">
+                        <label>Class & Section</label>
+                        <input type="text" id="actClass" value="4-B" required>
+                    </div>
+                    <div class="form-box">
+                        <label>Roll Number</label>
+                        <input type="text" id="actRoll" value="12" required>
+                    </div>
+                    <div class="form-box">
+                        <label>Activity Title / Event</label>
+                        <input type="text" id="actTitle" value="Cricket Tournament" required>
+                    </div>
+                    <div class="form-box full">
+                        <label>Performance Note / Remarks</label>
+                        <textarea id="actNote" required>Fahad ne aaj inter-school cricket match me behtareen batting ki aur apni team ko jeetwaya! MashaAllah.</textarea>
+                    </div>
+                    <div class="form-box full">
+                        <label>Activity Video Link (Paste drive/youtube/cloud storage video URL)</label>
+                        <input type="url" id="actVideoUrl" placeholder="https://example.com/video.mp4">
+                    </div>
+                </div>
+                <button type="submit" class="btn-prime"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Live Publish</button>
+            </form>
+
+            <h3 style="margin-top: 30px; font-size:16px;">Live Firebase Activities</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Class</th>
+                            <th>Event</th>
+                            <th>Remarks</th>
+                            <th>Video Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityTableBody">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading live data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Monthly Tests -->
+        <div id="monthlyTestPanel" class="admin-panel">
+            <div class="header-title">
+                <h1>Monthly Test Database</h1>
+                <p>Upload Excel sheet to automatically sync marks database with Firebase real-time cluster.</p>
+            </div>
+            <div class="upload-zone" onclick="document.getElementById('excelMonthlyFile').click()">
+                <i class="fa-solid fa-file-excel" style="color: #1f7246;"></i>
+                <h3>Click to Upload Monthly Test Excel File</h3>
+                <p>Will auto-save every row to database against Student Roll Numbers</p>
+                <input type="file" id="excelMonthlyFile" accept=".xlsx, .xls" style="display: none;" onchange="uploadExcelToFirebase(this, 'monthly_tests')">
+            </div>
+        </div>
+
+        <!-- SECTION 3: Annual Results -->
+        <div id="resultPanel" class="admin-panel">
+            <div class="header-title">
+                <h1>Annual Examination Portal</h1>
+                <p>Upload annual final terminal sheets to push live academic statuses instantly.</p>
+            </div>
+            <div class="upload-zone" onclick="document.getElementById('excelResultFile').click()">
+                <i class="fa-solid fa-cloud-arrow-up" style="color: #002d72; font-size:40px;"></i>
+                <h3>Click to Upload Annual Result Excel File</h3>
+                <p>Pushes complete sheet dataset onto parental verification networks</p>
+                <input type="file" id="excelResultFile" accept=".xlsx, .xls" style="display: none;" onchange="uploadExcelToFirebase(this, 'annual_results')">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FIREBASE LIBRARIES -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Your Verified Firebase Configuration Object
+        const firebaseConfig = {
+            apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
+            authDomain: "pine-hills-school.firebaseapp.com",
+            projectId: "pine-hills-school",
+            storageBucket: "pine-hills-school.firebasestorage.app",
+            messagingSenderId: "31002732655",
+            appId: "1:31002732655:web:37edd331495239524cefda",
+            databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com" // Standard node route
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // View Tab Switcher Controller
+        function switchPanel(panelId, btnElement) {
+            document.querySelectorAll('.admin-panel').forEach(panel => panel.classList.remove('active-panel'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active-panel');
+            btnElement.classList.add('active');
+        }
+
+        // --- 1. ACTIVITY LOGIC: SAVE TO FIREBASE ---
+        function saveActivityToFirebase(event) {
+            event.preventDefault();
+            
+            const roll = document.getElementById('actRoll').value.trim();
+            const name = document.getElementById('actName').value.trim();
+            const className = document.getElementById('actClass').value.trim();
+            const title = document.getElementById('actTitle').value.trim();
+            const note = document.getElementById('actNote').value.trim();
+            const videoUrl = document.getElementById('actVideoUrl').value.trim() || "No Link";
+
+            if(!roll) { alert("Roll number likhna zaroori hai!"); return; }
+
+            const nodeData = {
+                rollNumber: roll,
+                studentName: name,
+                className: className,
+                eventTitle: title,
+                performanceNote: note,
+                videoUrl: videoUrl,
+                lastUpdated: Date.now()
+            };
+
+            // Pushing live into Firebase Node path: activities/rollNumber
+            database.ref('activities/' + roll).set(nodeData, function(error) {
+                if (error) {
+                    alert("Firebase error: Data save nahi ho saka. Rules check karein!");
+                } else {
+                    alert("MashaAllah! Fahad Ahmed ka record Firebase par live save ho gaya.");
+                }
+            });
+        }
+
+        // --- FETCH & SHOW LIVE ACTIVITIES IN TABLE ---
+        database.ref('activities').on('value', function(snapshot) {
+            const tbody = document.getElementById('activityTableBody');
+            tbody.innerHTML = "";
+            
+            if(snapshot.exists()) {
+                snapshot.forEach(childSnapshot => {
+                    const data = childSnapshot.val();
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight:700;">${data.rollNumber}</td>
+                        <td style="color:var(--primary-blue); font-weight:600;">${data.studentName}</td>
+                        <td>${data.className}</td>
+                        <td><strong>${data.eventTitle}</strong></td>
+                        <td>${data.performanceNote}</td>
+                        <td>${data.videoUrl !== "No Link" ? `<a href="${data.videoUrl}" target="_blank" style="color:var(--accent-blue); text-decoration:none;"><i class="fa-solid fa-link"></i> Open Video</a>` : `<em>No Video</em>`}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = "<tr><td colspan='6' style='text-align:center;'>No record found on server.</td></tr>";
+            }
+        });
+
+
+        // --- 2. EXCEL AUTOMATION LOGIC: READ & PUSH BULK TO FIREBASE ---
+        function uploadExcelToFirebase(inputElement, firebaseNodeName) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                
+                // Convert sheet to JSON array of objects
+                // Ensure your Excel file has headers like: rollNumber, studentName, class, math, english, sst, total, etc.
+                const jsonArray = XLSX.utils.sheet_to_json(worksheet);
+
+                if(jsonArray.length === 0) {
+                    alert("Excel sheet khali hai!");
+                    return;
+                }
+
+                let uploadCounter = 0;
+                jsonArray.forEach(row => {
+                    // Check if rollNumber field exists in excel columns
+                    const roll = row.rollNumber || row.RollNo || row.roll;
+                    if(roll) {
+                        database.ref(firebaseNodeName + '/' + roll).set(row);
+                        uploadCounter++;
+                    }
+                });
+
+                alert(`Zabardast! Excel sheet se ${uploadCounter} students ka data direct Live Firebase Node [${firebaseNodeName}] me upload ho gaya hai.`);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>

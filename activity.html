@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Activity Search - Pine Hills School</title>
+    <!-- Google Fonts & Robust Font Awesome Kit -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #002d72;
+            --accent-blue: #1d4ed8;
+            --light-blue: #f4f7fc;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(0, 45, 114, 0.04);
+            --shadow-md: 0 10px 30px rgba(0, 45, 114, 0.06);
+            --shadow-lg: 0 20px 40px rgba(0, 45, 114, 0.1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #fafbfc; color: var(--text-dark); -webkit-font-smoothing: antialiased; }
+
+        header {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 45, 114, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 24px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .logo-img { width: 55px; height: 55px; object-fit: contain; border-radius: 50%; }
+        .logo-text h1 { font-size: 22px; font-weight: 700; color: var(--primary-blue); line-height: 1; letter-spacing: 0.5px; }
+        .logo-text span { font-size: 13px; font-weight: 600; color: var(--primary-blue); letter-spacing: 4px; display: block; margin-top: 2px; }
+
+        .nav-links { display: flex; list-style: none; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 15px; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-blue); }
+        .menu-toggle { display: none; font-size: 22px; color: var(--primary-blue); background: none; border: none; cursor: pointer; }
+
+        /* --- LAYOUT WRAPPER --- */
+        .wrapper { max-width: 900px; margin: 40px auto 80px auto; padding: 0 24px; }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 35px;
+            transition: var(--transition);
+        }
+        .back-btn:hover { transform: translateX(-5px); color: var(--accent-blue); }
+
+        .page-header { text-align: center; margin-bottom: 40px; }
+        .page-header h2 { font-size: 32px; color: var(--primary-blue); font-weight: 700; }
+        .page-header p { color: var(--text-muted); font-size: 15px; margin-top: 6px; }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            box-shadow: var(--shadow-md);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--white);
+            border: 2px solid rgba(0, 45, 114, 0.1);
+            transition: var(--transition);
+        }
+        .search-container:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: var(--shadow-lg);
+        }
+        .search-input {
+            width: 100%;
+            padding: 18px 25px 18px 60px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+            font-size: 18px;
+        }
+
+        /* --- STUDENT CARDS FEED --- */
+        .results-feed { display: flex; flex-direction: column; gap: 30px; }
+
+        .student-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 45, 114, 0.03);
+            display: flex; /* Galti Fixed: JavaScript handle karegi display flex standard layout */
+            flex-direction: column;
+            gap: 20px;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .student-card:hover { box-shadow: var(--shadow-md); }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+        .profile-info { display: flex; align-items: center; gap: 15px; }
+        .avatar-box {
+            width: 50px;
+            height: 50px;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .profile-text h3 { font-size: 18px; color: var(--primary-blue); font-weight: 600; }
+        .profile-text p { font-size: 13px; color: var(--text-muted); }
+
+        .activity-badge {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Video Box (Galti Fixed: Custom Controls, Playsinline added) */
+        .video-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            background-color: #0f172a;
+            position: relative;
+            aspect-ratio: 16 / 9;
+        }
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-caption {
+            font-size: 14.5px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            display: none;
+        }
+        .no-results i { font-size: 48px; color: #cbd5e1; margin-bottom: 15px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: fixed; top: 86px; left: -100%; width: 100%; height: calc(100vh - 86px);
+                background-color: var(--white); flex-direction: column; align-items: center;
+                padding-top: 50px; gap: 35px; transition: var(--transition); box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            }
+            .nav-links.active { left: 0; }
+            .student-profile { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .activity-badge { align-self: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="real logo copy.jpg" alt="Pine Hills Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>PINE HILLS</h1>
+                    <span>SCHOOL</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-links" id="menuLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="activity.html" class="active">Activities</a></li>
+                    <li><a href="#">Academics</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+                <button class="menu-toggle" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+
+        <div class="page-header">
+            <h2>Bache Ki Activity Dekhein</h2>
+            <p>Apne bache ka naam likhein taake uski video aur performance report samne aa jaye.</p>
+        </div>
+
+        <!-- LIVE STUDENT SEARCH BAR -->
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="studentSearch" class="search-input" placeholder="Type bache ka naam (e.g., Fahad, Ali, Zainab)..." onkeyup="searchStudent()">
+        </div>
+
+        <!-- SEARCH RESULTS DISPLAY AREA -->
+        <div class="results-feed" id="resultsFeed">
+            
+            <!-- Student 1: Fahad -->
+            <div class="student-card" data-name="fahad">
+                <div class="student-profile">
+                    <div class="profile-info">
+                        <div class="avatar-box"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div class="profile-text">
+                            <h3>Fahad Ahmed</h3>
+                            <p>Class: 4-B | Roll No: 12</p>
+                        </div>
+                    </div>
+                    <div class="activity-badge">Cricket Tournament</div>
+                </div>
+                <div class="video-wrapper">
+                    <!-- Galti Fixed: playsinline and preload added -->
+                    <video src="https://www.w3schools.com/html/mov_bbb.mp4" controls playsinline preload="metadata"></video>
+                </div>
+                <div class="video-caption">
+                    <strong>Performance Note:</strong> Fahad ne aaj inter-school cricket match me behtareen batting ki aur apni team ko jeetwaya! MashaAllah.
+                </div>
+            </div>
+
+            <!-- Student 2: Ali -->
+            <div class="student-card" data-name="ali">
+                <div class="student-profile">
+                    <div class="profile-info">
+                        <div class="avatar-box"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div class="profile-text">
+                            <h3>Ali Khan</h3>
+                            <p>Class: 5-A | Roll No: 05</p>
+                        </div>
+                    </div>
+                    <div class="activity-badge">Debate Contest</div>
+                </div>
+                <div class="video-wrapper">
+                    <video src="https://www.w3schools.com/html/movie.mp4" controls playsinline preload="metadata"></video>
+                </div>
+                <div class="video-caption">
+                    <strong>Performance Note:</strong> Ali ne "Mili Naghma & All-Karachi Debate Contest" me bht confidence ke sath speech deliver ki.
+                </div>
+            </div>
+
+            <!-- Student 3: Zainab -->
+            <div class="student-card" data-name="zainab">
+                <div class="student-profile">
+                    <div class="profile-info">
+                        <div class="avatar-box"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div class="profile-text">
+                            <h3>Zainab Fatima</h3>
+                            <p>Class: 3-C | Roll No: 22</p>
+                        </div>
+                    </div>
+                    <div class="activity-badge">Science Exhibition</div>
+                </div>
+                <div class="video-wrapper">
+                    <video src="https://www.w3schools.com/html/mov_bbb.mp4" controls playsinline preload="metadata"></video>
+                </div>
+                <div class="video-caption">
+                    <strong>Performance Note:</strong> Zainab ne Annual Science Exhibition me apna Robotics project principal aur guests ke samne bht achi trha explain kiya.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NO RESULTS FOUND TEXT -->
+        <div class="no-results" id="noResults">
+            <i class="fa-regular fa-face-frown"></i>
+            <h3>Koi record nahi mila</h3>
+            <p>Is naam ka koi bacha is activity list me nahi mila. Meharbani kar ke spelling check karein.</p>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger Menu Logic
+        const menuBtn = document.getElementById('menuBtn');
+        const menuLinks = document.getElementById('menuLinks');
+        menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
+
+        // Galti Fixed: Complete Multi-Device Compatible JS Search Function
+        function searchStudent() {
+            const input = document.getElementById('studentSearch').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.student-card');
+            const noResults = document.getElementById('noResults');
+            let matchFound = false;
+
+            cards.forEach(card => {
+                const studentNameAttr = card.getAttribute('data-name').toLowerCase();
+                const studentFullText = card.querySelector('.profile-text h3').innerText.toLowerCase();
+                
+                if (input === "" || studentNameAttr.includes(input) || studentFullText.includes(input)) {
+                    // Galti Fixed: Mobile aur desktop dono par compatible flexible framework display toggle
+                    card.style.setProperty('display', 'flex', 'important');
+                    matchFound = true;
+                } else {
+                    card.style.setProperty('display', 'none', 'important');
+                    const video = card.querySelector('video');
+                    if(video) video.pause();
+                }
+            });
+
+            if (matchFound) {
+                noResults.style.display = 'none';
+            } else {
+                noResults.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

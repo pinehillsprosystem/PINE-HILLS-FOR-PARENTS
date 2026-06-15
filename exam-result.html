@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annual Examination Result Portal - Pine Hills School</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #002d72;
+            --accent-blue: #1d4ed8;
+            --light-bg: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow-lg: 0 20px 40px -10px rgba(0, 45, 114, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f1f5f9; color: var(--text-dark); min-height: 100vh; padding-bottom: 60px; }
+
+        .portal-container { max-width: 800px; margin: 40px auto; padding: 0 15px; position: relative; }
+        
+        /* Top Navigation Bar for Home Link */
+        .top-nav { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+        .home-btn {
+            background: var(--white); color: var(--primary-blue); border: 2px solid var(--primary-blue);
+            padding: 10px 18px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.2s;
+        }
+        .home-btn:hover { background: var(--primary-blue); color: var(--white); }
+
+        .portal-header { text-align: center; margin-bottom: 30px; }
+        .portal-header .badge {
+            background: rgba(0, 45, 114, 0.08); color: var(--primary-blue);
+            padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
+        }
+        .portal-header h2 { font-size: 28px; font-weight: 800; color: var(--primary-blue); }
+        .portal-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+        /* Search Box */
+        .search-wrapper {
+            background: var(--white); border-radius: 20px; padding: 30px;
+            box-shadow: var(--shadow-lg); border: 1px solid #e2e8f0;
+            text-align: center; margin-bottom: 30px;
+        }
+        .search-wrapper h3 { font-size: 16px; color: var(--primary-blue); font-weight: 600; margin-bottom: 12px; }
+        .search-form { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+        
+        .search-form input {
+            flex: 1; padding: 14px 18px; border: 2px solid #cbd5e1; border-radius: 12px;
+            font-size: 15px; font-weight: 500; outline: none;
+        }
+        .search-form input:focus { border-color: var(--accent-blue); }
+        
+        .search-form button {
+            background: var(--primary-blue); color: var(--white); border: none;
+            padding: 0 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .search-form button:hover { background: var(--accent-blue); }
+
+        /* Print Bar Controls */
+        .print-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
+        .print-btn {
+            background: #0f172a; color: var(--white); border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .print-btn:hover { background: var(--accent-blue); }
+
+        /* --- MARKSHEET CONTAINER --- */
+        .marksheet-card {
+            background: var(--white); border-radius: 24px; padding: 35px;
+            box-shadow: var(--shadow-lg); border: 1px solid #cbd5e1; position: relative;
+            display: none; box-sizing: border-box;
+        }
+        .marksheet-card::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(0, 45, 114, 0.12); border-radius: 16px; pointer-events: none;
+        }
+
+        /* Branding Setup */
+        .sheet-top {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 3px double var(--primary-blue); padding-bottom: 18px; margin-bottom: 22px;
+        }
+        .school-brand { display: flex; align-items: center; gap: 14px; }
+        .school-logo { width: 65px; height: 65px; object-fit: contain; border-radius: 50%; }
+        .school-names h1 { font-size: 22px; font-weight: 800; color: var(--primary-blue); }
+        .school-names p { font-size: 12px; color: var(--text-muted); }
+        
+        .cert-title {
+            background: var(--primary-blue); color: var(--white); 
+            padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px;
+        }
+
+        /* Bio Block */
+        .bio-showcase {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            background: #f8fafc; border: 1px solid #e2e8f0; padding: 18px; border-radius: 12px; margin-bottom: 22px;
+        }
+        .bio-field { font-size: 13.5px; color: var(--text-muted); display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #e2e8f0; }
+        .bio-field:last-child { border-bottom: none; }
+        .bio-field strong { color: var(--text-dark); font-weight: 600; }
+
+        /* Fluid Table System */
+        .matrix-box { width: 100%; margin-bottom: 22px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; table-layout: fixed; }
+        
+        .grand-table th:nth-child(1), .grand-table td:nth-child(1) { width: 40%; }
+        .grand-table th:nth-child(2), .grand-table td:nth-child(2) { width: 15%; text-align: center; }
+        .grand-table th:nth-child(3), .grand-table td:nth-child(3) { width: 15%; text-align: center; }
+        .grand-table th:nth-child(4), .grand-table td:nth-child(4) { width: 15%; text-align: center; }
+        .grand-table th:nth-child(5), .grand-table td:nth-child(5) { width: 15%; text-align: center; }
+
+        .grand-table th {
+            background-color: var(--primary-blue); color: var(--white); padding: 12px 10px;
+            font-weight: 600; font-size: 12px; text-transform: uppercase;
+        }
+        .grand-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); word-wrap: break-word; }
+        .grand-table tr:last-child td { border-bottom: none; }
+        .grand-table tr:nth-child(even) { background-color: #f8fafc; }
+
+        /* Stats Blocks */
+        .summary-dashboard {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px;
+        }
+        .stat-card {
+            background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px 8px; border-radius: 10px; text-align: center;
+        }
+        .stat-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .stat-card h4 { font-size: 16px; color: var(--primary-blue); font-weight: 700; margin-top: 2px; }
+
+        /* Status Block */
+        .verdict-banner {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px; border-radius: 12px; margin-bottom: 25px;
+        }
+        .verdict-banner.pass-zone { background: #dcfce7; color: #15803d; border-left: 5px solid var(--success); }
+        .verdict-banner.fail-zone { background: #fee2e2; color: #b91c1c; border-left: 5px solid var(--danger); }
+        .remarks-text { font-size: 13px; font-weight: 500; }
+        .final-badge { font-size: 15px; font-weight: 800; }
+
+        /* Stamp Elements */
+        .stamp-row { display: flex; justify-content: space-between; margin-top: 45px; }
+        .stamp-box { text-align: center; width: 140px; }
+        .line-dash { border-top: 1px dashed #94a3b8; margin-bottom: 6px; }
+        .stamp-box p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+        .err-card {
+            background: var(--white); padding: 30px; border-radius: 20px; text-align: center;
+            box-shadow: var(--shadow-lg); display: none; color: var(--text-muted); border: 1px solid #e2e8f0;
+        }
+        .err-card i { font-size: 40px; color: var(--danger); margin-bottom: 10px; }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .portal-container { margin: 20px auto; padding: 0 10px; }
+            .top-nav { justify-content: center; }
+            .portal-header h2 { font-size: 22px; }
+            .search-wrapper { padding: 20px; }
+            
+            .marksheet-card { padding: 20px 10px; border-radius: 14px; }
+            .sheet-top { flex-direction: column; gap: 12px; text-align: center; }
+            .school-brand { flex-direction: column; gap: 8px; }
+            .cert-title { text-align: center; width: 100%; }
+            
+            .bio-showcase { grid-template-columns: 1fr; gap: 6px; padding: 12px; }
+            
+            .grand-table { font-size: 11px; }
+            .grand-table th { padding: 10px 4px; font-size: 10px; }
+            .grand-table td { padding: 10px 4px; }
+            
+            .summary-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .verdict-banner { flex-direction: column; gap: 8px; text-align: center; padding: 12px; }
+            
+            .stamp-row { flex-direction: column; gap: 35px; align-items: center; margin-top: 35px; }
+            .stamp-box { width: 140px; }
+        }
+
+        /* --- HARD LOCK PRINT ENGINE --- */
+        @media print {
+            @page { size: A4 portrait; margin: 0 !important; }
+            html, body { background: #fff !important; color: #000 !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; page-break-inside: avoid !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .top-nav, .portal-header, .search-wrapper, .print-bar { display: none !important; } 
+            .portal-container { width: 210mm !important; max-width: 210mm !important; margin: 0 !important; padding: 0 !important; }
+            .marksheet-card { display: block !important; box-shadow: none !important; border: 1px solid #000 !important; background: #fff !important; box-sizing: border-box; page-break-inside: avoid !important; page-break-after: avoid !important; width: 190mm !important; margin: 10mm auto !important; padding: 12mm 10mm !important; border-radius: 15px !important; transform: scale(0.96) !important; transform-origin: top center !important; }
+            .marksheet-card::before { border: 1px solid #cbd5e1 !important; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; }
+            .cert-title { background: #002d72 !important; color: #fff !important; }
+            .bio-showcase { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; }
+            .grand-table th { background-color: #002d72 !important; color: #fff !important; }
+            .stat-card { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
+            .pass-zone { background-color: #dcfce7 !important; color: #15803d !important; border-left: 4mm solid #10b981 !important; }
+            .fail-zone { background-color: #fee2e2 !important; color: #b91c1c !important; border-left: 4mm solid #ef4444 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        
+        <!-- TOP NAVIGATION BAR WITH BACK TO HOME BUTTON -->
+        <div class="top-nav">
+            <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> Go to Homepage</a>
+        </div>
+        
+        <div class="portal-header">
+            <span class="badge">Official Portal</span>
+            <h2>Annual Examination Results</h2>
+            <p>Pine Hills School independent premium student grading validation network.</p>
+        </div>
+
+        <div class="search-wrapper" id="searchWrapper">
+            <h3>Enter Student Roll Number</h3>
+            <div class="search-form">
+                <input type="text" id="mainRollInput" placeholder="Type Simple Roll Number (e.g., 501, 502)...">
+                <button onclick="fetchGrandResult()"><i class="fa-solid fa-shield-halved"></i> Verify</button>
+            </div>
+        </div>
+
+        <!-- PRINT CONTROL BAR -->
+        <div class="print-bar" id="printBar">
+            <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Marksheet</button>
+        </div>
+
+        <!-- HIGH-FIDELITY COMPACT MARKSHEET -->
+        <div class="marksheet-card" id="mainMarksheetCard">
+            
+            <div class="sheet-top">
+                <div class="school-brand">
+                    <img src="real logo copy.jpg" alt="Pine Hills Logo" class="school-logo">
+                    <div class="school-names">
+                        <h1>PINE HILLS SCHOOL</h1>
+                        <p>Affiliated Academic Board Network | Karachi, Pakistan</p>
+                    </div>
+                </div>
+                <div class="cert-title">ANNUAL PROGRESS REPORT</div>
+            </div>
+
+            <div class="bio-showcase">
+                <div>
+                    <div class="bio-field">Student Name: <strong id="studentName">-</strong></div>
+                    <div class="bio-field">Roll Number: <strong id="rollNumber">-</strong></div>
+                    <div class="bio-field">Father Name: <strong id="fatherName">-</strong></div>
+                </div>
+                <div>
+                    <div class="bio-field">Class / Section: <strong id="className">-</strong></div>
+                    <div class="bio-field">Academic Session: <strong id="sessionYear">-</strong></div>
+                    <div class="bio-field">Enrollment ID: <strong id="enrollId">-</strong></div>
+                </div>
+            </div>
+
+            <div class="matrix-box">
+                <table class="grand-table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Theory</th>
+                            <th>Prac</th>
+                            <th>Total</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grandTableBody">
+                        <!-- Dynamic Injection -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-dashboard">
+                <div class="stat-card">
+                    <p>Grand Total</p>
+                    <h4 id="statTotal">-/500</h4>
+                </div>
+                <div class="stat-card">
+                    <p>Percentage</p>
+                    <h4 id="statPercentage">-%</h4>
+                </div>
+                <div class="stat-card">
+                    <p>Final CGPA</p>
+                    <h4 id="statCGPA">-</h4>
+                </div>
+                <div class="stat-card">
+                    <p>Position</p>
+                    <h4 id="statPosition">-</h4>
+                </div>
+            </div>
+
+            <div class="verdict-banner" id="verdictBlock">
+                <div class="remarks-text">Remarks: <span id="lblRemarks">-</span></div>
+                <div class="final-badge" id="lblVerdict">PASSED</div>
+            </div>
+
+            <div class="stamp-row">
+                <div class="stamp-box">
+                    <div class="line-dash"></div>
+                    <p>Class Incharge</p>
+                </div>
+                <div class="stamp-box">
+                    <div class="line-dash"></div>
+                    <p>Exam Controller</p>
+                </div>
+                <div class="stamp-box">
+                    <div class="line-dash"></div>
+                    <p>Principal Stamp</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="err-card" id="errorCard">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <h3>Invalid Roll Number</h3>
+            <p>Records me yeh roll number nahi mila. Kripya sahi number check karein (e.g., 501, 502).</p>
+        </div>
+
+    </div>
+
+    <script>
+        const grandDatabase = {
+            "501": {
+                name: "Muhammad Hamza",
+                father: "Sajid Ali",
+                class: "9th-S (Science Group)",
+                session: "2025-2026",
+                enroll: "PHS-9932-25",
+                subjects: [
+                    { name: "English Compulsory", theory: 72, prac: 18, total: 90, grade: "A+" },
+                    { name: "Mathematics (Advance)", theory: 78, prac: 20, total: 98, grade: "A+" },
+                    { name: "Physics Theory / Lab", theory: 65, prac: 19, total: 84, grade: "A" },
+                    { name: "Chemistry Theory / Lab", theory: 60, prac: 17, total: 77, grade: "B" },
+                    { name: "Computer Sciences", theory: 75, prac: 20, total: 95, grade: "A+" }
+                ],
+                grandTotal: "444/500",
+                percentage: "88.8%",
+                cgpa: "3.92",
+                position: "1st",
+                remarks: "Outstanding performance throughout the session.",
+                status: "PASS"
+            },
+            "502": {
+                name: "Ayesha Siddiqua",
+                father: "Tariq Mahmood",
+                class: "9th-S (Science Group)",
+                session: "2025-2026",
+                enroll: "PHS-9945-25",
+                subjects: [
+                    { name: "English Compulsory", theory: 60, prac: 15, total: 75, grade: "B" },
+                    { name: "Mathematics (Advance)", theory: 55, prac: 14, total: 69, grade: "C" },
+                    { name: "Physics Theory / Lab", theory: 58, prac: 16, total: 74, grade: "B" },
+                    { name: "Chemistry Theory / Lab", theory: 62, prac: 18, total: 80, grade: "A" },
+                    { name: "Computer Sciences", theory: 68, prac: 19, total: 87, grade: "A" }
+                ],
+                grandTotal: "385/500",
+                percentage: "77.0%",
+                cgpa: "3.25",
+                position: "5th",
+                remarks: "Good effort. Has potential to score more in math.",
+                status: "PASS"
+            }
+        };
+
+        function fetchGrandResult() {
+            const input = document.getElementById('mainRollInput').value.trim();
+            const sheet = document.getElementById('mainMarksheetCard');
+            const printBar = document.getElementById('printBar');
+            const err = document.getElementById('errorCard');
+
+            if(input === "") {
+                sheet.style.display = 'none';
+                printBar.style.display = 'none';
+                err.style.display = 'block';
+                return;
+            }
+
+            const data = grandDatabase[input];
+
+            if(data) {
+                err.style.display = 'none';
+
+                document.getElementById('studentName').innerText = data.name;
+                document.getElementById('rollNumber').innerText = input;
+                document.getElementById('fatherName').innerText = data.father;
+                document.getElementById('className').innerText = data.class;
+                document.getElementById('sessionYear').innerText = data.session;
+                document.getElementById('enrollId').innerText = data.enroll;
+
+                document.getElementById('statTotal').innerText = data.grandTotal;
+                document.getElementById('statPercentage').innerText = data.percentage;
+                document.getElementById('statCGPA').innerText = data.cgpa;
+                document.getElementById('statPosition').innerText = data.position;
+
+                document.getElementById('lblRemarks').innerText = data.remarks;
+                document.getElementById('lblVerdict').innerText = data.status === "PASS" ? "PASSED / PROMOTED" : "FAILED";
+                
+                const vBlock = document.getElementById('verdictBlock');
+                if(data.status === "PASS") {
+                    vBlock.className = "verdict-banner pass-zone";
+                } else {
+                    vBlock.className = "verdict-banner fail-zone";
+                }
+
+                const tbody = document.getElementById('grandTableBody');
+                tbody.innerHTML = '';
+
+                data.subjects.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="color: var(--primary-blue); font-weight:600; text-align:left;">${s.name}</td>
+                        <td style="text-align:center;">${s.theory}</td>
+                        <td style="text-align:center;">${s.prac}</td>
+                        <td style="font-weight:700; text-align:center;">${s.total}</td>
+                        <td style="font-weight:700; color:var(--accent-blue); text-align:center;">${s.grade}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                sheet.style.display = 'block';
+                printBar.style.display = 'flex';
+                sheet.scrollIntoView({ behavior: 'smooth' });
+
+            } else {
+                sheet.style.display = 'none';
+                printBar.style.display = 'none';
+                err.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
