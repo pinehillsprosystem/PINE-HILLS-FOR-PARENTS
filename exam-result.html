@@ -3,209 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Annual Examination Result Portal - Pine Hills School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Official Progress Report Portal - Pine Hills School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
-            --primary-blue: #002d72;
-            --accent-blue: #1d4ed8;
-            --light-bg: #f8fafc;
-            --text-dark: #0f172a;
-            --text-muted: #475569;
-            --white: #ffffff;
-            --success: #10b981;
-            --danger: #ef4444;
-            --shadow-lg: 0 20px 40px -10px rgba(0, 45, 114, 0.1);
+            --primary-navy: #0a2540;
+            --secondary-blue: #1e3a8a;
+            --accent-gold: #b45309;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success: #15803d;
+            --danger: #b91c1c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f1f5f9; color: var(--text-dark); min-height: 100vh; padding-bottom: 60px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #f1f5f9; color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
 
-        .portal-container { max-width: 800px; margin: 40px auto; padding: 0 15px; position: relative; }
+        .portal-container { max-width: 850px; margin: 40px auto; padding: 0 15px; }
         
-        /* Top Navigation Bar for Home Link */
-        .top-nav { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+        .top-nav { display: flex; justify-content: flex-end; margin-bottom: 25px; }
         .home-btn {
-            background: var(--white); color: var(--primary-blue); border: 2px solid var(--primary-blue);
-            padding: 10px 18px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            background: #ffffff; color: var(--primary-navy); border: 1px solid var(--border-color);
+            padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
             text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
         }
-        .home-btn:hover { background: var(--primary-blue); color: var(--white); }
+        .home-btn:hover { background: var(--primary-navy); color: #ffffff; border-color: var(--primary-navy); }
 
-        .portal-header { text-align: center; margin-bottom: 30px; }
+        .portal-header { text-align: center; margin-bottom: 35px; }
         .portal-header .badge {
-            background: rgba(0, 45, 114, 0.08); color: var(--primary-blue);
-            padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 10px;
+            background: #e0f2fe; color: #0369a1;
+            padding: 6px 16px; border-radius: 30px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 12px;
         }
-        .portal-header h2 { font-size: 28px; font-weight: 800; color: var(--primary-blue); }
-        .portal-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+        .portal-header h2 { font-size: 30px; font-weight: 800; color: var(--primary-navy); letter-spacing: -0.5px; }
+        .portal-header p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
 
-        /* Search Box */
+        /* Search Interface */
         .search-wrapper {
-            background: var(--white); border-radius: 20px; padding: 30px;
-            box-shadow: var(--shadow-lg); border: 1px solid #e2e8f0;
+            background: #ffffff; border-radius: 16px; padding: 35px;
+            box-shadow: 0 10px 25px -5px rgba(10, 37, 64, 0.05); border: 1px solid #e2e8f0;
             text-align: center; margin-bottom: 30px;
         }
-        .search-wrapper h3 { font-size: 16px; color: var(--primary-blue); font-weight: 600; margin-bottom: 12px; }
-        .search-form { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
+        .search-wrapper h3 { font-size: 15px; color: var(--primary-navy); font-weight: 600; margin-bottom: 15px; }
+        .search-form { display: flex; gap: 10px; max-width: 520px; margin: 0 auto; }
         
         .search-form input {
-            flex: 1; padding: 14px 18px; border: 2px solid #cbd5e1; border-radius: 12px;
-            font-size: 15px; font-weight: 500; outline: none;
+            flex: 1; padding: 14px 18px; border: 2px solid var(--border-color); border-radius: 10px;
+            font-size: 15px; font-weight: 500; outline: none; transition: border-color 0.2s;
         }
-        .search-form input:focus { border-color: var(--accent-blue); }
+        .search-form input:focus { border-color: var(--secondary-blue); }
         
         .search-form button {
-            background: var(--primary-blue); color: var(--white); border: none;
-            padding: 0 24px; border-radius: 12px; font-size: 15px; font-weight: 600;
-            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            background: var(--primary-navy); color: #ffffff; border: none;
+            padding: 0 26px; border-radius: 10px; font-size: 14px; font-weight: 600;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s;
         }
-        .search-form button:hover { background: var(--accent-blue); }
+        .search-form button:hover { background: var(--secondary-blue); }
 
-        /* Print Bar Controls */
+        /* Action Controls */
         .print-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
         .print-btn {
-            background: #0f172a; color: var(--white); border: none; padding: 10px 20px;
+            background: #0f172a; color: #ffffff; border: none; padding: 11px 22px;
             border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .print-btn:hover { background: var(--accent-blue); }
+        .print-btn:hover { background: var(--secondary-blue); }
 
-        /* --- MARKSHEET CONTAINER --- */
+        /* ==========================================================================
+           💎 ULTRA PREMIUM MARKSHEET SYSTEM DESIGN
+           ========================================================================== */
         .marksheet-card {
-            background: var(--white); border-radius: 24px; padding: 35px;
-            box-shadow: var(--shadow-lg); border: 1px solid #cbd5e1; position: relative;
-            display: none; box-sizing: border-box;
+            background: #ffffff; border-radius: 0px; padding: 45px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); border: 1px solid #94a3b8; 
+            position: relative; display: none; box-sizing: border-box;
+            background-image: radial-gradient(rgba(10, 37, 64, 0.015) 2px, transparent 2px);
+            background-size: 24px 24px;
         }
+        
+        /* Double Elegant Document Frame Border */
         .marksheet-card::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid rgba(0, 45, 114, 0.12); border-radius: 16px; pointer-events: none;
+            content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
+            border: 2px solid var(--primary-navy); pointer-events: none; opacity: 0.85;
         }
+        .marksheet-card::after {
+            content: ''; position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px;
+            border: 1px solid var(--accent-gold); pointer-events: none; opacity: 0.4;
+        }
+
+        /* Certificate Verification Header */
+        .security-ribbon {
+            display: flex; justify-content: space-between; background: #f8fafc;
+            border: 1px solid #e2e8f0; padding: 6px 15px; font-size: 10px;
+            color: var(--text-muted); font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 20px; position: relative; z-index: 5;
+        }
+        .security-ribbon span i { color: var(--success); margin-right: 4px; }
 
         /* Branding Setup */
         .sheet-top {
             display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 3px double var(--primary-blue); padding-bottom: 18px; margin-bottom: 22px;
+            border-bottom: 2px solid var(--primary-navy); padding-bottom: 20px; margin-bottom: 25px;
+            position: relative; z-index: 5;
         }
-        .school-brand { display: flex; align-items: center; gap: 14px; }
-        .school-logo { width: 65px; height: 65px; object-fit: contain; border-radius: 50%; }
-        .school-names h1 { font-size: 22px; font-weight: 800; color: var(--primary-blue); }
-        .school-names p { font-size: 12px; color: var(--text-muted); }
+        .school-brand { display: flex; align-items: center; gap: 16px; }
+        .school-logo { width: 75px; height: 75px; object-fit: contain; }
+        .school-names h1 { font-size: 24px; font-weight: 800; color: var(--primary-navy); letter-spacing: -0.5px; }
+        .school-names p { font-size: 11.5px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
         
         .cert-title {
-            background: var(--primary-blue); color: var(--white); 
-            padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 12px;
+            border: 2px solid var(--primary-navy); color: var(--primary-navy); 
+            padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px;
+            text-transform: uppercase; background: #ffffff;
         }
 
-        /* Bio Block */
+        /* Bio Metadata Layout Block */
         .bio-showcase {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-            background: #f8fafc; border: 1px solid #e2e8f0; padding: 18px; border-radius: 12px; margin-bottom: 22px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+            background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; margin-bottom: 25px;
+            position: relative; z-index: 5;
         }
-        .bio-field { font-size: 13.5px; color: var(--text-muted); display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed #e2e8f0; }
+        .bio-field { font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
         .bio-field:last-child { border-bottom: none; }
-        .bio-field strong { color: var(--text-dark); font-weight: 600; }
+        .bio-field strong { color: var(--primary-navy); font-weight: 700; }
 
-        /* 📱 RESPONSIVE MOBILE SCROLLABLE TABLE SYSTEM */
+        /* Responsive Matrix Table Container */
         .matrix-box { 
-            width: 100%; 
-            margin-bottom: 22px; 
-            border-radius: 10px; 
-            overflow-x: auto; /* Enables swipe scroll on small mobiles */
-            border: 1px solid #e2e8f0; 
+            width: 100%; margin-bottom: 25px; overflow-x: auto; 
+            border: 1px solid var(--primary-navy); position: relative; z-index: 5;
             -webkit-overflow-scrolling: touch;
         }
-        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 500px; /* Prevents text clashing on small screens */ }
+        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 450px; }
         
-        .grand-table th:nth-child(1), .grand-table td:nth-child(1) { width: 40%; }
-        .grand-table th:nth-child(2), .grand-table td:nth-child(2) { width: 15%; text-align: center; }
-        .grand-table th:nth-child(3), .grand-table td:nth-child(3) { width: 15%; text-align: center; }
-        .grand-table th:nth-child(4), .grand-table td:nth-child(4) { width: 15%; text-align: center; }
-        .grand-table th:nth-child(5), .grand-table td:nth-child(5) { width: 15%; text-align: center; }
-
         .grand-table th {
-            background-color: var(--primary-blue); color: var(--white); padding: 12px 10px;
-            font-weight: 600; font-size: 12px; text-transform: uppercase;
+            background-color: var(--primary-navy); color: #ffffff; padding: 12px 16px;
+            font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .grand-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); }
+        .grand-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; color: var(--text-main); font-weight: 500; }
         .grand-table tr:last-child td { border-bottom: none; }
         .grand-table tr:nth-child(even) { background-color: #f8fafc; }
 
-        /* Stats Blocks */
+        /* Institutional Analytics Dashboard cards */
         .summary-dashboard {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px;
+            position: relative; z-index: 5;
         }
         .stat-card {
-            background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px 8px; border-radius: 10px; text-align: center;
+            background: #ffffff; border: 1px solid #cbd5e1; padding: 14px 10px; text-align: center;
         }
-        .stat-card p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-        .stat-card h4 { font-size: 16px; color: var(--primary-blue); font-weight: 700; margin-top: 2px; }
+        .stat-card p { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card h4 { font-size: 18px; color: var(--primary-navy); font-weight: 800; margin-top: 4px; }
 
-        /* Status Block */
+        /* Status Verdict Blocks */
         .verdict-banner {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 20px; border-radius: 12px; margin-bottom: 25px;
+            padding: 15px 20px; border: 1px solid #e2e8f0; margin-bottom: 25px;
+            position: relative; z-index: 5;
         }
-        .verdict-banner.pass-zone { background: #dcfce7; color: #15803d; border-left: 5px solid var(--success); }
-        .verdict-banner.fail-zone { background: #fee2e2; color: #b91c1c; border-left: 5px solid var(--danger); }
-        .remarks-text { font-size: 13px; font-weight: 500; }
-        .final-badge { font-size: 15px; font-weight: 800; }
+        .verdict-banner.pass-zone { background: #f0fdf4; color: var(--success); border-left: 4px solid var(--success); }
+        .verdict-banner.fail-zone { background: #fef2f2; color: var(--danger); border-left: 4px solid var(--danger); }
+        .remarks-text { font-size: 13px; font-weight: 600; }
+        .remarks-text span { font-weight: 500; color: var(--text-main); }
+        .final-badge { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
 
-        /* Stamp Elements */
-        .stamp-row { display: flex; justify-content: space-between; margin-top: 45px; }
-        .stamp-box { text-align: center; width: 140px; }
-        .line-dash { border-top: 1px dashed #94a3b8; margin-bottom: 6px; }
-        .stamp-box p { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        /* Stamp Signature Blocks Alignment */
+        .stamp-row { display: flex; justify-content: space-between; margin-top: 55px; position: relative; z-index: 5; }
+        .stamp-box { text-align: center; width: 160px; }
+        .line-dash { border-top: 1px solid #64748b; margin-bottom: 8px; }
+        .stamp-box p { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .err-card {
-            background: var(--white); padding: 30px; border-radius: 20px; text-align: center;
-            box-shadow: var(--shadow-lg); display: none; color: var(--text-muted); border: 1px solid #e2e8f0;
+            background: #ffffff; padding: 35px; border-radius: 16px; text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(10, 37, 64, 0.05); display: none; color: var(--text-muted); border: 1px solid #e2e8f0;
         }
-        .err-card i { font-size: 40px; color: var(--danger); margin-bottom: 10px; }
+        .err-card i { font-size: 38px; color: var(--danger); margin-bottom: 12px; }
 
-        /* --- MOBILE RESPONSIVE ENGINE --- */
+        /* ==========================================================================
+           📱 MOBILE RESPONSIVE ADAPTATION ENGINE
+           ========================================================================== */
         @media (max-width: 768px) {
             .portal-container { margin: 20px auto; padding: 0 10px; }
             .top-nav { justify-content: center; }
-            .portal-header h2 { font-size: 22px; }
+            .portal-header h2 { font-size: 24px; }
             
-            .search-wrapper { padding: 20px; border-radius: 14px; }
+            .search-wrapper { padding: 20px; border-radius: 12px; }
             .search-form { flex-direction: column; gap: 10px; }
             .search-form button { padding: 14px; justify-content: center; }
             
-            .marksheet-card { padding: 20px 12px; border-radius: 14px; }
-            .sheet-top { flex-direction: column; gap: 12px; text-align: center; padding-bottom: 12px; }
-            .school-brand { flex-direction: column; gap: 8px; }
+            .marksheet-card { padding: 25px 15px; }
+            .marksheet-card::before { top: 6px; left: 6px; right: 6px; bottom: 6px; }
+            .marksheet-card::after { top: 10px; left: 10px; right: 10px; bottom: 10px; }
+            
+            .sheet-top { flex-direction: column; gap: 15px; text-align: center; padding-bottom: 15px; }
+            .school-brand { flex-direction: column; gap: 10px; }
             .cert-title { text-align: center; width: 100%; padding: 10px; }
             
-            .bio-showcase { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
-            .bio-field { font-size: 12.5px; }
+            .bio-showcase { grid-template-columns: 1fr; gap: 10px; padding: 15px; }
             
-            .summary-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .verdict-banner { flex-direction: column; gap: 8px; text-align: center; padding: 12px; }
+            .summary-dashboard { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .verdict-banner { flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
             
-            .stamp-row { flex-direction: column; gap: 35px; align-items: center; margin-top: 35px; }
-            .stamp-box { width: 100%; max-width: 200px; }
+            .stamp-row { flex-direction: column; gap: 40px; align-items: center; margin-top: 40px; }
+            .stamp-box { width: 100%; max-width: 220px; }
         }
 
-        /* --- HARD LOCK PRINT ENGINE --- */
+        /* ==========================================================================
+           🖨️ ULTRA-ACCURATE A4 PORTRAIT PRINT LAYOUT ENGINE
+           ========================================================================== */
         @media print {
             @page { size: A4 portrait; margin: 0 !important; }
-            html, body { background: #fff !important; color: #000 !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; page-break-inside: avoid !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            html, body { background: #ffffff !important; color: #000000 !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .top-nav, .portal-header, .search-wrapper, .print-bar { display: none !important; } 
             .portal-container { width: 210mm !important; max-width: 210mm !important; margin: 0 !important; padding: 0 !important; }
-            .marksheet-card { display: block !important; box-shadow: none !important; border: 1px solid #000 !important; background: #fff !important; box-sizing: border-box; page-break-inside: avoid !important; page-break-after: avoid !important; width: 190mm !important; margin: 10mm auto !important; padding: 12mm 10mm !important; border-radius: 15px !important; transform: scale(0.96) !important; transform-origin: top center !important; }
-            .marksheet-card::before { border: 1px solid #cbd5e1 !important; top: 2mm; left: 2mm; right: 2mm; bottom: 2mm; }
-            .cert-title { background: #002d72 !important; color: #fff !important; }
+            
+            .marksheet-card { 
+                display: block !important; box-shadow: none !important; background: #ffffff !important; 
+                box-sizing: border-box; page-break-inside: avoid !important; page-break-after: avoid !important; 
+                width: 210mm !important; height: 297mm !important; padding: 22mm 20mm !important; 
+                border: none !important;
+            }
+            .marksheet-card::before { border: 2px solid #0a2540 !important; top: 8mm; left: 8mm; right: 8mm; bottom: 8mm; }
+            .marksheet-card::after { border: 1px solid #b45309 !important; top: 10mm; left: 10mm; right: 10mm; bottom: 10mm; }
+            
+            .security-ribbon { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; }
+            .cert-title { border: 2px solid #0a2540 !important; background: #ffffff !important; color: #0a2540 !important; }
             .bio-showcase { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; }
-            .grand-table th { background-color: #002d72 !important; color: #fff !important; }
-            .stat-card { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; }
-            .pass-zone { background-color: #dcfce7 !important; color: #15803d !important; border-left: 4mm solid #10b981 !important; }
-            .fail-zone { background-color: #fee2e2 !important; color: #b91c1c !important; border-left: 4mm solid #ef4444 !important; }
+            .matrix-box { border: 1px solid #0a2540 !important; }
+            .grand-table th { background-color: #0a2540 !important; color: #ffffff !important; }
+            .stat-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; }
+            .pass-zone { background-color: #f0fdf4 !important; color: #15803d !important; border-left: 4mm solid #15803d !important; }
+            .fail-zone { background-color: #fef2f2 !important; color: #b91c1c !important; border-left: 4mm solid #b91c1c !important; }
         }
     </style>
 </head>
@@ -214,20 +245,21 @@
     <div class="portal-container">
         
         <div class="top-nav">
-            <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> Go to Homepage</a>
+            <a href="index.html" class="home-btn"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
         </div>
         
         <div class="portal-header">
-            <span class="badge">Official Portal</span>
-            <h2>Annual Examination Results</h2>
-            <p>Pine Hills School independent premium student grading validation network.</p>
+            <span class="badge">Academic Verification</span>
+            <h2>Examination Result Portal</h2>
+            <p>Verify and download official progress reports from the Pine Hills central registry network.</p>
         </div>
 
+        <!-- Search Form Component Area -->
         <div class="search-wrapper" id="searchWrapper">
             <h3>Enter Student Roll Number</h3>
             <div class="search-form">
-                <input type="text" id="mainRollInput" placeholder="Type Simple Roll Number (e.g., 501, 502)...">
-                <button onclick="fetchGrandResult()"><i class="fa-solid fa-shield-halved"></i> Verify</button>
+                <input type="text" id="mainRollInput" placeholder="Enter valid roll number (e.g., 501, 502)...">
+                <button onclick="fetchGrandResult()"><i class="fa-solid fa-shield-check"></i> Search Records</button>
             </div>
         </div>
 
@@ -235,19 +267,27 @@
             <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Marksheet</button>
         </div>
 
+        <!-- MARKSHEET BLOCK -->
         <div class="marksheet-card" id="mainMarksheetCard">
+            
+            <!-- Document Top Security Verification Header Ribbon Bar -->
+            <div class="security-ribbon">
+                <span><i class="fa-solid fa-badge-check"></i> Secure Digitally Verified Document</span>
+                <span id="docTimestamp">System ID: PHS-2026-REG</span>
+            </div>
             
             <div class="sheet-top">
                 <div class="school-brand">
-                    <img src="real logo copy.jpg" alt="Pine Hills Logo" class="school-logo">
+                    <img src="real logo copy.jpg" alt="Pine Hills Logo" class="school-logo" onerror="this.src='https://via.placeholder.com/75'">
                     <div class="school-names">
                         <h1>PINE HILLS SCHOOL</h1>
                         <p>Affiliated Academic Board Network | Karachi, Pakistan</p>
                     </div>
                 </div>
-                <div class="cert-title">ANNUAL PROGRESS REPORT</div>
+                <div class="cert-title">Progress Report</div>
             </div>
 
+            <!-- Student Profile Metadata Block -->
             <div class="bio-showcase">
                 <div>
                     <div class="bio-field">Student Name: <strong id="studentName">-</strong></div>
@@ -261,46 +301,47 @@
                 </div>
             </div>
 
+            <!-- Performance Subject Matrix Grid Table Component -->
             <div class="matrix-box">
                 <table class="grand-table">
                     <thead>
                         <tr>
-                            <th>Subject</th>
-                            <th>Theory</th>
-                            <th>Prac</th>
-                            <th>Total</th>
-                            <th>Grade</th>
+                            <th style="width: 50%;">Subject Name</th>
+                            <th style="width: 30%; text-align: center;">Obtained Marks</th>
+                            <th style="width: 20%; text-align: center;">Grade</th>
                         </tr>
                     </thead>
-                    <tbody id="grandTableBody">
-                        </tbody>
+                    <tbody id="grandTableBody"></tbody>
                 </table>
             </div>
 
+            <!-- Quantitative Summary Analytics Dashboard Widgets Layout Block -->
             <div class="summary-dashboard">
                 <div class="stat-card">
                     <p>Grand Total</p>
-                    <h4 id="statTotal">-/500</h4>
+                    <h4 id="statTotal">-</h4>
                 </div>
                 <div class="stat-card">
                     <p>Percentage</p>
-                    <h4 id="statPercentage">-%</h4>
+                    <h4 id="statPercentage">-</h4>
                 </div>
                 <div class="stat-card">
                     <p>Final CGPA</p>
                     <h4 id="statCGPA">-</h4>
                 </div>
                 <div class="stat-card">
-                    <p>Position</p>
+                    <p>Class Position</p>
                     <h4 id="statPosition">-</h4>
                 </div>
             </div>
 
+            <!-- Result Status Verdict Signage Banner Card Component -->
             <div class="verdict-banner" id="verdictBlock">
                 <div class="remarks-text">Remarks: <span id="lblRemarks">-</span></div>
-                <div class="final-badge" id="lblVerdict">PASSED</div>
+                <div class="final-badge" id="lblVerdict">-</div>
             </div>
 
+            <!-- Official Institutional Verification Stamps Line-Dash Component Block Layout -->
             <div class="stamp-row">
                 <div class="stamp-box">
                     <div class="line-dash"></div>
@@ -320,58 +361,93 @@
 
         <div class="err-card" id="errorCard">
             <i class="fa-solid fa-triangle-exclamation"></i>
-            <h3>Invalid Roll Number</h3>
-            <p>Records me yeh roll number nahi mila. Kripya sahi number check karein (e.g., 501, 502).</p>
+            <h3>Record Not Found</h3>
+            <p>Kripya sahi roll number enter karein. Agar masla hal na ho to admin se rabta karein.</p>
         </div>
 
     </div>
 
     <script>
-        const grandDatabase = {
-            "501": {
-                name: "Muhammad Hamza",
-                father: "Sajid Ali",
-                class: "9th-S (Science Group)",
-                session: "2025-2026",
-                enroll: "PHS-9932-25",
-                subjects: [
-                    { name: "English Compulsory", theory: 72, prac: 18, total: 90, grade: "A+" },
-                    { name: "Mathematics (Advance)", theory: 78, prac: 20, total: 98, grade: "A+" },
-                    { name: "Physics Theory / Lab", theory: 65, prac: 19, total: 84, grade: "A" },
-                    { name: "Chemistry Theory / Lab", theory: 60, prac: 17, total: 77, grade: "B" },
-                    { name: "Computer Sciences", theory: 75, prac: 20, total: 95, grade: "A+" }
-                ],
-                grandTotal: "444/500",
-                percentage: "88.8%",
-                cgpa: "3.92",
-                position: "1st",
-                remarks: "Outstanding performance throughout the session.",
-                status: "PASS"
+        // Standardizing subject aliases function logic to match Excel outputs securely
+        function getCleanSubjectName(name) {
+            const normalized = name.trim().toLowerCase();
+            if (normalized === 'math' || normalized === 'mathematics') return 'Mathematics';
+            if (normalized === 'sst' || normalized === 'social studies') return 'Social Studies';
+            if (normalized === 'gk' || normalized === 'general knowledge') return 'General Knowledge';
+            if (normalized === 'seerat' || normalized === 'seerat un nabi') return 'Seerat un Nabi';
+            return name;
+        }
+
+        // Standard Embedded Registry Database (Demo Data - Jab medum admin se code generate karengi to ye replace ho jayega)
+const grandDatabase = {
+    "999": {
+        "name": "ali",
+        "father": "ali",
+        "class": "4th",
+        "session": "2025-2026",
+        "enroll": "999",
+        "subjects": [
+            {
+                "name": "English",
+                "theory": "10",
+                "prac": "0",
+                "total": "10",
+                "grade": "-"
             },
-            "502": {
-                name: "Ayesha Siddiqua",
-                father: "Tariq Mahmood",
-                class: "9th-S (Science Group)",
-                session: "2025-2026",
-                enroll: "PHS-9945-25",
-                subjects: [
-                    { name: "English Compulsory", theory: 60, prac: 15, total: 75, grade: "B" },
-                    { name: "Mathematics (Advance)", theory: 55, prac: 14, total: 69, grade: "C" },
-                    { name: "Physics Theory / Lab", theory: 58, prac: 16, total: 74, grade: "B" },
-                    { name: "Chemistry Theory / Lab", theory: 62, prac: 18, total: 80, grade: "A" },
-                    { name: "Computer Sciences", theory: 68, prac: 19, total: 87, grade: "A" }
-                ],
-                grandTotal: "385/500",
-                percentage: "77.0%",
-                cgpa: "3.25",
-                position: "5th",
-                remarks: "Good effort. Has potential to score more in math.",
-                status: "PASS"
+            {
+                "name": "Urdu",
+                "theory": "20",
+                "prac": "0",
+                "total": "20",
+                "grade": "-"
+            },
+            {
+                "name": "Mathematics",
+                "theory": "30",
+                "prac": "0",
+                "total": "30",
+                "grade": "-"
+            },
+            {
+                "name": "Islamiyat",
+                "theory": "40",
+                "prac": "0",
+                "total": "40",
+                "grade": "-"
+            },
+            {
+                "name": "Science",
+                "theory": "50",
+                "prac": "0",
+                "total": "50",
+                "grade": "-"
+            },
+            {
+                "name": "General Knowledge",
+                "theory": "60",
+                "prac": "0",
+                "total": "60",
+                "grade": "-"
+            },
+            {
+                "name": "Seerat un Nabi",
+                "theory": "70",
+                "prac": "0",
+                "total": "70",
+                "grade": "-"
             }
-        };
+        ],
+        "grandTotal": "200/500",
+        "percentage": "0.6",
+        "cgpa": "",
+        "position": "2nd",
+        "remarks": "0",
+        "status": "PASS"
+    }
+};
 
         function fetchGrandResult() {
-            const input = document.getElementById('mainRollInput').value.trim();
+            const input = document.getElementById('mainRollInput').value.trim().toLowerCase();
             const sheet = document.getElementById('mainMarksheetCard');
             const printBar = document.getElementById('printBar');
             const err = document.getElementById('errorCard');
@@ -388,19 +464,21 @@
             if(data) {
                 err.style.display = 'none';
 
-                document.getElementById('studentName').innerText = data.name;
-                document.getElementById('rollNumber').innerText = input;
-                document.getElementById('fatherName').innerText = data.father;
-                document.getElementById('className').innerText = data.class;
-                document.getElementById('sessionYear').innerText = data.session;
-                document.getElementById('enrollId').innerText = data.enroll;
+                document.getElementById('docTimestamp').innerText = `System ID: PHS-2026-${input.toUpperCase()}`;
 
-                document.getElementById('statTotal').innerText = data.grandTotal;
-                document.getElementById('statPercentage').innerText = data.percentage;
-                document.getElementById('statCGPA').innerText = data.cgpa;
-                document.getElementById('statPosition').innerText = data.position;
+                document.getElementById('studentName').innerText = data.name || "-";
+                document.getElementById('rollNumber').innerText = input.toUpperCase();
+                document.getElementById('fatherName').innerText = data.father || "-";
+                document.getElementById('className').innerText = data.class || "-";
+                document.getElementById('sessionYear').innerText = data.session || "-";
+                document.getElementById('enrollId').innerText = data.enroll || "-";
 
-                document.getElementById('lblRemarks').innerText = data.remarks;
+                document.getElementById('statTotal').innerText = data.grandTotal || "-";
+                document.getElementById('statPercentage').innerText = data.percentage || "-";
+                document.getElementById('statCGPA').innerText = data.cgpa || "-";
+                document.getElementById('statPosition').innerText = data.position || "-";
+
+                document.getElementById('lblRemarks').innerText = data.remarks || "No remarks provided.";
                 document.getElementById('lblVerdict').innerText = data.status === "PASS" ? "PASSED / PROMOTED" : "FAILED";
                 
                 const vBlock = document.getElementById('verdictBlock');
@@ -413,17 +491,17 @@
                 const tbody = document.getElementById('grandTableBody');
                 tbody.innerHTML = '';
 
-                data.subjects.forEach(s => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="color: var(--primary-blue); font-weight:600; text-align:left;">${s.name}</td>
-                        <td style="text-align:center;">${s.theory}</td>
-                        <td style="text-align:center;">${s.prac}</td>
-                        <td style="font-weight:700; text-align:center;">${s.total}</td>
-                        <td style="font-weight:700; color:var(--accent-blue); text-align:center;">${s.grade}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                if(data.subjects && data.subjects.length > 0) {
+                    data.subjects.forEach(s => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td style="color: var(--primary-navy); font-weight:600; text-align:left;">${getCleanSubjectName(s.name)}</td>
+                            <td style="font-weight:700; text-align:center; color: var(--primary-navy); font-size: 14px;">${s.total !== undefined ? s.total : "-"}</td>
+                            <td style="font-weight:700; color: var(--accent-gold); text-align:center;">${s.grade || "-"}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
 
                 sheet.style.display = 'block';
                 printBar.style.display = 'flex';
