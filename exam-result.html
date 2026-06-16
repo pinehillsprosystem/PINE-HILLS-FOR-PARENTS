@@ -131,13 +131,12 @@
         .bio-field:last-child { border-bottom: none; }
         .bio-field strong { color: var(--primary-navy); font-weight: 700; }
 
-        /* Responsive Matrix Table Container */
+        /* Table Matrix Fixed & Locked for Screen Width (No Scrolling) */
         .matrix-box { 
-            width: 100%; margin-bottom: 25px; overflow-x: auto; 
+            width: 100%; margin-bottom: 25px; 
             border: 1px solid var(--primary-navy); position: relative; z-index: 5;
-            -webkit-overflow-scrolling: touch;
         }
-        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 450px; }
+        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
         
         .grand-table th {
             background-color: var(--primary-navy); color: #ffffff; padding: 12px 16px;
@@ -147,9 +146,9 @@
         .grand-table tr:last-child td { border-bottom: none; }
         .grand-table tr:nth-child(even) { background-color: #f8fafc; }
 
-        /* Institutional Analytics Dashboard cards */
+        /* Institutional Analytics Dashboard cards - 3 Columns Layout */
         .summary-dashboard {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px;
             position: relative; z-index: 5;
         }
         .stat-card {
@@ -204,7 +203,13 @@
             
             .bio-showcase { grid-template-columns: 1fr; gap: 10px; padding: 15px; }
             
-            .summary-dashboard { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            /* Clean Full Width Table Padding on Mobile */
+            .grand-table th, .grand-table td { padding: 10px 12px; font-size: 12px; }
+            
+            .summary-dashboard { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .stat-card p { font-size: 9px; }
+            .stat-card h4 { font-size: 14px; }
+            
             .verdict-banner { flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
             
             .stamp-row { flex-direction: column; gap: 40px; align-items: center; margin-top: 40px; }
@@ -212,29 +217,48 @@
         }
 
         /* ==========================================================================
-           🖨️ ULTRA-ACCURATE A4 PORTRAIT PRINT LAYOUT ENGINE
+           🖨️ ULTRA-ACCURATE A4 PORTRAIT PRINT LAYOUT ENGINE (LOCKED SINGLE PAGE)
            ========================================================================== */
         @media print {
             @page { size: A4 portrait; margin: 0 !important; }
-            html, body { background: #ffffff !important; color: #000000 !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            html, body { 
+                background: #ffffff !important; 
+                color: #000000 !important; 
+                width: 210mm !important; 
+                height: 297mm !important; 
+                overflow: hidden !important; 
+                page-break-inside: avoid !important;
+                page-break-after: avoid !important;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+            }
             .top-nav, .portal-header, .search-wrapper, .print-bar { display: none !important; } 
             .portal-container { width: 210mm !important; max-width: 210mm !important; margin: 0 !important; padding: 0 !important; }
             
             .marksheet-card { 
                 display: block !important; box-shadow: none !important; background: #ffffff !important; 
                 box-sizing: border-box; page-break-inside: avoid !important; page-break-after: avoid !important; 
-                width: 210mm !important; height: 297mm !important; padding: 22mm 20mm !important; 
+                width: 210mm !important; height: 297mm !important; padding: 12mm 15mm !important; 
                 border: none !important;
             }
-            .marksheet-card::before { border: 2px solid #0a2540 !important; top: 8mm; left: 8mm; right: 8mm; bottom: 8mm; }
-            .marksheet-card::after { border: 1px solid #b45309 !important; top: 10mm; left: 10mm; right: 10mm; bottom: 10mm; }
+            .marksheet-card::before { border: 2px solid #0a2540 !important; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; }
+            .marksheet-card::after { border: 1px solid #b45309 !important; top: 7mm; left: 7mm; right: 7mm; bottom: 7mm; }
             
-            .security-ribbon { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; }
-            .cert-title { border: 2px solid #0a2540 !important; background: #ffffff !important; color: #0a2540 !important; }
-            .bio-showcase { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; }
-            .matrix-box { border: 1px solid #0a2540 !important; }
-            .grand-table th { background-color: #0a2540 !important; color: #ffffff !important; }
-            .stat-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; }
+            .security-ribbon { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; margin-bottom: 12px !important; padding: 4px 10px !important; }
+            .sheet-top { padding-bottom: 12px !important; margin-bottom: 15px !important; }
+            .school-logo { width: 60px !important; height: 60px !important; }
+            .school-names h1 { font-size: 20px !important; }
+            .cert-title { border: 2px solid #0a2540 !important; background: #ffffff !important; color: #0a2540 !important; padding: 6px 12px !important; font-size: 11px !important; }
+            .bio-showcase { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; padding: 12px !important; margin-bottom: 15px !important; gap: 10px !important; }
+            .bio-field { padding: 3px 0 !important; font-size: 12px !important; }
+            .matrix-box { border: 1px solid #0a2540 !important; margin-bottom: 15px !important; }
+            .grand-table th { background-color: #0a2540 !important; color: #ffffff !important; padding: 8px 12px !important; font-size: 11px !important; }
+            .grand-table td { padding: 8px 12px !important; font-size: 12px !important; }
+            .summary-dashboard { margin-bottom: 15px !important; gap: 8px !important; }
+            .stat-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; padding: 8px 5px !important; }
+            .stat-card h4 { font-size: 15px !important; }
+            .verdict-banner { margin-bottom: 15px !important; padding: 10px 15px !important; }
+            .stamp-row { margin-top: 35px !important; }
             .pass-zone { background-color: #f0fdf4 !important; color: #15803d !important; border-left: 4mm solid #15803d !important; }
             .fail-zone { background-color: #fef2f2 !important; color: #b91c1c !important; border-left: 4mm solid #b91c1c !important; }
         }
@@ -306,9 +330,8 @@
                 <table class="grand-table">
                     <thead>
                         <tr>
-                            <th style="width: 50%;">Subject Name</th>
-                            <th style="width: 30%; text-align: center;">Obtained Marks</th>
-                            <th style="width: 20%; text-align: center;">Grade</th>
+                            <th style="width: 65%;">Subject Name</th>
+                            <th style="width: 35%; text-align: center;">Obtained Marks</th>
                         </tr>
                     </thead>
                     <tbody id="grandTableBody"></tbody>
@@ -324,10 +347,6 @@
                 <div class="stat-card">
                     <p>Percentage</p>
                     <h4 id="statPercentage">-</h4>
-                </div>
-                <div class="stat-card">
-                    <p>Final CGPA</p>
-                    <h4 id="statCGPA">-</h4>
                 </div>
                 <div class="stat-card">
                     <p>Class Position</p>
@@ -368,7 +387,6 @@
     </div>
 
     <script>
-        // Standardizing subject aliases function logic to match Excel outputs securely
         function getCleanSubjectName(name) {
             const normalized = name.trim().toLowerCase();
             if (normalized === 'math' || normalized === 'mathematics') return 'Mathematics';
@@ -378,73 +396,29 @@
             return name;
         }
 
-        // Standard Embedded Registry Database (Demo Data - Jab medum admin se code generate karengi to ye replace ho jayega)
-const grandDatabase = {
-    "999": {
-        "name": "ali",
-        "father": "ali",
-        "class": "4th",
-        "session": "2025-2026",
-        "enroll": "999",
-        "subjects": [
-            {
-                "name": "English",
-                "theory": "10",
-                "prac": "0",
-                "total": "10",
-                "grade": "-"
-            },
-            {
-                "name": "Urdu",
-                "theory": "20",
-                "prac": "0",
-                "total": "20",
-                "grade": "-"
-            },
-            {
-                "name": "Mathematics",
-                "theory": "30",
-                "prac": "0",
-                "total": "30",
-                "grade": "-"
-            },
-            {
-                "name": "Islamiyat",
-                "theory": "40",
-                "prac": "0",
-                "total": "40",
-                "grade": "-"
-            },
-            {
-                "name": "Science",
-                "theory": "50",
-                "prac": "0",
-                "total": "50",
-                "grade": "-"
-            },
-            {
-                "name": "General Knowledge",
-                "theory": "60",
-                "prac": "0",
-                "total": "60",
-                "grade": "-"
-            },
-            {
-                "name": "Seerat un Nabi",
-                "theory": "70",
-                "prac": "0",
-                "total": "70",
-                "grade": "-"
+        const grandDatabase = {
+            "999": {
+                "name": "ali",
+                "father": "ali",
+                "class": "4th",
+                "session": "2025-2026",
+                "enroll": "999",
+                "subjects": [
+                    { "name": "English", "theory": "10", "prac": "0", "total": "10" },
+                    { "name": "Urdu", "theory": "20", "prac": "0", "total": "20" },
+                    { "name": "Mathematics", "theory": "30", "prac": "0", "total": "30" },
+                    { "name": "Islamiyat", "theory": "40", "prac": "0", "total": "40" },
+                    { "name": "Science", "theory": "50", "prac": "0", "total": "50" },
+                    { "name": "General Knowledge", "theory": "60", "prac": "0", "total": "60" },
+                    { "name": "Seerat un Nabi", "theory": "70", "prac": "0", "total": "70" }
+                ],
+                "grandTotal": "200/500",
+                "percentage": "0.6",
+                "position": "2nd",
+                "remarks": "0",
+                "status": "PASS"
             }
-        ],
-        "grandTotal": "200/500",
-        "percentage": "0.6",
-        "cgpa": "",
-        "position": "2nd",
-        "remarks": "0",
-        "status": "PASS"
-    }
-};
+        };
 
         function fetchGrandResult() {
             const input = document.getElementById('mainRollInput').value.trim().toLowerCase();
@@ -475,7 +449,6 @@ const grandDatabase = {
 
                 document.getElementById('statTotal').innerText = data.grandTotal || "-";
                 document.getElementById('statPercentage').innerText = data.percentage || "-";
-                document.getElementById('statCGPA').innerText = data.cgpa || "-";
                 document.getElementById('statPosition').innerText = data.position || "-";
 
                 document.getElementById('lblRemarks').innerText = data.remarks || "No remarks provided.";
@@ -497,7 +470,6 @@ const grandDatabase = {
                         tr.innerHTML = `
                             <td style="color: var(--primary-navy); font-weight:600; text-align:left;">${getCleanSubjectName(s.name)}</td>
                             <td style="font-weight:700; text-align:center; color: var(--primary-navy); font-size: 14px;">${s.total !== undefined ? s.total : "-"}</td>
-                            <td style="font-weight:700; color: var(--accent-gold); text-align:center;">${s.grade || "-"}</td>
                         `;
                         tbody.appendChild(tr);
                     });
