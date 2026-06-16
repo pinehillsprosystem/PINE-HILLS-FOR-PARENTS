@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Annual Examination Result Portal - Pine Hills School</title>
-    <!-- Google Fonts & Font Awesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -21,7 +20,7 @@
             --shadow-lg: 0 20px 40px -10px rgba(0, 45, 114, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #f1f5f9; color: var(--text-dark); min-height: 100vh; padding-bottom: 60px; }
 
         .portal-container { max-width: 800px; margin: 40px auto; padding: 0 15px; position: relative; }
@@ -111,9 +110,16 @@
         .bio-field:last-child { border-bottom: none; }
         .bio-field strong { color: var(--text-dark); font-weight: 600; }
 
-        /* Fluid Table System */
-        .matrix-box { width: 100%; margin-bottom: 22px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
-        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; table-layout: fixed; }
+        /* 📱 RESPONSIVE MOBILE SCROLLABLE TABLE SYSTEM */
+        .matrix-box { 
+            width: 100%; 
+            margin-bottom: 22px; 
+            border-radius: 10px; 
+            overflow-x: auto; /* Enables swipe scroll on small mobiles */
+            border: 1px solid #e2e8f0; 
+            -webkit-overflow-scrolling: touch;
+        }
+        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 500px; /* Prevents text clashing on small screens */ }
         
         .grand-table th:nth-child(1), .grand-table td:nth-child(1) { width: 40%; }
         .grand-table th:nth-child(2), .grand-table td:nth-child(2) { width: 15%; text-align: center; }
@@ -125,7 +131,7 @@
             background-color: var(--primary-blue); color: var(--white); padding: 12px 10px;
             font-weight: 600; font-size: 12px; text-transform: uppercase;
         }
-        .grand-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); word-wrap: break-word; }
+        .grand-table td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); }
         .grand-table tr:last-child td { border-bottom: none; }
         .grand-table tr:nth-child(even) { background-color: #f8fafc; }
 
@@ -161,29 +167,29 @@
         }
         .err-card i { font-size: 40px; color: var(--danger); margin-bottom: 10px; }
 
-        /* --- MOBILE RESPONSIVE --- */
+        /* --- MOBILE RESPONSIVE ENGINE --- */
         @media (max-width: 768px) {
             .portal-container { margin: 20px auto; padding: 0 10px; }
             .top-nav { justify-content: center; }
             .portal-header h2 { font-size: 22px; }
-            .search-wrapper { padding: 20px; }
             
-            .marksheet-card { padding: 20px 10px; border-radius: 14px; }
-            .sheet-top { flex-direction: column; gap: 12px; text-align: center; }
+            .search-wrapper { padding: 20px; border-radius: 14px; }
+            .search-form { flex-direction: column; gap: 10px; }
+            .search-form button { padding: 14px; justify-content: center; }
+            
+            .marksheet-card { padding: 20px 12px; border-radius: 14px; }
+            .sheet-top { flex-direction: column; gap: 12px; text-align: center; padding-bottom: 12px; }
             .school-brand { flex-direction: column; gap: 8px; }
-            .cert-title { text-align: center; width: 100%; }
+            .cert-title { text-align: center; width: 100%; padding: 10px; }
             
-            .bio-showcase { grid-template-columns: 1fr; gap: 6px; padding: 12px; }
-            
-            .grand-table { font-size: 11px; }
-            .grand-table th { padding: 10px 4px; font-size: 10px; }
-            .grand-table td { padding: 10px 4px; }
+            .bio-showcase { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
+            .bio-field { font-size: 12.5px; }
             
             .summary-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .verdict-banner { flex-direction: column; gap: 8px; text-align: center; padding: 12px; }
             
             .stamp-row { flex-direction: column; gap: 35px; align-items: center; margin-top: 35px; }
-            .stamp-box { width: 140px; }
+            .stamp-box { width: 100%; max-width: 200px; }
         }
 
         /* --- HARD LOCK PRINT ENGINE --- */
@@ -207,7 +213,6 @@
 
     <div class="portal-container">
         
-        <!-- TOP NAVIGATION BAR WITH BACK TO HOME BUTTON -->
         <div class="top-nav">
             <a href="index.html" class="home-btn"><i class="fa-solid fa-house"></i> Go to Homepage</a>
         </div>
@@ -226,12 +231,10 @@
             </div>
         </div>
 
-        <!-- PRINT CONTROL BAR -->
         <div class="print-bar" id="printBar">
             <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Marksheet</button>
         </div>
 
-        <!-- HIGH-FIDELITY COMPACT MARKSHEET -->
         <div class="marksheet-card" id="mainMarksheetCard">
             
             <div class="sheet-top">
@@ -270,8 +273,7 @@
                         </tr>
                     </thead>
                     <tbody id="grandTableBody">
-                        <!-- Dynamic Injection -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
