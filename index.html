@@ -20,6 +20,8 @@
             --shadow-md: 0 10px 30px rgba(0, 45, 114, 0.06);
             --shadow-lg: 0 20px 40px rgba(0, 45, 114, 0.1);
             --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --danger-red: #ef4444;
+            --warning-gold: #f59e0b;
         }
 
         * {
@@ -184,10 +186,89 @@
             z-index: 5;
         }
 
+        /* --- 📢 NOTICE BOARD PREMIUM SECTION --- */
+        .notice-section {
+            max-width: 1280px;
+            margin: 40px auto 0 auto;
+            padding: 0 24px;
+        }
+
+        .notice-container {
+            background: var(--white);
+            border-left: 5px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 25px 30px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .notice-main {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+
+        .notice-icon {
+            width: 50px;
+            height: 50px;
+            background: #eff6ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-size: 22px;
+            animation: pulse-ring 2s infinite;
+        }
+
+        .notice-content {
+            flex-grow: 1;
+        }
+
+        .notice-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-urgent { background: #fee2e2; color: var(--danger-red); }
+        .tag-new { background: #e0f2fe; color: var(--accent-blue); }
+        .tag-event { background: #fef3c7; color: var(--warning-gold); }
+
+        .notice-text {
+            font-size: 14.5px;
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .notice-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: block;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.2); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(29, 78, 216, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+        }
+
+        /* --- SERVICES CONTAINER --- */
         .services-section {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 90px 24px;
+            padding: 60px 24px 90px 24px;
         }
 
         .services-header {
@@ -317,6 +398,8 @@
             .hero-section { flex-direction: column; }
             .hero-left { clip-path: none; padding: 60px 40px; text-align: center; align-items: center; }
             .hero-right { min-height: 320px; margin-left: 0; background-position: center center; }
+            .notice-container { flex-direction: column; text-align: center; padding: 20px; }
+            .notice-main { flex-direction: column; gap: 12px; }
         }
 
         @media (max-width: 768px) {
@@ -372,6 +455,22 @@
         <div class="hero-right"></div>
     </section>
 
+    <!-- 📢 LIVE NOTICE BOARD LIVE SYSTEM -->
+    <section class="notice-section">
+        <div class="notice-container">
+            <div class="notice-main">
+                <div class="notice-icon">
+                    <i class="fa-solid fa-bullhorn"></i>
+                </div>
+                <div class="notice-content">
+                    <span class="notice-tag tag-urgent" id="noticeTag">Urgent Notice</span>
+                    <p class="notice-text" id="noticeText">Monthly Tests and Progress Reports are now uploaded. Please check your child's performance database.</p>
+                    <span class="notice-date" id="noticeDate">Updated: June 17, 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="services-section">
         <div class="services-header">
             <h2>Explore Parent Services</h2>
@@ -386,21 +485,19 @@
                 <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
             </div>
 
-        <div class="card" onclick="location.href='monthly-test.html'">
-           <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
-           <h3>Monthly Tests</h3>
-           <p>Check monthly test schedules and performance reports.</p>
-           <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+            <div class="card" onclick="location.href='monthly-test.html'">
+                <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
+                <h3>Monthly Tests</h3>
+                <p>Check monthly test schedules and performance reports.</p>
+                <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
             </div>
 
             <div class="card" onclick="location.href='exam-result.html'">
-           <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
-           <h3>Result</h3>
-           <p>Access your child's academic results and track their progress.</p>
-           <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
+                <h3>Result</h3>
+                <p>Access your child's academic results and track their progress.</p>
+                <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
             </div>
-
-
 
             <div class="card" onclick="location.href='admission.html'">
                 <div class="icon-wrapper"><i class="fa-regular fa-file-lines"></i></div>
@@ -419,6 +516,7 @@
     </section>
 
     <script>
+        // --- Mobile Menu Toggle Logic ---
         const menuBtn = document.getElementById('menuBtn');
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => {
@@ -426,6 +524,23 @@
             const icon = menuBtn.querySelector('i');
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-xmark');
+        });
+
+        // --- Local Notice Board Data Engine ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedText = localStorage.getItem('school_notice_text');
+            const savedTag = localStorage.getItem('school_notice_type'); // urgent, new, event
+            const savedDate = localStorage.getItem('school_notice_date');
+
+            // Default Data set (Aap ya medum direct yahan se bhi text change kar sakte hain)
+            if(savedText) {
+                document.getElementById('noticeText').innerText = savedText;
+                document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
+                
+                const tagEl = document.getElementById('noticeTag');
+                tagEl.innerText = savedTag + " Notice";
+                tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
+            }
         });
     </script>
 </body>
