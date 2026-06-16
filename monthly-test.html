@@ -24,316 +24,96 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #fafbfc; color: var(--text-dark); -webkit-font-smoothing: antialiased; }
+        body { background-color: #fafbfc; color: var(--text-dark); -webkit-font-smoothing: antialiased; padding-bottom: 40px; }
 
-        /* Navigation Style */
-        header {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(0, 45, 114, 0.05);
-        }
-
-        .nav-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 24px;
-        }
-
-        .logo-area { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-        .logo-img { width: 55px; height: 55px; object-fit: contain; border-radius: 50%; }
-        .logo-text h1 { font-size: 22px; font-weight: 700; color: var(--primary-blue); line-height: 1; letter-spacing: 0.5px; }
-        .logo-text span { font-size: 13px; font-weight: 600; color: var(--primary-blue); letter-spacing: 4px; display: block; margin-top: 2px; }
-
-        .nav-links { display: flex; list-style: none; gap: 30px; }
-        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 15px; transition: var(--transition); }
+        header { width: 100%; background: #ffffff; box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(0, 45, 114, 0.05); }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-img { width: 45px; height: 45px; object-fit: contain; border-radius: 50%; }
+        .logo-text h1 { font-size: 18px; font-weight: 700; color: var(--primary-blue); line-height: 1; }
+        .logo-text span { font-size: 11px; font-weight: 600; color: var(--primary-blue); letter-spacing: 2px; display: block; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: var(--transition); }
         .nav-links a:hover, .nav-links a.active { color: var(--primary-blue); }
-        .menu-toggle { display: none; font-size: 22px; color: var(--primary-blue); background: none; border: none; cursor: pointer; }
+        .menu-toggle { display: none; font-size: 20px; color: var(--primary-blue); background: none; border: none; cursor: pointer; }
 
-        /* Layout Wrapper */
-        .wrapper { max-width: 800px; margin: 40px auto 80px auto; padding: 0 20px; }
-        
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--primary-blue);
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 30px;
-            transition: var(--transition);
-        }
-        .back-btn:hover { transform: translateX(-5px); color: var(--accent-blue); }
+        .wrapper { max-width: 800px; margin: 25px auto; padding: 0 15px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--primary-blue); text-decoration: none; font-weight: 600; margin-bottom: 20px; font-size: 14px; }
+        .page-header { text-align: center; margin-bottom: 25px; }
+        .page-header h2 { font-size: 24px; color: var(--primary-blue); font-weight: 700; }
+        .page-header p { color: var(--text-muted); font-size: 13px; }
 
-        .page-header { text-align: center; margin-bottom: 35px; }
-        .page-header h2 { font-size: 30px; color: var(--primary-blue); font-weight: 700; }
-        .page-header p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
-
-        /* Search Control Box */
-        .search-box-card {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(0, 45, 114, 0.03);
-            margin-bottom: 35px;
-            text-align: center;
-        }
-        .search-group {
-            display: flex;
-            gap: 12px;
-            max-width: 500px;
-            margin: 15px auto 0 auto;
-        }
-        .roll-input {
-            flex: 1;
-            padding: 14px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
+        .search-box-card { background: var(--white); border-radius: 12px; padding: 20px; box-shadow: var(--shadow-md); border: 1px solid rgba(0, 45, 114, 0.03); margin-bottom: 25px; text-align: center; }
+        .search-group { display: flex; gap: 10px; max-width: 500px; margin: 15px auto 0 auto; }
+        .roll-input { flex: 1; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
         .roll-input:focus { border-color: var(--primary-blue); }
-        .search-btn {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            border: none;
-            padding: 14px 25px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .search-btn { background-color: var(--primary-blue); color: var(--white); border: none; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
         .search-btn:hover { background-color: var(--accent-blue); }
 
-        /* Print Action Button Frame */
-        .print-control-bar {
-            display: none;
-            justify-content: flex-end;
-            margin-bottom: 15px;
-        }
-        .print-action-btn {
-            background-color: #0f172a;
-            color: var(--white);
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: var(--transition);
-        }
-        .print-action-btn:hover { background-color: var(--accent-blue); }
+        .print-control-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
+        .print-action-btn { background-color: #0f172a; color: var(--white); border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 
-        /* --- PREMIUM LOCK GLOBAL MARKSHEET SYSTEM --- */
-        .marksheet-container {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 35px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid #cbd5e1;
-            display: none;
-            position: relative;
-            box-sizing: border-box;
-        }
-        .marksheet-container::before {
-            content: '';
-            position: absolute;
-            top: 8px; left: 8px; right: 8px; bottom: 8px;
-            border: 1px solid rgba(0, 45, 114, 0.12);
-            border-radius: 14px;
-            pointer-events: none;
-        }
+        .marksheet-container { background: var(--white); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-lg); border: 1px solid #cbd5e1; display: none; position: relative; box-sizing: border-box; }
+        .marksheet-container::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 1px solid rgba(0, 45, 114, 0.1); border-radius: 12px; pointer-events: none; }
+        
+        .sheet-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px double var(--primary-blue); padding-bottom: 15px; margin-bottom: 20px; }
+        .sheet-logo-area { display: flex; align-items: center; gap: 10px; }
+        .sheet-school-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: contain; }
+        .school-info h3 { font-size: 18px; color: var(--primary-blue); font-weight: 700; }
+        .school-info p { font-size: 11px; color: var(--text-muted); }
+        .report-badge { background-color: var(--light-blue); color: var(--primary-blue); padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; border: 1px dashed var(--primary-blue); }
 
-        .sheet-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 3px double var(--primary-blue);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-        }
-        .sheet-logo-area { display: flex; align-items: center; gap: 12px; }
-        .sheet-school-logo { width: 60px; height: 60px; border-radius: 50%; object-fit: contain; }
-        .school-info h3 { font-size: 22px; color: var(--primary-blue); font-weight: 700; }
-        .school-info p { font-size: 12px; color: var(--text-muted); }
-        .report-badge {
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 12px;
-            border: 1px dashed var(--primary-blue);
-        }
-
-        /* Bio Grid */
-        .student-bio-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-            background: #f8fafc;
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        .bio-item { font-size: 13.5px; color: var(--text-muted); }
+        .student-bio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .bio-item { font-size: 13px; color: var(--text-muted); }
         .bio-item strong { color: var(--text-dark); font-weight: 600; }
 
-        /* Table Structure (Fluid & Compact Layout) */
-        .table-responsive-wrapper {
-            width: 100%;
-            margin-bottom: 25px;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-        .marks-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 14px;
-        }
-        .marks-table th {
-            background-color: var(--primary-blue);
-            color: var(--white);
-            padding: 12px 15px;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-        .marks-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e2e8f0;
-            color: var(--text-dark);
-        }
-        .marks-table tr:last-child td { border-bottom: none; }
+        .table-responsive-wrapper { width: 100%; margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .marks-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+        .marks-table th { background-color: var(--primary-blue); color: var(--white); padding: 10px 15px; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+        .marks-table td { padding: 10px 15px; border-bottom: 1px solid #e2e8f0; color: var(--text-dark); }
         .marks-table tr:nth-child(even) { background-color: #f8fafc; }
 
-        /* Footer Results Metrics */
-        .sheet-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--light-blue);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid var(--primary-blue);
-            margin-bottom: 30px;
-        }
-        .metrics-block { display: flex; gap: 25px; }
-        .metric-box { font-size: 13px; color: var(--text-muted); }
-        .metric-box span { font-weight: 700; color: var(--text-dark); font-size: 17px; display: block; }
-        .status-pill {
-            padding: 6px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 14px;
-        }
+        .sheet-footer { display: flex; justify-content: space-between; align-items: center; background-color: var(--light-blue); padding: 15px; border-radius: 10px; border-left: 5px solid var(--primary-blue); margin-bottom: 25px; gap: 15px; }
+        .metrics-block { display: flex; gap: 25px; flex-wrap: wrap; }
+        .metric-box { font-size: 12px; color: var(--text-muted); min-width: 100px; }
+        .metric-box span { font-weight: 700; color: var(--text-dark); font-size: 15px; display: block; margin-top: 2px; }
+        .status-pill { padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; text-transform: uppercase; text-align: center; }
         .pass { background-color: #dcfce7; color: var(--success-green); }
         .fail { background-color: #fee2e2; color: var(--danger-red); }
 
-        /* Signature Lines */
-        .signature-row {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-        }
-        .sig-box { text-align: center; width: 160px; }
-        .sig-line { border-top: 1px dashed #cbd5e1; margin-bottom: 6px; }
-        .sig-box p { font-size: 12px; color: var(--text-muted); }
+        .signature-row { display: flex; justify-content: space-between; margin-top: 35px; gap: 20px; }
+        .sig-box { text-align: center; width: 140px; }
+        .sig-line { border-top: 1px dashed #cbd5e1; margin-bottom: 4px; }
+        .sig-box p { font-size: 11px; color: var(--text-muted); }
 
-        .error-message {
-            text-align: center;
-            background: var(--white);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow-md);
-            color: var(--text-muted);
-            display: none;
-        }
-        .error-message i { font-size: 40px; color: var(--danger-red); margin-bottom: 10px; }
+        .error-message { text-align: center; background: var(--white); border-radius: 12px; padding: 25px; box-shadow: var(--shadow-md); color: var(--text-muted); display: none; }
+        .error-message i { font-size: 35px; color: var(--danger-red); margin-bottom: 8px; }
 
-        /* --- STAGE 1: PERFECT MOBILE BREAKPOINT ADJUSTMENTS (NO OVERFLOW/NO SCROLL) --- */
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
-            .nav-links {
-                position: fixed; top: 86px; left: -100%; width: 100%; height: calc(100vh - 86px);
-                background-color: var(--white); flex-direction: column; align-items: center;
-                padding-top: 50px; gap: 35px; transition: var(--transition); box-shadow: 0 15px 30px rgba(0,0,0,0.05);
-            }
+            .nav-links { position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); background-color: var(--white); flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; transition: var(--transition); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
             .nav-links.active { left: 0; }
-            .search-group { flex-direction: column; }
-            .search-btn { justify-content: center; }
             
-            /* Marksheet container resets for mobile padding bounds */
-            .marksheet-container { padding: 20px 15px; border-radius: 12px; }
-            .sheet-header { flex-direction: column; gap: 15px; text-align: center; }
-            .sheet-logo-area { flex-direction: column; }
-            .student-bio-grid { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
+            .search-group { flex-direction: column; gap: 8px; }
+            .search-btn { width: 100%; justify-content: center; }
             
-            /* Fluid Table Fix - Compresses cell sizes gracefully without leaking */
-            .marks-table th, .marks-table td { padding: 10px 8px; font-size: 12.5px; }
+            .marksheet-container { padding: 15px 10px; }
+            .sheet-header { flex-direction: column; text-align: center; gap: 10px; }
+            .student-bio-grid { grid-template-columns: 1fr; padding: 10px; gap: 6px; }
             
-            .sheet-footer { flex-direction: column; text-align: center; gap: 15px; padding: 15px; }
-            .metrics-block { justify-content: space-between; width: 100%; gap: 5px; }
-            .metric-box { font-size: 11px; }
-            .metric-box span { font-size: 14px; }
-            .signature-row { gap: 30px; justify-content: space-around; }
-            .sig-box { width: 120px; }
+            .sheet-footer { flex-direction: column; text-align: center; align-items: center; padding: 15px 10px; }
+            .metrics-block { justify-content: center; gap: 15px; width: 100%; }
+            .metric-box { text-align: center; min-width: 30%; }
+            .status-pill { width: 100%; max-width: 200px; margin-top: 5px; }
+            
+            .signature-row { justify-content: space-between; width: 100%; }
+            .sig-box { width: 45%; }
         }
 
-        /* --- STAGE 2: HIGH-FIDELITY HARD LOCKED PRINT CSS ENGINE (A4 DIMENSIONS) --- */
         @media print {
-            /* Lock target parameters onto A4 specifications strictly */
-            @page {
-                size: A4 portrait;
-                margin: 15mm 15mm 15mm 15mm;
-            }
-            html, body {
-                background: #fff !important;
-                color: #000 !important;
-                font-size: 12pt;
-                width: 100%;
-                height: auto;
-            }
-            header, .back-btn, .page-header, .search-box-card, .print-control-bar {
-                display: none !important; /* Strips unnecessary browser chrome UI elements */
-            }
+            header, .back-btn, .page-header, .search-box-card, .print-control-bar { display: none !important; }
             .wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .marksheet-container {
-                display: block !important;
-                box-shadow: none !important;
-                border: 1px solid #000 !important;
-                padding: 25mm 20mm !important;
-                width: 100% !important;
-                background: #fff !important;
-                box-sizing: border-box;
-                page-break-inside: avoid;
-            }
-            .marksheet-container::before { border: 1px solid #000 !important; top: 3mm; left: 3mm; right: 3mm; bottom: 3mm; }
-            .student-bio-grid { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .marks-table th { background-color: #002d72 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .sheet-footer { background-color: #f4f7fc !important; border-left: 5mm solid #002d72 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .pass { background-color: #dcfce7 !important; color: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            .fail { background-color: #fee2e2 !important; color: #ef4444 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .marksheet-container { display: block !important; box-shadow: none !important; border: 1px solid #000 !important; padding: 15mm !important; background: #fff !important; }
         }
     </style>
 </head>
@@ -365,14 +145,14 @@
 
         <div class="page-header">
             <h2>Monthly Test Result Portal</h2>
-            <p>Enter bache ka Roll Number to view professional progress report card.</p>
+            <p>Enter Student Roll Number to view progress report card.</p>
         </div>
 
         <div class="search-box-card">
-            <h4 style="color: var(--primary-blue); font-weight: 600; font-size: 15px;">Enter Simple Roll Number</h4>
+            <h4 style="color: var(--primary-blue); font-weight: 600; font-size: 14px;">Enter Simple Roll Number</h4>
             <div class="search-group">
-                <input type="text" id="rollNumberInput" class="roll-input" placeholder="Enter number (e.g., 101, 102, 103)...">
-                <button class="search-btn" onclick="generateReport()"><i class="fa-solid fa-magnifying-glass"></i> Search Result</button>
+                <input type="text" id="rollNumberInput" class="roll-input" placeholder="Enter number (e.g., 101, 102)...">
+                <button class="search-btn" onclick="generateReport()"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
             </div>
         </div>
 
@@ -386,7 +166,7 @@
                     <img src="real logo copy.jpg" alt="Pine Hills School" class="sheet-school-logo">
                     <div class="school-info">
                         <h3>PINE HILLS SCHOOL</h3>
-                        <p>Karachi, Pakistan | Academic Progress Report</p>
+                        <p>Karachi, Pakistan | Progress Report</p>
                     </div>
                 </div>
                 <div class="report-badge">Monthly Test</div>
@@ -403,21 +183,19 @@
                 <table class="marks-table">
                     <thead>
                         <tr>
-                            <th>Subject</th>
-                            <th>Total</th>
-                            <th>Obtained</th>
-                            <th>Status</th>
+                            <th>Subject Name</th>
+                            <th style="text-align: right;">Obtained Marks</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
             <div class="sheet-footer">
                 <div class="metrics-block">
-                    <div class="metric-box">Total <span>500</span></div>
-                    <div class="metric-box">Obtained <span id="lblObtained">-</span></div>
+                    <!-- FIXED KEY ASSIGNMENT: Now maps perfectly with reportDatabase keys -->
+                    <div class="metric-box">Marks Obtained <span id="lblObtained">-</span></div>
                     <div class="metric-box">Percentage <span id="lblPercentage">-</span></div>
                     <div class="metric-box">Grade <span id="lblGrade">-</span></div>
                 </div>
@@ -431,7 +209,7 @@
                 </div>
                 <div class="sig-box">
                     <div class="sig-line"></div>
-                    <p>Principal Signature</p>
+                    <p>Principal</p>
                 </div>
             </div>
         </div>
@@ -439,71 +217,47 @@
         <div class="error-message" id="errorMessage">
             <i class="fa-regular fa-circle-xmark"></i>
             <h3>Roll Number Nahi Mila</h3>
-            <p>Meharbani kar ke sahi number enter karein (e.g., 101, 102, 103).</p>
+            <p>Meharbani kar ke sahi number enter karein.</p>
         </div>
     </div>
 
     <script>
-        // Responsive Menu Function toggle
         const menuBtn = document.getElementById('menuBtn');
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
 
-        // Simple Numeric Key Storage Mock Data Engine
-        const reportDatabase = {
-            "101": {
-                name: "Fahad Ahmed",
-                class: "4-B",
-                month: "June 2026",
-                subjects: [
-                    { name: "English", total: 100, obtained: 88 },
-                    { name: "Mathematics", total: 100, obtained: 95 },
-                    { name: "Science", total: 100, obtained: 84 },
-                    { name: "Urdu", total: 100, obtained: 78 },
-                    { name: "Social Studies", total: 100, obtained: 82 }
-                ],
-                totalObtained: 427,
-                percentage: "85.4%",
-                grade: "A+",
-                status: "PASS"
-            },
-            "102": {
-                name: "Ali Khan",
-                class: "5-A",
-                month: "June 2026",
-                subjects: [
-                    { name: "English", total: 100, obtained: 72 },
-                    { name: "Mathematics", total: 100, obtained: 65 },
-                    { name: "Science", total: 100, obtained: 70 },
-                    { name: "Urdu", total: 100, obtained: 68 },
-                    { name: "Social Studies", total: 100, obtained: 74 }
-                ],
-                totalObtained: 349,
-                percentage: "69.8%",
-                grade: "B",
-                status: "PASS"
-            },
-            "103": {
-                name: "Zainab Fatima",
-                class: "3-C",
-                month: "June 2026",
-                subjects: [
-                    { name: "English", total: 100, obtained: 45 },
-                    { name: "Mathematics", total: 100, obtained: 32 },
-                    { name: "Science", total: 100, obtained: 55 },
-                    { name: "Urdu", total: 100, obtained: 42 },
-                    { name: "islamiyat", total: 100, obtained: 42 },
-                    { name: "Social Studies", total: 100, obtained: 50 }
-                ],
-                totalObtained: 224,
-                percentage: "44.8%",
-                grade: "D",
-                status: "FAIL"
-            }
-        };
+        // FIXED DATABASE KEYS MATCHING FOR ACCURATE FOOTER RENDERING
+
+
+            // -----------------------------past here ----------------------
+
+
+
+const reportDatabase = {
+    "999": {
+        name: "ali",
+        class: "1st",
+        month: "June 2026",
+        subjects: [
+            { name: "English", obtained: "100" },
+            { name: "Urdu", obtained: "100" },
+            { name: "Mathematics", obtained: "100" },
+            { name: "Islamiyat", obtained: "20" },
+            { name: "Social Studies", obtained: "30" },
+            { name: "Science", obtained: "40" },
+            { name: "General Knowledge", obtained: "50" },
+            { name: "Seerat un Nabi", obtained: "20" }
+        ],
+        totalMarks: "500",
+        totalObtained: "400",
+        percentage: "80.0%",
+        grade: "A1",
+        status: "PASS"
+    }
+};
 
         function generateReport() {
-            const inputVal = document.getElementById('rollNumberInput').value.trim();
+            const inputVal = document.getElementById('rollNumberInput').value.trim().toLowerCase();
             const container = document.getElementById('marksheetContainer');
             const printBar = document.getElementById('printControlBar');
             const errorBlock = document.getElementById('errorMessage');
@@ -520,39 +274,35 @@
             if(record) {
                 errorBlock.style.display = 'none';
 
-                // Map Meta Strings
                 document.getElementById('lblStudentName').innerText = record.name;
-                document.getElementById('lblRollNumber').innerText = inputVal;
+                document.getElementById('lblRollNumber').innerText = inputVal.toUpperCase();
                 document.getElementById('lblClass').innerText = record.class;
                 document.getElementById('lblExamMonth').innerText = record.month;
 
-                // Map Aggregates
-                document.getElementById('lblObtained').innerText = record.totalObtained;
+                // FIX LOGIC: Direct map to totalObtained & totalMarks fields generated by database
+                const obtMarks = record.totalObtained || "0";
+                const totMarks = record.totalMarks || "0";
+                document.getElementById('lblObtained').innerText = `${obtMarks} / ${totMarks}`;
+                
                 document.getElementById('lblPercentage').innerText = record.percentage;
                 document.getElementById('lblGrade').innerText = record.grade;
 
-                // Handle Pill Styles securely
                 const statusPill = document.getElementById('lblFinalStatus');
                 statusPill.innerText = record.status;
-                if(record.status === "PASS") {
+                if(record.status.toUpperCase() === "PASS" || record.status.toUpperCase() === "PASSED") {
                     statusPill.className = "status-pill pass";
                 } else {
                     statusPill.className = "status-pill fail";
                 }
 
-                // Append Child Table Grid rows cleanly
                 const tbody = document.getElementById('tableBody');
                 tbody.innerHTML = ''; 
 
                 record.subjects.forEach(sub => {
                     const tr = document.createElement('tr');
-                    const subStatus = sub.obtained >= 40 ? '<span style="color:var(--success-green); font-weight:600;">Pass</span>' : '<span style="color:var(--danger-red); font-weight:600;">Fail</span>';
-                    
                     tr.innerHTML = `
-                        <td style="font-weight: 500;">${sub.name}</td>
-                        <td>${sub.total}</td>
-                        <td style="font-weight: 600;">${sub.obtained}</td>
-                        <td>${subStatus}</td>
+                        <td style="font-weight: 500; color: var(--primary-blue);">${sub.name}</td>
+                        <td style="font-weight: 700; text-align: right; font-size: 14px;">${sub.obtained}</td>
                     `;
                     tbody.appendChild(tr);
                 });
