@@ -110,82 +110,19 @@
         /* --- STUDENT CARDS FEED --- */
         .results-feed { display: flex; flex-direction: column; gap: 30px; }
 
-        .student-card {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(0, 45, 114, 0.03);
-            display: flex; /* Galti Fixed: JavaScript handle karegi display flex standard layout */
+        /* Chupa hua state feed card ke liye pehle se handle ho taake search se chalay */
+        .activity-marksheet-card {
+            display: none; 
             flex-direction: column;
             gap: 20px;
-            transition: var(--transition);
             animation: fadeIn 0.5s ease-in-out;
-        }
-        .student-card:hover { box-shadow: var(--shadow-md); }
-
-        .student-profile {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 15px;
-        }
-        .profile-info { display: flex; align-items: center; gap: 15px; }
-        .avatar-box {
-            width: 50px;
-            height: 50px;
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .profile-text h3 { font-size: 18px; color: var(--primary-blue); font-weight: 600; }
-        .profile-text p { font-size: 13px; color: var(--text-muted); }
-
-        .activity-badge {
-            background-color: #dcfce7;
-            color: #166534;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Video Box (Galti Fixed: Custom Controls, Playsinline added) */
-        .video-wrapper {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            background-color: #0f172a;
-            position: relative;
-            aspect-ratio: 16 / 9;
-        }
-        .video-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .video-caption {
-            font-size: 14.5px;
-            color: var(--text-dark);
-            line-height: 1.6;
-            background-color: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-blue);
         }
 
         .no-results {
             text-align: center;
             padding: 40px;
             color: var(--text-muted);
-            display: none;
+            display: block; /* Default block, logic will control it */
         }
         .no-results i { font-size: 48px; color: #cbd5e1; margin-bottom: 15px; }
 
@@ -202,8 +139,6 @@
                 padding-top: 50px; gap: 35px; transition: var(--transition); box-shadow: 0 15px 30px rgba(0,0,0,0.05);
             }
             .nav-links.active { left: 0; }
-            .student-profile { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .activity-badge { align-self: flex-start; }
         }
     </style>
 </head>
@@ -235,20 +170,20 @@
 
         <div class="page-header">
             <h2>Bache Ki Activity Dekhein</h2>
-            <p>Apne bache ka naam likhein taake uski video aur performance report samne aa jaye.</p>
+            <p>Apne bache ka naam ya Roll Number likhein taake uski video aur performance report samne aa jaye.</p>
         </div>
 
         <!-- LIVE STUDENT SEARCH BAR -->
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="studentSearch" class="search-input" placeholder="Type bache ka naam (e.g., Fahad, Ali, Zainab)..." onkeyup="searchStudent()">
+            <input type="text" id="studentSearch" class="search-input" placeholder="Type bache ka naam ya roll no (e.g., Hamza, 501)..." onkeyup="searchStudent()">
         </div>
 
         <!-- SEARCH RESULTS DISPLAY AREA -->
         <div class="results-feed" id="resultsFeed">
             
-            <!-- ---------------------------------PAST HERE----------------------------------- -->
-
+            <!-- ---------------------------------PASTE ADMIN GENERATED CODE HERE----------------------------------- -->
+            
 <div class="activity-marksheet-card" data-roll="----------------------" style="background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #cbd5e1;">
     <div class="student-profile" style="background: #f8fafc; border-radius: 12px; padding: 15px; margin-bottom: 20px; border-left: 5px solid #002d72;">
         <div class="profile-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
@@ -335,14 +270,17 @@
 
 
 
+
+
+
             
         </div>
 
         <!-- NO RESULTS FOUND TEXT -->
         <div class="no-results" id="noResults">
             <i class="fa-regular fa-face-frown"></i>
-            <h3>Koi record nahi mila</h3>
-            <p>Is naam ka koi bacha is activity list me nahi mila. Meharbani kar ke spelling check karein.</p>
+            <h3>Search karke bache ka record check karein</h3>
+            <p>Meharbani kar ke bache ka mukammal naam ya sahi roll number enter karein.</p>
         </div>
     </div>
 
@@ -352,25 +290,39 @@
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
 
-        // Galti Fixed: Complete Multi-Device Compatible JS Search Function
+        // Robust Synchronized Search Filter Mechanism
         function searchStudent() {
             const input = document.getElementById('studentSearch').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.student-card');
+            const cards = document.querySelectorAll('.activity-marksheet-card');
             const noResults = document.getElementById('noResults');
             let matchFound = false;
 
+            // Agar search bar khali ho toh sab cards chupa do aur main message dikhao
+            if (input === "") {
+                cards.forEach(card => {
+                    card.style.display = 'none';
+                    const video = card.querySelector('video');
+                    if(video) video.pause();
+                });
+                noResults.style.display = 'block';
+                noResults.querySelector('h3').innerText = "Search karke bache ka record check karein";
+                noResults.querySelector('p').innerText = "Meharbani kar ke bache ka mukammal naam ya sahi roll number enter karein.";
+                return;
+            }
+
             cards.forEach(card => {
-                const studentNameAttr = card.getAttribute('data-name').toLowerCase();
-                const studentFullText = card.querySelector('.profile-text h3').innerText.toLowerCase();
+                // Admin code ke parameters se roll number aur inner text nikalna
+                const rollAttr = card.getAttribute('data-roll') ? card.getAttribute('data-roll').toLowerCase() : "";
+                const fullTextContent = card.textContent.toLowerCase();
                 
-                if (input === "" || studentNameAttr.includes(input) || studentFullText.includes(input)) {
-                    // Galti Fixed: Mobile aur desktop dono par compatible flexible framework display toggle
+                // Roll number ya text strings dono me match check karein
+                if (rollAttr === input || rollAttr.includes(input) || fullTextContent.includes(input)) {
                     card.style.setProperty('display', 'flex', 'important');
                     matchFound = true;
                 } else {
                     card.style.setProperty('display', 'none', 'important');
                     const video = card.querySelector('video');
-                    if(video) video.pause();
+                    if(video) video.pause(); // Background video pause handling
                 }
             });
 
@@ -378,6 +330,8 @@
                 noResults.style.display = 'none';
             } else {
                 noResults.style.display = 'block';
+                noResults.querySelector('h3').innerText = "Koi record nahi mila";
+                noResults.querySelector('p').innerText = "Is naam ya roll number ka koi bacha list me nahi mila. Meharbani kar ke spelling check karein.";
             }
         }
     </script>
