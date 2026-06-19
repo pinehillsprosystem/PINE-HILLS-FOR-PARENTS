@@ -208,6 +208,7 @@
                         <thead>
                             <tr>
                                 <th>Subject Name</th>
+                                <th style="text-align: center;">Total Marks</th>
                                 <th style="text-align: right;">Obtained Marks</th>
                             </tr>
                         </thead>
@@ -253,17 +254,24 @@
         const menuBtn = document.getElementById('menuBtn');
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
-                    const reportDatabase = {
+        
+        // [database keeps original data structure]
+                        // ----------------------PAST HERE ---------------------
+
+
+
+
+  const reportDatabase = {
     "1066": {
         name: "zahisha",
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "23" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "20" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "23" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "20" }
         ],
         totalMarks: "135",
         totalObtained: "92",
@@ -276,11 +284,11 @@
         class: "play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "18" },
-            { name: "Islamiyat", obtained: "20" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "30", obtained: "20" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "122",
@@ -293,11 +301,11 @@
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "0",
@@ -310,11 +318,11 @@
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "19" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "19",
@@ -327,11 +335,11 @@
         class: "play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "29" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "0" },
-            { name: "General Knowledge", obtained: "10" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "29" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "0" },
+            { name: "General Knowledge", total: "25", obtained: "10" }
         ],
         totalMarks: "135",
         totalObtained: "68",
@@ -344,11 +352,11 @@
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "0",
@@ -361,11 +369,11 @@
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "0",
@@ -378,11 +386,11 @@
         class: "play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "29" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "0" },
-            { name: "General Knowledge", obtained: "10" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "29" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "0" },
+            { name: "General Knowledge", total: "25", obtained: "10" }
         ],
         totalMarks: "135",
         totalObtained: "88",
@@ -408,10 +416,10 @@
         class: "Play",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "0",
@@ -424,11 +432,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "28" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "20" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "28" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "20" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "122",
@@ -441,11 +449,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "28" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "25" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "28" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "25" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "108",
@@ -458,11 +466,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "29" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "25" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "29" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "25" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "128",
@@ -475,11 +483,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "28" },
-            { name: "Mathematics", obtained: "19" },
-            { name: "Islamiyat", obtained: "20" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "28" },
+            { name: "Mathematics", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "30", obtained: "20" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "121",
@@ -505,11 +513,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "26" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "25" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "26" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "25" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "125",
@@ -522,11 +530,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "27" },
-            { name: "Urdu", obtained: "27" },
-            { name: "Mathematics", obtained: "19" },
-            { name: "Islamiyat", obtained: "30" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "27" },
+            { name: "Urdu", total: "30", obtained: "27" },
+            { name: "Mathematics", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "30", obtained: "30" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "128",
@@ -539,11 +547,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "27" },
-            { name: "Mathematics", obtained: "18" },
-            { name: "Islamiyat", obtained: "25" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "27" },
+            { name: "Mathematics", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "30", obtained: "25" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "124",
@@ -556,11 +564,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "30" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "30" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "General Knowledge", total: "25", obtained: "A" }
         ],
         totalMarks: "135",
         totalObtained: "30",
@@ -573,11 +581,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "28" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "25" },
-            { name: "General Knowledge", obtained: "25" }
+            { name: "English", total: "30", obtained: "28" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "30", obtained: "25" },
+            { name: "General Knowledge", total: "25", obtained: "25" }
         ],
         totalMarks: "135",
         totalObtained: "98",
@@ -590,11 +598,11 @@
         class: "Nursiry",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "30" },
-            { name: "General Knowledge", obtained: "20" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "30" },
+            { name: "General Knowledge", total: "25", obtained: "20" }
         ],
         totalMarks: "135",
         totalObtained: "50",
@@ -607,11 +615,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "30" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "45" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "30" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "45" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "225",
@@ -624,11 +632,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "45", obtained: "A" },
+            { name: "Islamiyat", total: "50", obtained: "A" },
+            { name: "General Knowledge", total: "70", obtained: "A" }
         ],
         totalMarks: "225",
         totalObtained: "0",
@@ -641,11 +649,11 @@
         class: "kG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "45", obtained: "A" },
+            { name: "Islamiyat", total: "50", obtained: "A" },
+            { name: "General Knowledge", total: "70", obtained: "A" }
         ],
         totalMarks: "225",
         totalObtained: "0",
@@ -658,11 +666,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "45" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "45" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "224",
@@ -675,11 +683,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "45", obtained: "A" },
+            { name: "Islamiyat", total: "50", obtained: "A" },
+            { name: "General Knowledge", total: "70", obtained: "A" }
         ],
         totalMarks: "225",
         totalObtained: "0",
@@ -692,11 +700,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "15" },
-            { name: "Urdu", obtained: "35" },
-            { name: "Mathematics", obtained: "30" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "15" },
+            { name: "Urdu", total: "30", obtained: "35" },
+            { name: "Mathematics", total: "45", obtained: "30" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "200",
@@ -709,11 +717,11 @@
         class: "kG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "27" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "45" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "27" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "45" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "222",
@@ -726,11 +734,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "30", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "45", obtained: "A" },
+            { name: "Islamiyat", total: "50", obtained: "A" },
+            { name: "General Knowledge", total: "70", obtained: "A" }
         ],
         totalMarks: "225",
         totalObtained: "0",
@@ -743,11 +751,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "29" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "44" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "29" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "44" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "223",
@@ -760,11 +768,11 @@
         class: "KG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "28" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "43" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "28" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "43" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "221",
@@ -790,11 +798,11 @@
         class: "kG1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "30" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "43" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "70" }
+            { name: "English", total: "30", obtained: "30" },
+            { name: "Urdu", total: "30", obtained: "30" },
+            { name: "Mathematics", total: "45", obtained: "43" },
+            { name: "Islamiyat", total: "50", obtained: "50" },
+            { name: "General Knowledge", total: "70", obtained: "70" }
         ],
         totalMarks: "225",
         totalObtained: "223",
@@ -807,11 +815,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "38" },
-            { name: "Urdu", obtained: "49" },
-            { name: "Mathematics", obtained: "52" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "38" },
+            { name: "Urdu", total: "50", obtained: "49" },
+            { name: "Mathematics", total: "52", obtained: "52" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "239",
@@ -824,11 +832,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "50" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "240",
@@ -841,11 +849,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "38" },
-            { name: "Urdu", obtained: "49" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "38" },
+            { name: "Urdu", total: "50", obtained: "49" },
+            { name: "Mathematics", total: "52", obtained: "50" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "237",
@@ -858,11 +866,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "37" },
-            { name: "Urdu", obtained: "46" },
-            { name: "Mathematics", obtained: "45" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "40", obtained: "37" },
+            { name: "Urdu", total: "50", obtained: "46" },
+            { name: "Mathematics", total: "52", obtained: "45" },
+            { name: "Islamiyat", total: "60", obtained: "A" },
+            { name: "General Knowledge", total: "50", obtained: "A" }
         ],
         totalMarks: "252",
         totalObtained: "128",
@@ -875,11 +883,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "39" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "40" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "39" },
+            { name: "Urdu", total: "50", obtained: "A" },
+            { name: "Mathematics", total: "52", obtained: "40" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "179",
@@ -892,11 +900,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "47" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "40", obtained: "A" },
+            { name: "Urdu", total: "50", obtained: "A" },
+            { name: "Mathematics", total: "52", obtained: "47" },
+            { name: "Islamiyat", total: "60", obtained: "A" },
+            { name: "General Knowledge", total: "50", obtained: "A" }
         ],
         totalMarks: "252",
         totalObtained: "47",
@@ -909,11 +917,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "37" },
-            { name: "Urdu", obtained: "45" },
-            { name: "Mathematics", obtained: "42" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "37" },
+            { name: "Urdu", total: "50", obtained: "45" },
+            { name: "Mathematics", total: "52", obtained: "42" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "224",
@@ -926,11 +934,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "37" },
-            { name: "Urdu", obtained: "44" },
-            { name: "Mathematics", obtained: "51" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "37" },
+            { name: "Urdu", total: "50", obtained: "44" },
+            { name: "Mathematics", total: "52", obtained: "51" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "232",
@@ -943,11 +951,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "52" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "52" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "242",
@@ -960,11 +968,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "51" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "51" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "241",
@@ -977,11 +985,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "General Knowledge", obtained: "A" }
+            { name: "English", total: "40", obtained: "A" },
+            { name: "Urdu", total: "50", obtained: "A" },
+            { name: "Mathematics", total: "52", obtained: "A" },
+            { name: "Islamiyat", total: "60", obtained: "A" },
+            { name: "General Knowledge", total: "50", obtained: "A" }
         ],
         totalMarks: "252",
         totalObtained: "0",
@@ -994,11 +1002,11 @@
         class: "kG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "52" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "52" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "242",
@@ -1011,11 +1019,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "37" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "51" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "37" },
+            { name: "Urdu", total: "50", obtained: "A" },
+            { name: "Mathematics", total: "52", obtained: "51" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "188",
@@ -1028,11 +1036,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "39" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "51" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "39" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "51" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "240",
@@ -1045,11 +1053,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "50" },
-            { name: "Mathematics", obtained: "52" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "50" },
+            { name: "Mathematics", total: "52", obtained: "52" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "242",
@@ -1062,11 +1070,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "29" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "29" },
+            { name: "Mathematics", total: "52", obtained: "A" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "169",
@@ -1079,11 +1087,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "40" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "46" },
-            { name: "Islamiyat", obtained: "50" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "40" },
+            { name: "Urdu", total: "50", obtained: "A" },
+            { name: "Mathematics", total: "52", obtained: "46" },
+            { name: "Islamiyat", total: "60", obtained: "50" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "186",
@@ -1096,11 +1104,11 @@
         class: "KG2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "48" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "60" },
-            { name: "General Knowledge", obtained: "50" }
+            { name: "English", total: "40", obtained: "A" },
+            { name: "Urdu", total: "50", obtained: "48" },
+            { name: "Mathematics", total: "52", obtained: "A" },
+            { name: "Islamiyat", total: "60", obtained: "60" },
+            { name: "General Knowledge", total: "50", obtained: "50" }
         ],
         totalMarks: "252",
         totalObtained: "158",
@@ -1113,11 +1121,11 @@
         class: "1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "25" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "Social Studies", total: "35", obtained: "A" },
+            { name: "Science", total: "25", obtained: "25" }
         ],
         totalMarks: "110",
         totalObtained: "44",
@@ -1130,11 +1138,11 @@
         class: "1",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "13" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "25" }
+            { name: "English", total: "20", obtained: "13" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "Social Studies", total: "35", obtained: "A" },
+            { name: "Science", total: "25", obtained: "25" }
         ],
         totalMarks: "110",
         totalObtained: "38",
@@ -1147,11 +1155,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "18" },
-            { name: "Islamiyat", obtained: "30" },
-            { name: "Social Studies", obtained: "34" },
-            { name: "Science", obtained: "24" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "30", obtained: "30" },
+            { name: "Social Studies", total: "35", obtained: "34" },
+            { name: "Science", total: "25", obtained: "24" }
         ],
         totalMarks: "130",
         totalObtained: "125",
@@ -1164,7 +1172,7 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" }
         ],
         totalMarks: "130",
         totalObtained: "0",
@@ -1177,7 +1185,7 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" }
         ],
         totalMarks: "130",
         totalObtained: "0",
@@ -1190,11 +1198,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "14" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Islamiyat", obtained: "19" },
-            { name: "Social Studies", obtained: "31" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "20", obtained: "14" },
+            { name: "Urdu", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "30", obtained: "19" },
+            { name: "Social Studies", total: "35", obtained: "31" },
+            { name: "Science", total: "25", obtained: "A" }
         ],
         totalMarks: "130",
         totalObtained: "83",
@@ -1207,11 +1215,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "18" },
-            { name: "Islamiyat", obtained: "24" },
-            { name: "Social Studies", obtained: "34" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "30", obtained: "24" },
+            { name: "Social Studies", total: "35", obtained: "34" },
+            { name: "Science", total: "25", obtained: "A" }
         ],
         totalMarks: "130",
         totalObtained: "95",
@@ -1224,11 +1232,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Islamiyat", obtained: "30" },
-            { name: "Social Studies", obtained: "31" },
-            { name: "Science", obtained: "23" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "30", obtained: "30" },
+            { name: "Social Studies", total: "35", obtained: "31" },
+            { name: "Science", total: "25", obtained: "23" }
         ],
         totalMarks: "130",
         totalObtained: "122",
@@ -1241,11 +1249,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "11" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "21" }
+            { name: "English", total: "20", obtained: "11" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "Social Studies", total: "35", obtained: "A" },
+            { name: "Science", total: "25", obtained: "21" }
         ],
         totalMarks: "130",
         totalObtained: "32",
@@ -1258,11 +1266,11 @@
         class: "2",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "18" },
-            { name: "Islamiyat", obtained: "29" },
-            { name: "Social Studies", obtained: "34" },
-            { name: "Science", obtained: "23" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "30", obtained: "29" },
+            { name: "Social Studies", total: "35", obtained: "34" },
+            { name: "Science", total: "25", obtained: "23" }
         ],
         totalMarks: "130",
         totalObtained: "123",
@@ -1288,11 +1296,11 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "39" },
-            { name: "Islamiyat", obtained: "38" },
-            { name: "Social Studies", obtained: "18" },
-            { name: "Science", obtained: "22" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "39" },
+            { name: "Islamiyat", total: "60", obtained: "38" },
+            { name: "Social Studies", total: "20", obtained: "18" },
+            { name: "Science", total: "30", obtained: "22" }
         ],
         totalMarks: "170",
         totalObtained: "140",
@@ -1331,12 +1339,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "25" },
-            { name: "Mathematics", obtained: "15" },
-            { name: "Islamiyat", obtained: "48" },
-            { name: "Social Studies", obtained: "16" },
-            { name: "Science", obtained: "10" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "25" },
+            { name: "Mathematics", total: "50", obtained: "15" },
+            { name: "Islamiyat", total: "60", obtained: "48" },
+            { name: "Social Studies", total: "20", obtained: "16" },
+            { name: "Science", total: "30", obtained: "10" }
         ],
         totalMarks: "170",
         totalObtained: "137",
@@ -1349,12 +1357,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "30" },
-            { name: "Mathematics", obtained: "30" },
-            { name: "Islamiyat", obtained: "16" },
-            { name: "Social Studies", obtained: "17" },
-            { name: "Science", obtained: "10" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "30" },
+            { name: "Mathematics", total: "50", obtained: "30" },
+            { name: "Islamiyat", total: "60", obtained: "16" },
+            { name: "Social Studies", total: "20", obtained: "17" },
+            { name: "Science", total: "30", obtained: "10" }
         ],
         totalMarks: "170",
         totalObtained: "126",
@@ -1367,12 +1375,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "24" },
-            { name: "Urdu", obtained: "40" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "58" },
-            { name: "Social Studies", obtained: "17" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "24" },
+            { name: "Urdu", total: "40", obtained: "40" },
+            { name: "Mathematics", total: "50", obtained: "50" },
+            { name: "Islamiyat", total: "60", obtained: "58" },
+            { name: "Social Studies", total: "20", obtained: "17" },
+            { name: "Science", total: "30", obtained: "A" }
         ],
         totalMarks: "170",
         totalObtained: "189",
@@ -1398,12 +1406,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "38" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "18" },
-            { name: "Science", obtained: "4" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "38" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "60", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "18" },
+            { name: "Science", total: "30", obtained: "4" }
         ],
         totalMarks: "170",
         totalObtained: "83",
@@ -1416,12 +1424,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "24" },
-            { name: "Urdu", obtained: "40" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "60" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "30" }
+            { name: "English", total: "25", obtained: "24" },
+            { name: "Urdu", total: "40", obtained: "40" },
+            { name: "Mathematics", total: "50", obtained: "50" },
+            { name: "Islamiyat", total: "60", obtained: "60" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "30", obtained: "30" }
         ],
         totalMarks: "170",
         totalObtained: "223",
@@ -1434,12 +1442,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "29" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "16" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "A" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "60", obtained: "29" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "30", obtained: "16" }
         ],
         totalMarks: "170",
         totalObtained: "87",
@@ -1452,12 +1460,12 @@
         class: "3",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "23" },
-            { name: "Urdu", obtained: "31" },
-            { name: "Mathematics", obtained: "25" },
-            { name: "Islamiyat", obtained: "41" },
-            { name: "Social Studies", obtained: "18" },
-            { name: "Science", obtained: "15" }
+            { name: "English", total: "25", obtained: "23" },
+            { name: "Urdu", total: "40", obtained: "31" },
+            { name: "Mathematics", total: "50", obtained: "25" },
+            { name: "Islamiyat", total: "60", obtained: "41" },
+            { name: "Social Studies", total: "20", obtained: "18" },
+            { name: "Science", total: "30", obtained: "15" }
         ],
         totalMarks: "170",
         totalObtained: "153",
@@ -1470,11 +1478,11 @@
         class: "4",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "21" },
-            { name: "Urdu", obtained: "37" },
-            { name: "Mathematics", obtained: "57" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "31" }
+            { name: "English", total: "25", obtained: "21" },
+            { name: "Urdu", total: "40", obtained: "37" },
+            { name: "Mathematics", total: "70", obtained: "57" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "40", obtained: "31" }
         ],
         totalMarks: "125",
         totalObtained: "165",
@@ -1487,11 +1495,11 @@
         class: "4",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "24" },
-            { name: "Urdu", obtained: "38" },
-            { name: "Mathematics", obtained: "64" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "37" }
+            { name: "English", total: "25", obtained: "24" },
+            { name: "Urdu", total: "40", obtained: "38" },
+            { name: "Mathematics", total: "70", obtained: "64" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "40", obtained: "37" }
         ],
         totalMarks: "125",
         totalObtained: "182",
@@ -1504,11 +1512,11 @@
         class: "4",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "24" },
-            { name: "Urdu", obtained: "37" },
-            { name: "Mathematics", obtained: "59" },
-            { name: "Social Studies", obtained: "18" },
-            { name: "Science", obtained: "38" }
+            { name: "English", total: "25", obtained: "24" },
+            { name: "Urdu", total: "40", obtained: "37" },
+            { name: "Mathematics", total: "70", obtained: "59" },
+            { name: "Social Studies", total: "20", obtained: "18" },
+            { name: "Science", total: "40", obtained: "38" }
         ],
         totalMarks: "125",
         totalObtained: "176",
@@ -1521,11 +1529,11 @@
         class: "4",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "24" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "60" },
-            { name: "Social Studies", obtained: "16" },
-            { name: "Science", obtained: "25" }
+            { name: "English", total: "25", obtained: "24" },
+            { name: "Urdu", total: "40", obtained: "A" },
+            { name: "Mathematics", total: "70", obtained: "60" },
+            { name: "Social Studies", total: "20", obtained: "16" },
+            { name: "Science", total: "40", obtained: "25" }
         ],
         totalMarks: "125",
         totalObtained: "125",
@@ -1538,11 +1546,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "18" },
-            { name: "Islamiyat", obtained: "35" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "42" }
+            { name: "English", total: "25", obtained: "A" },
+            { name: "Urdu", total: "20", obtained: "18" },
+            { name: "Islamiyat", total: "40", obtained: "35" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "42" }
         ],
         totalMarks: "155",
         totalObtained: "114",
@@ -1568,11 +1576,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "16" },
-            { name: "Islamiyat", obtained: "39" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "16" },
+            { name: "Islamiyat", total: "40", obtained: "39" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "20" }
         ],
         totalMarks: "155",
         totalObtained: "113",
@@ -1585,11 +1593,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "17" },
-            { name: "Islamiyat", obtained: "38" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "17" },
+            { name: "Islamiyat", total: "40", obtained: "38" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "A" }
         ],
         totalMarks: "155",
         totalObtained: "93",
@@ -1602,11 +1610,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "A" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "A" },
+            { name: "Science", total: "50", obtained: "A" }
         ],
         totalMarks: "155",
         totalObtained: "0",
@@ -1619,11 +1627,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Islamiyat", obtained: "40" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "40" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "40", obtained: "40" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "40" }
         ],
         totalMarks: "155",
         totalObtained: "137",
@@ -1636,11 +1644,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "A" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "A" },
+            { name: "Science", total: "50", obtained: "A" }
         ],
         totalMarks: "155",
         totalObtained: "0",
@@ -1653,11 +1661,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "20" },
-            { name: "Islamiyat", obtained: "40" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "20" },
+            { name: "Islamiyat", total: "40", obtained: "40" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "A" }
         ],
         totalMarks: "155",
         totalObtained: "98",
@@ -1670,11 +1678,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Islamiyat", obtained: "40" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "19" },
+            { name: "Islamiyat", total: "40", obtained: "40" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "A" }
         ],
         totalMarks: "155",
         totalObtained: "97",
@@ -1687,11 +1695,11 @@
         class: "5",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Islamiyat", obtained: "35" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "25" }
+            { name: "English", total: "25", obtained: "19" },
+            { name: "Urdu", total: "20", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "35" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "50", obtained: "25" }
         ],
         totalMarks: "155",
         totalObtained: "98",
@@ -1717,7 +1725,7 @@
         class: "6",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "-", obtained: "A" }
         ],
         totalMarks: "0",
         totalObtained: "0",
@@ -1730,7 +1738,7 @@
         class: "6",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "-", obtained: "A" }
         ],
         totalMarks: "0",
         totalObtained: "0",
@@ -1743,12 +1751,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "40" },
-            { name: "Islamiyat", obtained: "27" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "40", obtained: "20" },
+            { name: "Mathematics", total: "50", obtained: "40" },
+            { name: "Islamiyat", total: "40", obtained: "27" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "146",
@@ -1761,12 +1769,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "59" },
-            { name: "Islamiyat", obtained: "36" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "32", obtained: "20" },
+            { name: "Mathematics", total: "50", obtained: "50" },
+            { name: "Islamiyat", total: "40", obtained: "36" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "174",
@@ -1779,11 +1787,11 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "30" },
-            { name: "Islamiyat", obtained: "36" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "Urdu", total: "38", obtained: "20" },
+            { name: "Mathematics", total: "50", obtained: "30" },
+            { name: "Islamiyat", total: "40", obtained: "36" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "126",
@@ -1796,12 +1804,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "36" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "32", obtained: "20" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "36" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "115",
@@ -1814,11 +1822,11 @@
         class: "8",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "20" },
-            { name: "Islamiyat", obtained: "20" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "19" }
+            { name: "Urdu", total: "38", obtained: "20" },
+            { name: "Mathematics", total: "50", obtained: "20" },
+            { name: "Islamiyat", total: "40", obtained: "20" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "40", obtained: "19" }
         ],
         totalMarks: "190",
         totalObtained: "98",
@@ -1831,7 +1839,7 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" }
         ],
         totalMarks: "190",
         totalObtained: "0",
@@ -1844,7 +1852,7 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" }
         ],
         totalMarks: "190",
         totalObtained: "0",
@@ -1857,12 +1865,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "17" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Mathematics", obtained: "30" },
-            { name: "Islamiyat", obtained: "26" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "20", obtained: "17" },
+            { name: "Urdu", total: "32", obtained: "19" },
+            { name: "Mathematics", total: "50", obtained: "30" },
+            { name: "Islamiyat", total: "40", obtained: "26" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "132",
@@ -1875,12 +1883,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" },
+            { name: "Urdu", total: "32", obtained: "A" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "A" },
+            { name: "Science", total: "40", obtained: "A" }
         ],
         totalMarks: "190",
         totalObtained: "0",
@@ -1893,12 +1901,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "18" },
-            { name: "Urdu", obtained: "19" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "20" },
-            { name: "Science", obtained: "20" }
+            { name: "English", total: "20", obtained: "18" },
+            { name: "Urdu", total: "32", obtained: "19" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "20" },
+            { name: "Science", total: "40", obtained: "20" }
         ],
         totalMarks: "190",
         totalObtained: "77",
@@ -1911,12 +1919,12 @@
         class: "7",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" },
+            { name: "Urdu", total: "32", obtained: "A" },
+            { name: "Mathematics", total: "50", obtained: "A" },
+            { name: "Islamiyat", total: "40", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "A" },
+            { name: "Science", total: "40", obtained: "A" }
         ],
         totalMarks: "190",
         totalObtained: "0",
@@ -1929,12 +1937,12 @@
         class: "8",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "19" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "19" }
+            { name: "English", total: "20", obtained: "19" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "70", obtained: "50" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "20", obtained: "19" }
         ],
         totalMarks: "190",
         totalObtained: "107",
@@ -1947,12 +1955,12 @@
         class: "8",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "A" },
-            { name: "Urdu", obtained: "A" },
-            { name: "Mathematics", obtained: "A" },
-            { name: "Islamiyat", obtained: "A" },
-            { name: "Social Studies", obtained: "A" },
-            { name: "Science", obtained: "A" }
+            { name: "English", total: "20", obtained: "A" },
+            { name: "Urdu", total: "30", obtained: "A" },
+            { name: "Mathematics", total: "70", obtained: "A" },
+            { name: "Islamiyat", total: "30", obtained: "A" },
+            { name: "Social Studies", total: "20", obtained: "A" },
+            { name: "Science", total: "20", obtained: "A" }
         ],
         totalMarks: "190",
         totalObtained: "0",
@@ -1965,12 +1973,12 @@
         class: "8",
         month: "June 2026 (MONTHLY TEST)",
         subjects: [
-            { name: "English", obtained: "18" },
-            { name: "Urdu", obtained: "20" },
-            { name: "Mathematics", obtained: "50" },
-            { name: "Islamiyat", obtained: "20" },
-            { name: "Social Studies", obtained: "19" },
-            { name: "Science", obtained: "19" }
+            { name: "English", total: "20", obtained: "18" },
+            { name: "Urdu", total: "30", obtained: "20" },
+            { name: "Mathematics", total: "70", obtained: "50" },
+            { name: "Islamiyat", total: "30", obtained: "20" },
+            { name: "Social Studies", total: "20", obtained: "19" },
+            { name: "Science", total: "20", obtained: "19" }
         ],
         totalMarks: "190",
         totalObtained: "146",
@@ -1978,7 +1986,8 @@
         grade: "A",
         status: "PASS"
     }
-};
+};                      
+
         // Helper function to create individual marksheet HTML string
         function createMarksheetHTML(rollNum, record) {
             const obtMarks = record.totalObtained || "0";
@@ -1990,6 +1999,7 @@
                 subjectsRows += `
                     <tr>
                         <td style="font-weight: 500; color: var(--primary-blue);">${sub.name}</td>
+                        <td style="font-weight: 600; text-align: center; color: var(--text-muted); font-size: 14px;">${sub.total || "-"}</td>
                         <td style="font-weight: 700; text-align: right; font-size: 14px;">${sub.obtained}</td>
                     </tr>
                 `;
@@ -2020,6 +2030,7 @@
                             <thead>
                                 <tr>
                                     <th>Subject Name</th>
+                                    <th style="text-align: center;">Total Marks</th>
                                     <th style="text-align: right;">Obtained Marks</th>
                                 </tr>
                             </thead>
@@ -2032,7 +2043,7 @@
                     <div class="sheet-footer">
                         <div class="metrics-block">
                             <div class="metric-box">Marks Obtained <span>${obtMarks} / ${totMarks}</span></div>
-                            <div class="metric-box">Percentage <span>${record.percentage}</span></div>
+                            <div class="metric-box">Percentage <span>${parseFloat(record.percentage).toFixed(2)}%</span></div>
                             <div class="metric-box">Grade <span>${record.grade}</span></div>
                         </div>
                         <div class="${statusClass}">${record.status}</div>
@@ -2062,12 +2073,10 @@
             const printBar = document.getElementById('printControlBar');
             const errorBlock = document.getElementById('errorMessage');
 
-            // --- SECRET FEATURE FOR MEDUM ---
             if(inputVal === "print-all") {
                 errorBlock.style.display = 'none';
                 let masterHTML = '';
                 
-                // Loop through all database keys and accumulate marksheets
                 Object.keys(reportDatabase).forEach(roll => {
                     masterHTML += createMarksheetHTML(roll, reportDatabase[roll]);
                 });
@@ -2075,7 +2084,6 @@
                 printArea.innerHTML = masterHTML;
                 printBar.style.display = 'flex';
                 
-                // Automatically open browser print option
                 setTimeout(() => { window.print(); }, 500);
                 return;
             }
@@ -2091,7 +2099,6 @@
 
             if(record) {
                 errorBlock.style.display = 'none';
-                // Render single normal student report
                 printArea.innerHTML = createMarksheetHTML(inputVal, record);
                 printBar.style.display = 'flex';
             } else {
