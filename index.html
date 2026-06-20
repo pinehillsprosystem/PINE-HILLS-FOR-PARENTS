@@ -589,7 +589,54 @@
         </div>
     </div>
 
-    <!-- AI Core Processing JavaScript Engine -->
+<!-- ================================================================= -->
+    <!-- 🤖 PINE HILLS INTELLIGENT DATA-CONNECTED AI ENGINE (FULL FUNCTIONAL) -->
+    <!-- ================================================================= -->
+    
+    <div id="ph-ai-widget" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999; font-family: 'Poppins', sans-serif;">
+        <!-- Launcher Icon -->
+        <button id="ph-ai-launcher" style="width: 60px; height: 60px; border-radius: 50%; background: #002d72; color: white; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s ease;">
+            <i class="fa-solid fa-robot"></i>
+        </button>
+
+        <!-- WhatsApp Style Intelligent Chat Box -->
+        <div id="ph-ai-box" style="width: 350px; height: 480px; background: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); border-radius: 16px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; position: absolute; bottom: 75px; right: 0;">
+            <!-- Header -->
+            <div style="background: #002d72; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 38px; height: 38px; border-radius: 50%; background: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 18px;"><i class="fa-solid fa-circle-nodes"></i></div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600;">Pine Hills Smart AI</h4>
+                        <span style="font-size: 10px; color: #93c5fd; display: block;">Online Portal Assistant</span>
+                    </div>
+                </div>
+                <button id="ph-ai-close" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="ph-ai-body" style="flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: white; color: black; max-width: 85%; padding: 10px 12px; border-radius: 8px; font-size: 13px; align-self: flex-start; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); line-height: 1.5;">
+                    Assalam-o-Alaikum! Main Pine Hills Portal ka automatic robot hu. <br><br>
+                    Misaal ke tor par bolien: <br>
+                    <b>"Result roll number 105"</b> ya <br>
+                    <b>"Monthly test roll number 102"</b> <br><br>
+                    Main bachy ka mukammal data nikaal kar dikhaunga!
+                </div>
+            </div>
+
+            <!-- Input Controls Footer Bar -->
+            <div style="padding: 10px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.3); backdrop-filter: blur(5px);">
+                <div style="flex-grow: 1; background: white; border-radius: 20px; padding: 6px 14px; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                    <input type="text" id="ph-ai-input" placeholder="Bolien ya roll number likhein..." style="width: 100%; border: none; outline: none; padding: 4px 0; font-size: 13.5px; background: transparent;">
+                </div>
+                <button id="ph-ai-action-btn" style="width: 42px; height: 42px; border-radius: 50%; background: #002d72; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: background 0.2s;">
+                    <i class="fa-solid fa-microphone" id="ph-mic-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Core Database Processing Engine -->
     <script>
         (function() {
             const launcher = document.getElementById('ph-ai-launcher');
@@ -600,7 +647,6 @@
             const micIcon = document.getElementById('ph-mic-icon');
             const chatBody = document.getElementById('ph-ai-body');
 
-            // Open / Close Layout Window UI Toggle
             launcher.addEventListener('click', () => {
                 chatBox.style.display = 'flex';
                 launcher.style.display = 'none';
@@ -613,7 +659,6 @@
                 if('speechSynthesis' in window) window.speechSynthesis.cancel();
             });
 
-            // Change Icon state fluidly on text input values
             inputField.addEventListener('input', () => {
                 if(inputField.value.trim().length > 0) {
                     micIcon.className = "fa-solid fa-paper-plane";
@@ -622,28 +667,96 @@
                 }
             });
 
-            // Dictionary base matching engine for dynamic queries
-            function matchUrduResponse(query) {
-                let text = query.toLowerCase();
-                if (text.includes('result') || text.includes('nambar') || text.includes('number') || text.includes('marks') || text.includes('natija')) {
-                    return "Bachay ka result check karne ke liye portal par mojood 'Result' card par click karein aur roll number enter karein.";
-                } else if (text.includes('test') || text.includes('monthly') || text.includes('mahana')) {
-                    return "Mahana tests aur schedule dekhne ke liye aap 'Monthly Tests' card par click kar sakte hain.";
-                } else if (text.includes('admission') || text.includes('dakhla') || text.includes('form')) {
-                    return "Naye dakhlay ke liye online form bharna chahte hain to 'Online Admission' section me dakhil hon.";
-                } else if (text.includes('activity') || text.includes('khel') || text.includes('event')) {
-                    return "School sargarmiyon aur functions ki mukammal updates aap 'Activity' wale page se check kar sakte hain.";
-                } else if (text.includes('hello') || text.includes('assalam') || text.includes('hi')) {
-                    return "Walaikum Assalam! Main aapko portal navigate karne me madad karunga. Aapko kis cheez ke baare me janna hai?";
-                } else {
-                    return "Main aapki baat samajh gaya hu. Portal par aap Result, Monthly Test, Admission aur Activities check kar sakte hain. Mazeed poochne ke liye dobara mic dabayein.";
+            // Universal English & Urdu Number Converter
+            function extractRollNumber(text) {
+                const words = text.match(/\d+/g);
+                if (words) return words[0];
+                
+                // Roman Urdu / Urdu Text Counting Fallback
+                const urduNumbers = {
+                    'ek': '1', 'one': '1', 'do': '2', 'two': '2', 'teen': '3', 'three': '3', 
+                    'chaar': '4', 'four': '4', 'paanch': '5', 'five': '5', 'che': '6', 'six': '6', 
+                    'saat': '7', 'seven': '7', 'aath': '8', 'eight': '8', 'nau': '9', 'nine': '9', 'das': '10'
+                };
+                for (let key in urduNumbers) {
+                    if (text.includes(key)) return urduNumbers[key];
+                }
+                return null;
+            }
+
+            // Real-Time System Local Database Fetcher (Fetches from your upload system)
+            function fetchStudentData(rollNum, type) {
+                // local key mapping matching your excel storage
+                const dbKey = type === 'test' ? 'monthly_test_data' : 'exam_result_data';
+                const localData = localStorage.getItem(dbKey);
+                
+                if (!localData) return null;
+
+                try {
+                    const parsedData = JSON.parse(localData);
+                    // Single row search optimization
+                    return parsedData.find(student => String(student.roll_no || student.RollNo || student.roll).trim() === String(rollNum).trim());
+                } catch (e) {
+                    return null;
                 }
             }
 
-            function addBubble(text, sender) {
+            // Advanced AI Router Agent
+            function processIntelligentLogic(userInput) {
+                let text = userInput.toLowerCase();
+                let rollNum = extractRollNumber(text);
+                
+                let isTest = text.includes('test') || text.includes('mahana') || text.includes('monthly');
+                let isResult = text.includes('result') || text.includes('natija') || text.includes('annual') || text.includes('salana') || text.includes('marks');
+
+                if (!rollNum) {
+                    // Normal Assistant Routing if roll number is missing
+                    if (text.includes('hello') || text.includes('assalam') || text.includes('hi')) {
+                        return "Walaikum Assalam! Bachay ka data dekhne ke liye baraye meherbani uska Roll Number bolein.";
+                    }
+                    if (isTest) return "Mahana test ki details dekhne ke liye Roll Number batana lazmi hai, jaise: 'Test roll number 5'.";
+                    if (isResult) return "Result check karne ke liye roll number ke sath bolein, jaise: 'Result roll number 10'.";
+                    return "Main aapki baat samajh nahi paya. Bachay ka details dekhne ke liye uska Roll Number bolein.";
+                }
+
+                // If user doesn't specify 'test' or 'result', default smartly to Result database
+                let targetType = isTest ? 'test' : 'result';
+                let student = fetchStudentData(rollNum, targetType);
+
+                if (!student) {
+                    return `Maazrat! Roll number ${rollNum} ka record hamare database me nahi mila. Kirpya sahi roll number bolein ya check karein ke data upload hua hai ya nahi.`;
+                }
+
+                // Generate Dynamic Clean Text Report Layout for Web View
+                let name = student.name || student.Name || "Student";
+                let reportHTML = `<div style="text-align:left; background:#f0fdf4; padding:8px; border-radius:6px; border:1px solid #bbf7d0; margin-top:5px;">
+                                    <b>📝 ${targetType === 'test' ? 'Monthly Test' : 'Final Result'} Card</b><br>
+                                    <b>Naam:</b> ${name}<br>
+                                    <b>Roll No:</b> ${rollNum}<br><br>`;
+                
+                let voiceSpeechText = `Mubarak ho! Roll number ${rollNum} ${name} ka data mil gaya hai. `;
+
+                // Filter subject loops inside the matching row dynamically
+                for (let subject in student) {
+                    if (!['roll_no', 'RollNo', 'roll', 'name', 'Name', 'id', 'total', 'Total'].includes(subject)) {
+                        reportHTML += `<span style="text-transform:capitalize;"><b>${subject}:</b></span> ${student[subject]}<br>`;
+                        voiceSpeechText += `${subject} me ${student[subject]} marks hain. `;
+                    }
+                }
+                
+                if(student.total || student.Total) {
+                    reportHTML += `<br><b>Total Marks:</b> ${student.total || student.Total}`;
+                    voiceSpeechText += `Kul nambar ${student.total || student.Total} hain.`;
+                }
+                reportHTML += `</div>`;
+
+                return { html: reportHTML, audio: voiceSpeechText };
+            }
+
+            function addBubble(content, sender, isHTML = false) {
                 const b = document.createElement('div');
                 b.style.maxWidth = "85%";
-                b.style.padding = "8px 12px";
+                b.style.padding = "10px 12px";
                 b.style.borderRadius = "8px";
                 b.style.fontSize = "13px";
                 b.style.lineHeight = "1.5";
@@ -654,94 +767,106 @@
                     b.style.color = "black";
                     b.style.alignSelf = "flex-start";
                     b.style.borderTopLeftRadius = "0";
+                    if(isHTML) {
+                        b.innerHTML = content;
+                    } else {
+                        b.innerText = content;
+                    }
                 } else {
                     b.style.background = "#dcf8c6";
                     b.style.color = "black";
                     b.style.alignSelf = "flex-end";
                     b.style.borderTopRightRadius = "0";
+                    b.innerText = content;
                 }
-                b.innerText = text;
                 chatBody.appendChild(b);
                 chatBody.scrollTop = chatBody.scrollHeight;
             }
 
-            function processSystemQuery(queryText) {
+            function triggerAIResponseExecution(queryText) {
                 if(!queryText.trim()) return;
                 addBubble(queryText, 'user');
                 inputField.value = '';
                 micIcon.className = "fa-solid fa-microphone";
 
                 setTimeout(() => {
-                    const systemReply = matchUrduResponse(queryText);
-                    addBubble(systemReply, 'bot');
-
-                    // Standard localized clear speech out renderer
-                    if('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const speakUtterance = new SpeechSynthesisUtterance(systemReply);
-                        speakUtterance.lang = 'ur-PK';
-                        window.speechSynthesis.speak(speakUtterance);
+                    const aiResult = processIntelligentLogic(queryText);
+                    
+                    if (typeof aiResult === 'object') {
+                        // Data Output Handling
+                        addBubble(aiResult.html, 'bot', true);
+                        speakUrduVocal(aiResult.audio);
+                    } else {
+                        // Text string handling
+                        addBubble(aiResult, 'bot', false);
+                        speakUrduVocal(aiResult);
                     }
                 }, 600);
             }
 
-            // Local Environment Safe Voice Core Engine
+            function speakUrduVocal(textToSpeak) {
+                if('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = 'ur-PK';
+                    utterance.rate = 0.9;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+
+            // Safe Web Voice Trigger Component
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            let voiceEngine = null;
-            let isListening = false;
+            let recognition = null;
+            let recordingState = false;
 
             if(SpeechRecognition) {
-                voiceEngine = new SpeechRecognition();
-                voiceEngine.continuous = false;
-                voiceEngine.lang = 'ur-PK'; // Urdu Accent Engine
-                
-                voiceEngine.onresult = function(event) {
-                    const textSpeech = event.results[0][0].transcript;
-                    processSystemQuery(textSpeech);
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'ur-PK';
+
+                recognition.onresult = function(e) {
+                    const voiceText = e.results[0][0].transcript;
+                    triggerAIResponseExecution(voiceText);
                 };
 
-                voiceEngine.onend = function() {
-                    isListening = false;
-                    actionBtn.style.background = "#075e54";
+                recognition.onend = function() {
+                    recordingState = false;
+                    actionBtn.style.background = "#002d72";
                 };
 
-                voiceEngine.onerror = function() {
-                    isListening = false;
-                    actionBtn.style.background = "#075e54";
+                recognition.onerror = function() {
+                    recordingState = false;
+                    actionBtn.style.background = "#002d72";
                 };
             }
 
             actionBtn.addEventListener('click', () => {
-                const typedVal = inputField.value.trim();
-                if(typedVal) {
-                    processSystemQuery(typedVal);
+                const textVal = inputField.value.trim();
+                if(textVal) {
+                    triggerAIResponseExecution(textVal);
                 } else {
-                    // Local machine check context fallback
                     if(location.protocol === 'file:') {
-                        alert("⚠️ Local Security Notice: Aapki website abhi bina server ke 'file:///' par chal rahi hai. Browser security local system par bina internet domain (http/https) ke mic allow nahi karti. Aap niche box me message likh kar test kar sakte hain, wo bilkul perfect chale ga!");
+                        alert("⚠️ Microphne Testing Alert: Aapki file abhi browser me seedha open hai. Voice command live server (`http://` ya `https://`) par chalegi. Tab tak aap chat box me test karne ke liye 'Result roll number 101' type karke enter karein!");
                         return;
                     }
 
-                    if(voiceEngine) {
-                        if(isListening) {
-                            voiceEngine.stop();
+                    if(recognition) {
+                        if(recordingState) {
+                            recognition.stop();
                         } else {
-                            isListening = true;
-                            actionBtn.style.background = "#ef4444"; // Recording state indicator trigger
+                            recordingState = true;
+                            actionBtn.style.background = "#ef4444";
                             if('speechSynthesis' in window) window.speechSynthesis.cancel();
-                            voiceEngine.start();
+                            recognition.start();
                         }
-                    } else {
-                        alert("Voice Recognition not supported or blocked by browser.");
                     }
                 }
             });
 
             inputField.addEventListener('keypress', (e) => {
-                if(e.key === 'Enter') processSystemQuery(inputField.value.trim());
+                if(e.key === 'Enter') triggerAIResponseExecution(inputField.value.trim());
             });
         })();
     </script>
-    
 </body>
 </html>
