@@ -39,7 +39,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 🚨 PREMIUM TOP NOTIFICATION BAR --- */
+        /* --- 📢 PREMIUM TOP NOTIFICATION BAR --- */
         .top-announcement-bar {
             background: linear-gradient(90deg, var(--danger-red), #b91c1c);
             color: var(--white);
@@ -455,7 +455,7 @@
 </head>
 <body>
 
-    <!-- 🚨 TOP ANNOUNCEMENT BAR -->
+    <!-- 📢 TOP ANNOUNCEMENT BAR -->
     <div class="top-announcement-bar">
         <i class="fa-solid fa-bell"></i> Notice: School Re-opening <br> Date: 3 August 2026 ko open hoga.
     </div>
@@ -578,6 +578,29 @@
                 tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
             }
         });
+
+        // --- 📲 REAL-TIME MOBILE PUSH NOTIFICATION REGISTRATION ---
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                .then(function(registration) {
+                    console.log('Pine Hills Service Worker Registered Successfully!', registration);
+                    
+                    // Parents se phone screen pr notification pop-up allow krwana
+                    return Notification.requestPermission();
+                })
+                .then(function(permission) {
+                    if (permission === 'granted') {
+                        console.log('Parents ne notification permissions allow krdi hain!');
+                    } else {
+                        console.log('Notification permission ko block ya close kia gya.');
+                    }
+                })
+                .catch(function(err) {
+                    console.error('Service Worker verification failure: ', err);
+                });
+            });
+        }
     </script>
 
 </body>
