@@ -39,6 +39,33 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* --- 🚨 PREMIUM TOP NOTIFICATION BAR --- */
+        .top-announcement-bar {
+            background: linear-gradient(90deg, var(--danger-red), #b91c1c);
+            color: var(--white);
+            text-align: center;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.2);
+            position: relative;
+            z-index: 1001;
+        }
+
+        .top-announcement-bar i {
+            font-size: 16px;
+            animation: blinker 1.5s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
         /* --- STICKY NAVIGATION --- */
         header {
             width: 100%;
@@ -251,6 +278,10 @@
             line-height: 1.5;
         }
 
+        .notice-text b {
+            color: var(--danger-red);
+        }
+
         .notice-date {
             font-size: 12px;
             color: var(--text-muted);
@@ -424,6 +455,11 @@
 </head>
 <body>
 
+    <!-- 🚨 TOP ANNOUNCEMENT BAR -->
+    <div class="top-announcement-bar">
+        <i class="fa-solid fa-bell"></i> Notice: School Re-opening <br> Date: 3 August 2026 ko open hoga.
+    </div>
+
     <header>
         <div class="nav-container">
             <a href="index.html" class="logo-area">
@@ -464,8 +500,8 @@
                 </div>
                 <div class="notice-content">
                     <span class="notice-tag tag-urgent" id="noticeTag">Urgent Notice</span>
-                    <p class="notice-text" id="noticeText">Monthly Tests and Progress Reports are now uploaded. Please check your child's performance database.</p>
-                    <span class="notice-date" id="noticeDate">Updated: June 17, 2026</span>
+                    <p class="notice-text" id="noticeText">Monthly Tests and Progress Reports are now uploaded. Please check your child's performance database. <br><b>Tafseel:</b> School ki chuttiyan khatam hone ke baad school dobara <b>3 August 2026</b> ko khulega.</p>
+                    <span class="notice-date" id="noticeDate">Updated: June 20, 2026</span>
                 </div>
             </div>
         </div>
@@ -532,9 +568,9 @@
             const savedTag = localStorage.getItem('school_notice_type'); // urgent, new, event
             const savedDate = localStorage.getItem('school_notice_date');
 
-            // Default Data set (Aap ya medum direct yahan se bhi text change kar sakte hain)
+            // Default Data set
             if(savedText) {
-                document.getElementById('noticeText').innerText = savedText;
+                document.getElementById('noticeText').innerHTML = savedText;
                 document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
                 
                 const tagEl = document.getElementById('noticeTag');
@@ -543,8 +579,6 @@
             }
         });
     </script>
-
-
 
 </body>
 </html>
