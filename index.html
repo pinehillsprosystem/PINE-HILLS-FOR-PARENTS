@@ -7,6 +7,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignal.public.js" defer></script>
+    <script>
+      window.OneSignal = window.OneSignal || [];
+      OneSignal.push(async function() {
+        await OneSignal.init({
+          appId: "eed2d7bf-486c-4706-90ef-8544286309b9",
+          notifyButton: {
+            enable: true, /* Yeh parents ki screen par notification permission ke liye bell icon show karega */
+          },
+        });
+      });
+    </script>
+
     <style>
         /* --- BRANDING & DESIGN SYSTEM --- */
         :root {
@@ -455,7 +468,6 @@
 </head>
 <body>
 
-    <!-- 📢 TOP ANNOUNCEMENT BAR -->
     <div class="top-announcement-bar">
         <i class="fa-solid fa-bell"></i> Notice: School Re-opening <br> Date: 3 August 2026 ko open hoga.
     </div>
@@ -491,7 +503,6 @@
         <div class="hero-right"></div>
     </section>
 
-    <!-- 📢 LIVE NOTICE BOARD LIVE SYSTEM -->
     <section class="notice-section">
         <div class="notice-container">
             <div class="notice-main">
@@ -578,29 +589,6 @@
                 tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
             }
         });
-
-        // --- 📲 REAL-TIME MOBILE PUSH NOTIFICATION REGISTRATION ---
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js')
-                .then(function(registration) {
-                    console.log('Pine Hills Service Worker Registered Successfully!', registration);
-                    
-                    // Parents se phone screen pr notification pop-up allow krwana
-                    return Notification.requestPermission();
-                })
-                .then(function(permission) {
-                    if (permission === 'granted') {
-                        console.log('Parents ne notification permissions allow krdi hain!');
-                    } else {
-                        console.log('Notification permission ko block ya close kia gya.');
-                    }
-                })
-                .catch(function(err) {
-                    console.error('Service Worker verification failure: ', err);
-                });
-            });
-        }
     </script>
 
 </body>
