@@ -7,16 +7,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- 📲 ONESIGNAL AUTOMATIC MOBILE FORCE PROMPT ENGINE -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignal.public.js" defer></script>
     <script>
       window.OneSignal = window.OneSignal || [];
       OneSignal.push(async function() {
         await OneSignal.init({
           appId: "eed2d7bf-486c-4706-90ef-8544286309b9",
+          allowLocalhostAsSecureCube: true,
           notifyButton: {
-            enable: true, /* Yeh parents ki screen par notification permission ke liye bell icon show karega */
+            enable: true, /* Mobile aur desktop dono screen par floating bell icon lazmi dikhayega */
+            position: 'bottom-right',
+            size: 'medium',
+            theme: 'default'
           },
         });
+        
+        // Mobile browsers par automatic slide-down permission bar trigger karne ke liye
+        setTimeout(async () => {
+            try {
+                if (OneSignal.Notifications && typeof OneSignal.Notifications.requestPermission === 'function') {
+                    await OneSignal.Notifications.requestPermission();
+                }
+            } catch(e) {
+                console.log("Auto-prompt managed:", e);
+            }
+        }, 1500); // 1.5 seconds ka delay taake layout sahi se load ho jaye
       });
     </script>
 
