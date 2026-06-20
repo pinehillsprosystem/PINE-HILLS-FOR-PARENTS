@@ -543,5 +543,205 @@
             }
         });
     </script>
+
+
+<!-- ================================================================= -->
+    <!-- 🤖 PINE HILLS LIGHTWEIGHT AI SYSTEM (NO DESIGN CHANGES TO CORE) 2026 -->
+    <!-- ================================================================= -->
+    
+    <!-- AI Floating UI Elements -->
+    <div id="ph-ai-widget" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999; font-family: 'Poppins', sans-serif;">
+        <!-- Launcher Icon -->
+        <button id="ph-ai-launcher" style="width: 60px; height: 60px; border-radius: 50%; background: #075e54; color: white; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s ease;">
+            <i class="fa-solid fa-comments"></i>
+        </button>
+
+        <!-- Compact WhatsApp Style Chat Box -->
+        <div id="ph-ai-box" style="width: 340px; height: 450px; background: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; position: absolute; bottom: 75px; right: 0;">
+            <!-- Header -->
+            <div style="background: #075e54; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 35px; height: 35px; border-radius: 50%; background: #128c7e; display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 14px; font-weight: 600;">Pine Hills AI</h4>
+                        <span style="font-size: 10px; color: #dcf8c6; display: block;">Online Guide</span>
+                    </div>
+                </div>
+                <button id="ph-ai-close" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="ph-ai-body" style="flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: white; color: black; max-width: 85%; padding: 8px 12px; border-radius: 8px; font-size: 13px; align-self: flex-start; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                    Assalam-o-Alaikum! Main Pine Hills Portal guide hu. Aap mujhse Urdu me baat kar sakte hain. Niche diye gaye mic ko daba kar bolein ya text type karein.
+                </div>
+            </div>
+
+            <!-- Input Controls Footer Bar -->
+            <div style="padding: 8px 10px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2);">
+                <div style="flex-grow: 1; background: white; border-radius: 20px; padding: 5px 12px; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+                    <input type="text" id="ph-ai-input" placeholder="Message..." style="width: 100%; border: none; outline: none; padding: 4px 0; font-size: 13.5px; background: transparent;">
+                </div>
+                <button id="ph-ai-action-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #075e54; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px;">
+                    <i class="fa-solid fa-microphone" id="ph-mic-icon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Core Processing JavaScript Engine -->
+    <script>
+        (function() {
+            const launcher = document.getElementById('ph-ai-launcher');
+            const closeBtn = document.getElementById('ph-ai-close');
+            const chatBox = document.getElementById('ph-ai-box');
+            const inputField = document.getElementById('ph-ai-input');
+            const actionBtn = document.getElementById('ph-ai-action-btn');
+            const micIcon = document.getElementById('ph-mic-icon');
+            const chatBody = document.getElementById('ph-ai-body');
+
+            // Open / Close Layout Window UI Toggle
+            launcher.addEventListener('click', () => {
+                chatBox.style.display = 'flex';
+                launcher.style.display = 'none';
+                chatBody.scrollTop = chatBody.scrollHeight;
+            });
+
+            closeBtn.addEventListener('click', () => {
+                chatBox.style.display = 'none';
+                launcher.style.display = 'flex';
+                if('speechSynthesis' in window) window.speechSynthesis.cancel();
+            });
+
+            // Change Icon state fluidly on text input values
+            inputField.addEventListener('input', () => {
+                if(inputField.value.trim().length > 0) {
+                    micIcon.className = "fa-solid fa-paper-plane";
+                } else {
+                    micIcon.className = "fa-solid fa-microphone";
+                }
+            });
+
+            // Dictionary base matching engine for dynamic queries
+            function matchUrduResponse(query) {
+                let text = query.toLowerCase();
+                if (text.includes('result') || text.includes('nambar') || text.includes('number') || text.includes('marks') || text.includes('natija')) {
+                    return "Bachay ka result check karne ke liye portal par mojood 'Result' card par click karein aur roll number enter karein.";
+                } else if (text.includes('test') || text.includes('monthly') || text.includes('mahana')) {
+                    return "Mahana tests aur schedule dekhne ke liye aap 'Monthly Tests' card par click kar sakte hain.";
+                } else if (text.includes('admission') || text.includes('dakhla') || text.includes('form')) {
+                    return "Naye dakhlay ke liye online form bharna chahte hain to 'Online Admission' section me dakhil hon.";
+                } else if (text.includes('activity') || text.includes('khel') || text.includes('event')) {
+                    return "School sargarmiyon aur functions ki mukammal updates aap 'Activity' wale page se check kar sakte hain.";
+                } else if (text.includes('hello') || text.includes('assalam') || text.includes('hi')) {
+                    return "Walaikum Assalam! Main aapko portal navigate karne me madad karunga. Aapko kis cheez ke baare me janna hai?";
+                } else {
+                    return "Main aapki baat samajh gaya hu. Portal par aap Result, Monthly Test, Admission aur Activities check kar sakte hain. Mazeed poochne ke liye dobara mic dabayein.";
+                }
+            }
+
+            function addBubble(text, sender) {
+                const b = document.createElement('div');
+                b.style.maxWidth = "85%";
+                b.style.padding = "8px 12px";
+                b.style.borderRadius = "8px";
+                b.style.fontSize = "13px";
+                b.style.lineHeight = "1.5";
+                b.style.boxShadow = "0 1px 2px rgba(0,0,0,0.1)";
+                
+                if(sender === 'bot') {
+                    b.style.background = "white";
+                    b.style.color = "black";
+                    b.style.alignSelf = "flex-start";
+                    b.style.borderTopLeftRadius = "0";
+                } else {
+                    b.style.background = "#dcf8c6";
+                    b.style.color = "black";
+                    b.style.alignSelf = "flex-end";
+                    b.style.borderTopRightRadius = "0";
+                }
+                b.innerText = text;
+                chatBody.appendChild(b);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
+            function processSystemQuery(queryText) {
+                if(!queryText.trim()) return;
+                addBubble(queryText, 'user');
+                inputField.value = '';
+                micIcon.className = "fa-solid fa-microphone";
+
+                setTimeout(() => {
+                    const systemReply = matchUrduResponse(queryText);
+                    addBubble(systemReply, 'bot');
+
+                    // Standard localized clear speech out renderer
+                    if('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const speakUtterance = new SpeechSynthesisUtterance(systemReply);
+                        speakUtterance.lang = 'ur-PK';
+                        window.speechSynthesis.speak(speakUtterance);
+                    }
+                }, 600);
+            }
+
+            // Local Environment Safe Voice Core Engine
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let voiceEngine = null;
+            let isListening = false;
+
+            if(SpeechRecognition) {
+                voiceEngine = new SpeechRecognition();
+                voiceEngine.continuous = false;
+                voiceEngine.lang = 'ur-PK'; // Urdu Accent Engine
+                
+                voiceEngine.onresult = function(event) {
+                    const textSpeech = event.results[0][0].transcript;
+                    processSystemQuery(textSpeech);
+                };
+
+                voiceEngine.onend = function() {
+                    isListening = false;
+                    actionBtn.style.background = "#075e54";
+                };
+
+                voiceEngine.onerror = function() {
+                    isListening = false;
+                    actionBtn.style.background = "#075e54";
+                };
+            }
+
+            actionBtn.addEventListener('click', () => {
+                const typedVal = inputField.value.trim();
+                if(typedVal) {
+                    processSystemQuery(typedVal);
+                } else {
+                    // Local machine check context fallback
+                    if(location.protocol === 'file:') {
+                        alert("⚠️ Local Security Notice: Aapki website abhi bina server ke 'file:///' par chal rahi hai. Browser security local system par bina internet domain (http/https) ke mic allow nahi karti. Aap niche box me message likh kar test kar sakte hain, wo bilkul perfect chale ga!");
+                        return;
+                    }
+
+                    if(voiceEngine) {
+                        if(isListening) {
+                            voiceEngine.stop();
+                        } else {
+                            isListening = true;
+                            actionBtn.style.background = "#ef4444"; // Recording state indicator trigger
+                            if('speechSynthesis' in window) window.speechSynthesis.cancel();
+                            voiceEngine.start();
+                        }
+                    } else {
+                        alert("Voice Recognition not supported or blocked by browser.");
+                    }
+                }
+            });
+
+            inputField.addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') processSystemQuery(inputField.value.trim());
+            });
+        })();
+    </script>
+    
 </body>
 </html>
