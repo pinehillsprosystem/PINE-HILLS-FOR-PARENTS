@@ -8,6 +8,10 @@
     <link href="https://fonts.getfonts.net/style/jameel-noori-nastaleeq" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Core Firebase SDKs (v9 Compatible Compatibility Layer) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary-blue: #002d72;
@@ -54,7 +58,6 @@
         .print-control-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
         .print-action-btn { background-color: #0f172a; color: var(--white); border: none; padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 
-        /* Multi-print wrapping layout */
         #printArea { display: flex; flex-direction: column; gap: 30px; }
 
         .marksheet-container { background: var(--white); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-lg); border: 1px solid #cbd5e1; display: none; position: relative; box-sizing: border-box; }
@@ -182,71 +185,14 @@
             <button class="print-action-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Marksheet</button>
         </div>
 
-        <!-- Master container for single or multiple printing -->
         <div id="printArea">
-            <div class="marksheet-container" id="marksheetContainer">
-                <div class="sheet-header">
-                    <div class="sheet-logo-area">
-                        <img src="real logo copy.jpg" alt="Pine Hills School" class="sheet-school-logo">
-                        <div class="school-info">
-                            <h3>PINE HILLS SCHOOL</h3>
-                            <p>Karachi, Pakistan | Progress Report</p>
-                        </div>
-                    </div>
-                    <div class="report-badge">Monthly Test</div>
-                </div>
-
-                <div class="student-bio-grid">
-                    <div class="bio-item">Student Name: <strong id="lblStudentName">-</strong></div>
-                    <div class="bio-item">Roll Number: <strong id="lblRollNumber">-</strong></div>
-                    <div class="bio-item">Class / Section: <strong id="lblClass">-</strong></div>
-                    <div class="bio-item">Examination Month: <strong id="lblExamMonth">-</strong></div>
-                </div>
-
-                <div class="table-responsive-wrapper">
-                    <table class="marks-table">
-                        <thead>
-                            <tr>
-                                <th>Subject Name</th>
-                                <th style="text-align: center;">Total Marks</th>
-                                <th style="text-align: right;">Obtained Marks</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="sheet-footer">
-                    <div class="metrics-block">
-                        <div class="metric-box">Marks Obtained <span id="lblObtained">-</span></div>
-                        <div class="metric-box">Percentage <span id="lblPercentage">-</span></div>
-                        <div class="metric-box">Grade <span id="lblGrade">-</span></div>
-                    </div>
-                    <div class="status-pill" id="lblFinalStatus">PASS</div>
-                </div>
-
-                <div class="marksheet-note">
-                    <p>مزید معلومات کے لیے ہماری ویب سائٹ یوز کریں۔</p>
-                </div>
-
-                <div class="signature-row">
-                    <div class="sig-box">
-                        <div class="sig-line"></div>
-                        <p>Class Teacher</p>
-                    </div>
-                    <div class="sig-box">
-                        <div class="sig-line"></div>
-                        <p>Principal</p>
-                    </div>
-                </div>
-            </div>
+            <!-- Marksheet generated dynamically here -->
         </div>
 
         <div class="error-message" id="errorMessage">
             <i class="fa-regular fa-circle-xmark"></i>
-            <h3>Roll Number Nahi Mila</h3>
-            <p>Meharbani kar ke sahi number enter karein.</p>
+            <h3 id="errorTitle">Roll Number Nahi Mila</h3>
+            <p id="errorDesc">Meharbani kar ke sahi number enter karein.</p>
         </div>
     </div>
 
@@ -255,1755 +201,98 @@
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
         
-        // [database keeps original data structure]
-                        // ----------------------PAST HERE ---------------------
+        // 1. YOUR FIREBASE CONFIGURATION
+        const firebaseConfig = {
+          apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
+          authDomain: "pine-hills-school.firebaseapp.com",
+          projectId: "pine-hills-school",
+          storageBucket: "pine-hills-school.firebasestorage.app",
+          messagingSenderId: "310029732655",
+          appId: "1:310029732655:web:37edd331495239524cefda",
+          databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com" // Realtime Database URL
+        };
 
+        // Initialize Firebase with Compatibility Libraries
+        // Note: Make sure to include the Realtime Database compat script in your <head> if needed, 
+        // but the core app package handles it via firebase.database()
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // Dynamic loading wrapper for database script if not already present
+        if (!firebase.database) {
+            const script = document.createElement('script');
+            script.src = "https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js";
+            document.head.appendChild(script);
+        }
 
+        function calculateFallbackGrade(pct) {
+            if (isNaN(pct) || pct <= 0) return "Absent";
+            if (pct >= 90) return "A1";
+            if (pct >= 80) return "A";
+            if (pct >= 70) return "B";
+            if (pct >= 60) return "C";
+            if (pct >= 50) return "D";
+            if (pct >= 33) return "E";
+            return "F";
+        }
 
-
-  const reportDatabase = {
-    "1066": {
-        name: "zahisha",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "23" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "20" }
-        ],
-        totalMarks: "135",
-        totalObtained: "92",
-        percentage: "68.14814814814815%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1070": {
-        name: "hassan",
-        class: "play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "30", obtained: "20" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "122",
-        percentage: "90.37037037037037%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1074": {
-        name: "Sajad",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1080": {
-        name: "Muhammad yasir",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "19",
-        percentage: "14.074074074074074%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1083": {
-        name: "M zeeshan",
-        class: "play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "29" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "0" },
-            { name: "General Knowledge", total: "25", obtained: "10" }
-        ],
-        totalMarks: "135",
-        totalObtained: "68",
-        percentage: "50.37037037037037%",
-        grade: "C",
-        status: "PASS"
-    },
-    "1085": {
-        name: "Armeena",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1093": {
-        name: "Muhammad Hussain",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1097": {
-        name: "M  Hasnain",
-        class: "play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "29" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "0" },
-            { name: "General Knowledge", total: "25", obtained: "10" }
-        ],
-        totalMarks: "135",
-        totalObtained: "88",
-        percentage: "65.18518518518519%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1103": {
-        name: "Husain",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1105": {
-        name: "Azlan",
-        class: "Play",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1030": {
-        name: "Abubakar",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "28" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "20" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "122",
-        percentage: "90.37037037037037%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1072": {
-        name: "Abdul Bari",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "28" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "25" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "108",
-        percentage: "80%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1075": {
-        name: "umar",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "29" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "25" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "128",
-        percentage: "94.81481481481482%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1079": {
-        name: "Muhammad Ifraheem",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "28" },
-            { name: "Mathematics", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "30", obtained: "20" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "121",
-        percentage: "89.62962962962962%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1081": {
-        name: "Muhammad Suffiyan",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "135",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1084": {
-        name: "Muhammad Azan",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "26" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "25" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "125",
-        percentage: "92.5925925925926%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1098": {
-        name: "Zarish",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "27" },
-            { name: "Urdu", total: "30", obtained: "27" },
-            { name: "Mathematics", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "30", obtained: "30" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "128",
-        percentage: "94.81481481481482%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1100": {
-        name: "Umm-e-Hania",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "27" },
-            { name: "Mathematics", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "30", obtained: "25" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "124",
-        percentage: "91.85185185185185%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1102": {
-        name: "Rameen",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "30" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "General Knowledge", total: "25", obtained: "A" }
-        ],
-        totalMarks: "135",
-        totalObtained: "30",
-        percentage: "22.22222222222222%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1104": {
-        name: "Abdul raheem",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "28" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "30", obtained: "25" },
-            { name: "General Knowledge", total: "25", obtained: "25" }
-        ],
-        totalMarks: "135",
-        totalObtained: "98",
-        percentage: "72.5925925925926%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1108": {
-        name: "Asma",
-        class: "Nursiry",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "30" },
-            { name: "General Knowledge", total: "25", obtained: "20" }
-        ],
-        totalMarks: "135",
-        totalObtained: "50",
-        percentage: "37.03703703703704%",
-        grade: "E",
-        status: "PASS"
-    },
-    "1026": {
-        name: "iqra",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "30" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "45" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "225",
-        percentage: "100%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1050": {
-        name: "Arham",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "45", obtained: "A" },
-            { name: "Islamiyat", total: "50", obtained: "A" },
-            { name: "General Knowledge", total: "70", obtained: "A" }
-        ],
-        totalMarks: "225",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1058": {
-        name: "Abdul Rehman",
-        class: "kG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "45", obtained: "A" },
-            { name: "Islamiyat", total: "50", obtained: "A" },
-            { name: "General Knowledge", total: "70", obtained: "A" }
-        ],
-        totalMarks: "225",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1065": {
-        name: "faryal",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "45" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "224",
-        percentage: "99.55555555555556%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1067": {
-        name: "Maryem",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "45", obtained: "A" },
-            { name: "Islamiyat", total: "50", obtained: "A" },
-            { name: "General Knowledge", total: "70", obtained: "A" }
-        ],
-        totalMarks: "225",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1077": {
-        name: "Zain Ali Attari",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "15" },
-            { name: "Urdu", total: "30", obtained: "35" },
-            { name: "Mathematics", total: "45", obtained: "30" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "200",
-        percentage: "88.88888888888889%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1078": {
-        name: "Anabia Batool",
-        class: "kG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "27" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "45" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "222",
-        percentage: "98.66666666666667%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1082": {
-        name: "Ahmad Ali",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "45", obtained: "A" },
-            { name: "Islamiyat", total: "50", obtained: "A" },
-            { name: "General Knowledge", total: "70", obtained: "A" }
-        ],
-        totalMarks: "225",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1091": {
-        name: "BiBi Fatima",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "29" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "44" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "223",
-        percentage: "99.11111111111111%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1094": {
-        name: "Fahad",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "28" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "43" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "221",
-        percentage: "98.22222222222223%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1095": {
-        name: "Muneba",
-        class: "KG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "225",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1111": {
-        name: "shahyan",
-        class: "kG1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "30", obtained: "30" },
-            { name: "Urdu", total: "30", obtained: "30" },
-            { name: "Mathematics", total: "45", obtained: "43" },
-            { name: "Islamiyat", total: "50", obtained: "50" },
-            { name: "General Knowledge", total: "70", obtained: "70" }
-        ],
-        totalMarks: "225",
-        totalObtained: "223",
-        percentage: "99.11111111111111%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1031": {
-        name: "Haya Noor",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "38" },
-            { name: "Urdu", total: "50", obtained: "49" },
-            { name: "Mathematics", total: "52", obtained: "52" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "239",
-        percentage: "94.84126984126983%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1039": {
-        name: "Aleena",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "50" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "240",
-        percentage: "95.23809523809523%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1040": {
-        name: "Ahmed",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "38" },
-            { name: "Urdu", total: "50", obtained: "49" },
-            { name: "Mathematics", total: "52", obtained: "50" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "237",
-        percentage: "94.04761904761905%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1041": {
-        name: "M-Yaseen",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "37" },
-            { name: "Urdu", total: "50", obtained: "46" },
-            { name: "Mathematics", total: "52", obtained: "45" },
-            { name: "Islamiyat", total: "60", obtained: "A" },
-            { name: "General Knowledge", total: "50", obtained: "A" }
-        ],
-        totalMarks: "252",
-        totalObtained: "128",
-        percentage: "50.79365079365079%",
-        grade: "C",
-        status: "PASS"
-    },
-    "1042": {
-        name: "Sadeequllaha",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "39" },
-            { name: "Urdu", total: "50", obtained: "A" },
-            { name: "Mathematics", total: "52", obtained: "40" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "179",
-        percentage: "71.03174603174604%",
-        grade: "40",
-        status: "PASS"
-    },
-    "1046": {
-        name: "Shah Meer Ali",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "A" },
-            { name: "Urdu", total: "50", obtained: "A" },
-            { name: "Mathematics", total: "52", obtained: "47" },
-            { name: "Islamiyat", total: "60", obtained: "A" },
-            { name: "General Knowledge", total: "50", obtained: "A" }
-        ],
-        totalMarks: "252",
-        totalObtained: "47",
-        percentage: "18.650793650793652%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1048": {
-        name: "Muhammad Husnain",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "37" },
-            { name: "Urdu", total: "50", obtained: "45" },
-            { name: "Mathematics", total: "52", obtained: "42" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "224",
-        percentage: "88.88888888888889%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1049": {
-        name: "M -Umer",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "37" },
-            { name: "Urdu", total: "50", obtained: "44" },
-            { name: "Mathematics", total: "52", obtained: "51" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "232",
-        percentage: "92.06349206349206%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1054": {
-        name: "Abdulrehman",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "52" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "242",
-        percentage: "96.03174603174604%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1063": {
-        name: "Muskan",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "51" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "241",
-        percentage: "95.63492063492063%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1068": {
-        name: "Muqaddas",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "A" },
-            { name: "Urdu", total: "50", obtained: "A" },
-            { name: "Mathematics", total: "52", obtained: "A" },
-            { name: "Islamiyat", total: "60", obtained: "A" },
-            { name: "General Knowledge", total: "50", obtained: "A" }
-        ],
-        totalMarks: "252",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1071": {
-        name: "Rohan",
-        class: "kG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "52" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "242",
-        percentage: "96.03174603174604%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1073": {
-        name: "Nayab",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "37" },
-            { name: "Urdu", total: "50", obtained: "A" },
-            { name: "Mathematics", total: "52", obtained: "51" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "188",
-        percentage: "74.60317460317461%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1076": {
-        name: "Hassan Ali Attari",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "39" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "51" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "240",
-        percentage: "95.23809523809523%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1086": {
-        name: "Ariba",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "50" },
-            { name: "Mathematics", total: "52", obtained: "52" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "242",
-        percentage: "96.03174603174604%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1099": {
-        name: "Aryan",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "29" },
-            { name: "Mathematics", total: "52", obtained: "A" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "169",
-        percentage: "67.06349206349206%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1106": {
-        name: "Shazil",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "40" },
-            { name: "Urdu", total: "50", obtained: "A" },
-            { name: "Mathematics", total: "52", obtained: "46" },
-            { name: "Islamiyat", total: "60", obtained: "50" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "186",
-        percentage: "73.80952380952381%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1107": {
-        name: "salman",
-        class: "KG2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "40", obtained: "A" },
-            { name: "Urdu", total: "50", obtained: "48" },
-            { name: "Mathematics", total: "52", obtained: "A" },
-            { name: "Islamiyat", total: "60", obtained: "60" },
-            { name: "General Knowledge", total: "50", obtained: "50" }
-        ],
-        totalMarks: "252",
-        totalObtained: "158",
-        percentage: "62.698412698412696%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1109": {
-        name: "Syeda Zara",
-        class: "1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "Social Studies", total: "35", obtained: "A" },
-            { name: "Science", total: "25", obtained: "25" }
-        ],
-        totalMarks: "110",
-        totalObtained: "44",
-        percentage: "40%",
-        grade: "D",
-        status: "PASS"
-    },
-    "1110": {
-        name: "Noman",
-        class: "1",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "13" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "Social Studies", total: "35", obtained: "A" },
-            { name: "Science", total: "25", obtained: "25" }
-        ],
-        totalMarks: "110",
-        totalObtained: "38",
-        percentage: "34.54545454545455%",
-        grade: "E",
-        status: "PASS"
-    },
-    "1006": {
-        name: "Aniya",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "30", obtained: "30" },
-            { name: "Social Studies", total: "35", obtained: "34" },
-            { name: "Science", total: "25", obtained: "24" }
-        ],
-        totalMarks: "130",
-        totalObtained: "125",
-        percentage: "96.15384615384616%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1028": {
-        name: "Saira",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" }
-        ],
-        totalMarks: "130",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1029": {
-        name: "Eman Gul",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" }
-        ],
-        totalMarks: "130",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1035": {
-        name: "Aneel",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "14" },
-            { name: "Urdu", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "30", obtained: "19" },
-            { name: "Social Studies", total: "35", obtained: "31" },
-            { name: "Science", total: "25", obtained: "A" }
-        ],
-        totalMarks: "130",
-        totalObtained: "83",
-        percentage: "63.84615384615384%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1038": {
-        name: "Uswa",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "30", obtained: "24" },
-            { name: "Social Studies", total: "35", obtained: "34" },
-            { name: "Science", total: "25", obtained: "A" }
-        ],
-        totalMarks: "130",
-        totalObtained: "95",
-        percentage: "73.07692307692307%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1051": {
-        name: "Wajhia",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "30", obtained: "30" },
-            { name: "Social Studies", total: "35", obtained: "31" },
-            { name: "Science", total: "25", obtained: "23" }
-        ],
-        totalMarks: "130",
-        totalObtained: "122",
-        percentage: "93.84615384615384%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1060": {
-        name: "Abdul Amid",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "11" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "Social Studies", total: "35", obtained: "A" },
-            { name: "Science", total: "25", obtained: "21" }
-        ],
-        totalMarks: "130",
-        totalObtained: "32",
-        percentage: "24.615384615384617%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1062": {
-        name: "Samiulrehman",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "30", obtained: "29" },
-            { name: "Social Studies", total: "35", obtained: "34" },
-            { name: "Science", total: "25", obtained: "23" }
-        ],
-        totalMarks: "130",
-        totalObtained: "123",
-        percentage: "94.61538461538461%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1089": {
-        name: "Wajhia",
-        class: "2",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "130",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1003": {
-        name: "Shakirullah",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "39" },
-            { name: "Islamiyat", total: "60", obtained: "38" },
-            { name: "Social Studies", total: "20", obtained: "18" },
-            { name: "Science", total: "30", obtained: "22" }
-        ],
-        totalMarks: "170",
-        totalObtained: "140",
-        percentage: "82.35294117647058%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1009": {
-        name: "Abdulwasay",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "170",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1017": {
-        name: "Bisma",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "170",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1021": {
-        name: "Zarah Fatima",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "25" },
-            { name: "Mathematics", total: "50", obtained: "15" },
-            { name: "Islamiyat", total: "60", obtained: "48" },
-            { name: "Social Studies", total: "20", obtained: "16" },
-            { name: "Science", total: "30", obtained: "10" }
-        ],
-        totalMarks: "170",
-        totalObtained: "137",
-        percentage: "80.58823529411765%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1032": {
-        name: "Alina",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "30" },
-            { name: "Mathematics", total: "50", obtained: "30" },
-            { name: "Islamiyat", total: "60", obtained: "16" },
-            { name: "Social Studies", total: "20", obtained: "17" },
-            { name: "Science", total: "30", obtained: "10" }
-        ],
-        totalMarks: "170",
-        totalObtained: "126",
-        percentage: "74.11764705882354%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1037": {
-        name: "Raheel",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "24" },
-            { name: "Urdu", total: "40", obtained: "40" },
-            { name: "Mathematics", total: "50", obtained: "50" },
-            { name: "Islamiyat", total: "60", obtained: "58" },
-            { name: "Social Studies", total: "20", obtained: "17" },
-            { name: "Science", total: "30", obtained: "A" }
-        ],
-        totalMarks: "170",
-        totalObtained: "189",
-        percentage: "111.1764705882353%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1045": {
-        name: "Subhan Ahmad Ali",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "170",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1052": {
-        name: "Anees",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "38" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "60", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "18" },
-            { name: "Science", total: "30", obtained: "4" }
-        ],
-        totalMarks: "170",
-        totalObtained: "83",
-        percentage: "48.8235294117647%",
-        grade: "D",
-        status: "PASS"
-    },
-    "1061": {
-        name: "Mubasher",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "24" },
-            { name: "Urdu", total: "40", obtained: "40" },
-            { name: "Mathematics", total: "50", obtained: "50" },
-            { name: "Islamiyat", total: "60", obtained: "60" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "30", obtained: "30" }
-        ],
-        totalMarks: "170",
-        totalObtained: "223",
-        percentage: "131.1764705882353%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1087": {
-        name: "Fayyaz",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "A" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "60", obtained: "29" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "30", obtained: "16" }
-        ],
-        totalMarks: "170",
-        totalObtained: "87",
-        percentage: "51.17647058823529%",
-        grade: "C",
-        status: "PASS"
-    },
-    "1092": {
-        name: "BiBi Marwah",
-        class: "3",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "23" },
-            { name: "Urdu", total: "40", obtained: "31" },
-            { name: "Mathematics", total: "50", obtained: "25" },
-            { name: "Islamiyat", total: "60", obtained: "41" },
-            { name: "Social Studies", total: "20", obtained: "18" },
-            { name: "Science", total: "30", obtained: "15" }
-        ],
-        totalMarks: "170",
-        totalObtained: "153",
-        percentage: "90%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1025": {
-        name: "Sadiq",
-        class: "4",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "21" },
-            { name: "Urdu", total: "40", obtained: "37" },
-            { name: "Mathematics", total: "70", obtained: "57" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "40", obtained: "31" }
-        ],
-        totalMarks: "125",
-        totalObtained: "165",
-        percentage: "132%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1033": {
-        name: "Ayeza",
-        class: "4",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "24" },
-            { name: "Urdu", total: "40", obtained: "38" },
-            { name: "Mathematics", total: "70", obtained: "64" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "40", obtained: "37" }
-        ],
-        totalMarks: "125",
-        totalObtained: "182",
-        percentage: "145.6%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1059": {
-        name: "Halima Shahzadi",
-        class: "4",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "24" },
-            { name: "Urdu", total: "40", obtained: "37" },
-            { name: "Mathematics", total: "70", obtained: "59" },
-            { name: "Social Studies", total: "20", obtained: "18" },
-            { name: "Science", total: "40", obtained: "38" }
-        ],
-        totalMarks: "125",
-        totalObtained: "176",
-        percentage: "140.79999999999998%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1088": {
-        name: "Malika",
-        class: "4",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "24" },
-            { name: "Urdu", total: "40", obtained: "A" },
-            { name: "Mathematics", total: "70", obtained: "60" },
-            { name: "Social Studies", total: "20", obtained: "16" },
-            { name: "Science", total: "40", obtained: "25" }
-        ],
-        totalMarks: "125",
-        totalObtained: "125",
-        percentage: "100%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1015": {
-        name: "M.RAHEEM",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "A" },
-            { name: "Urdu", total: "20", obtained: "18" },
-            { name: "Islamiyat", total: "40", obtained: "35" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "42" }
-        ],
-        totalMarks: "155",
-        totalObtained: "114",
-        percentage: "73.54838709677419%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1016": {
-        name: "SUMMAIYA",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "155",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1022": {
-        name: "Rehan Ali",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "16" },
-            { name: "Islamiyat", total: "40", obtained: "39" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "20" }
-        ],
-        totalMarks: "155",
-        totalObtained: "113",
-        percentage: "72.90322580645162%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1024": {
-        name: "Nizar Muhammad",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "17" },
-            { name: "Islamiyat", total: "40", obtained: "38" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "A" }
-        ],
-        totalMarks: "155",
-        totalObtained: "93",
-        percentage: "60%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1027": {
-        name: "Azan",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "A" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "A" },
-            { name: "Science", total: "50", obtained: "A" }
-        ],
-        totalMarks: "155",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1047": {
-        name: "Alina BiBi",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "40", obtained: "40" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "40" }
-        ],
-        totalMarks: "155",
-        totalObtained: "137",
-        percentage: "88.38709677419355%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1053": {
-        name: "Ali Raza",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "A" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "A" },
-            { name: "Science", total: "50", obtained: "A" }
-        ],
-        totalMarks: "155",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1055": {
-        name: "Roqiya",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "20" },
-            { name: "Islamiyat", total: "40", obtained: "40" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "A" }
-        ],
-        totalMarks: "155",
-        totalObtained: "98",
-        percentage: "63.2258064516129%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1057": {
-        name: "Manahil",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "19" },
-            { name: "Islamiyat", total: "40", obtained: "40" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "A" }
-        ],
-        totalMarks: "155",
-        totalObtained: "97",
-        percentage: "62.58064516129033%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1064": {
-        name: "Sajid",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "25", obtained: "19" },
-            { name: "Urdu", total: "20", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "35" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "50", obtained: "25" }
-        ],
-        totalMarks: "155",
-        totalObtained: "98",
-        percentage: "63.2258064516129%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1053": {
-        name: "Ali Raza",
-        class: "5",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            
-        ],
-        totalMarks: "155",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1008": {
-        name: "Abdulrafey",
-        class: "6",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "-", obtained: "A" }
-        ],
-        totalMarks: "0",
-        totalObtained: "0",
-        percentage: "-",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1012": {
-        name: "Amna Bibi",
-        class: "6",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "-", obtained: "A" }
-        ],
-        totalMarks: "0",
-        totalObtained: "0",
-        percentage: "-",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1005": {
-        name: "Abdul Rehman",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "40", obtained: "20" },
-            { name: "Mathematics", total: "50", obtained: "40" },
-            { name: "Islamiyat", total: "40", obtained: "27" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "146",
-        percentage: "76.84210526315789%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1014": {
-        name: "FATIMA GUL",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "32", obtained: "20" },
-            { name: "Mathematics", total: "50", obtained: "50" },
-            { name: "Islamiyat", total: "40", obtained: "36" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "174",
-        percentage: "91.57894736842105%",
-        grade: "A1",
-        status: "PASS"
-    },
-    "1018": {
-        name: "DUA",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "Urdu", total: "38", obtained: "20" },
-            { name: "Mathematics", total: "50", obtained: "30" },
-            { name: "Islamiyat", total: "40", obtained: "36" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "126",
-        percentage: "66.3157894736842%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1023": {
-        name: "Noor Fatima",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "32", obtained: "20" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "36" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "115",
-        percentage: "60.526315789473685%",
-        grade: "B",
-        status: "PASS"
-    },
-    "1034": {
-        name: "Alisha",
-        class: "8",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "Urdu", total: "38", obtained: "20" },
-            { name: "Mathematics", total: "50", obtained: "20" },
-            { name: "Islamiyat", total: "40", obtained: "20" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "40", obtained: "19" }
-        ],
-        totalMarks: "190",
-        totalObtained: "98",
-        percentage: "51.578947368421055%",
-        grade: "C",
-        status: "PASS"
-    },
-    "1043": {
-        name: "Eman",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" }
-        ],
-        totalMarks: "190",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1044": {
-        name: "Kanwal",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" }
-        ],
-        totalMarks: "190",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1056": {
-        name: "Ehetesham",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "17" },
-            { name: "Urdu", total: "32", obtained: "19" },
-            { name: "Mathematics", total: "50", obtained: "30" },
-            { name: "Islamiyat", total: "40", obtained: "26" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "132",
-        percentage: "69.47368421052632%",
-        grade: "A",
-        status: "PASS"
-    },
-    "1069": {
-        name: "Kulsoom Fathima",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" },
-            { name: "Urdu", total: "32", obtained: "A" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "A" },
-            { name: "Science", total: "40", obtained: "A" }
-        ],
-        totalMarks: "190",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1096": {
-        name: "samreen",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "18" },
-            { name: "Urdu", total: "32", obtained: "19" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "20" },
-            { name: "Science", total: "40", obtained: "20" }
-        ],
-        totalMarks: "190",
-        totalObtained: "77",
-        percentage: "40.526315789473685%",
-        grade: "D",
-        status: "PASS"
-    },
-    "1101": {
-        name: "ihsan",
-        class: "7",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" },
-            { name: "Urdu", total: "32", obtained: "A" },
-            { name: "Mathematics", total: "50", obtained: "A" },
-            { name: "Islamiyat", total: "40", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "A" },
-            { name: "Science", total: "40", obtained: "A" }
-        ],
-        totalMarks: "190",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1002": {
-        name: "Shumilla",
-        class: "8",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "19" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "70", obtained: "50" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "20", obtained: "19" }
-        ],
-        totalMarks: "190",
-        totalObtained: "107",
-        percentage: "56.315789473684205%",
-        grade: "C",
-        status: "PASS"
-    },
-    "1004": {
-        name: "Noman",
-        class: "8",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "A" },
-            { name: "Urdu", total: "30", obtained: "A" },
-            { name: "Mathematics", total: "70", obtained: "A" },
-            { name: "Islamiyat", total: "30", obtained: "A" },
-            { name: "Social Studies", total: "20", obtained: "A" },
-            { name: "Science", total: "20", obtained: "A" }
-        ],
-        totalMarks: "190",
-        totalObtained: "0",
-        percentage: "0%",
-        grade: "FALSE",
-        status: "PASS"
-    },
-    "1090": {
-        name: "Muhammad Hassan",
-        class: "8",
-        month: "June 2026 (MONTHLY TEST)",
-        subjects: [
-            { name: "English", total: "20", obtained: "18" },
-            { name: "Urdu", total: "30", obtained: "20" },
-            { name: "Mathematics", total: "70", obtained: "50" },
-            { name: "Islamiyat", total: "30", obtained: "20" },
-            { name: "Social Studies", total: "20", obtained: "19" },
-            { name: "Science", total: "20", obtained: "19" }
-        ],
-        totalMarks: "190",
-        totalObtained: "146",
-        percentage: "76.84210526315789%",
-        grade: "A",
-        status: "PASS"
-    }
-};                      
-
-        // Helper function to create individual marksheet HTML string
         function createMarksheetHTML(rollNum, record) {
-            const obtMarks = record.totalObtained || "0";
-            const totMarks = record.totalMarks || "0";
-            const statusClass = (record.status.toUpperCase() === "PASS" || record.status.toUpperCase() === "PASSED") ? "status-pill pass" : "status-pill fail";
+            let calculatedTotalMarks = 0;
+            let calculatedObtainedMarks = 0;
+            let totalMarksValid = true;
+
+            const subjectsList = record.subjects || [];
+
+            subjectsList.forEach(sub => {
+                let t = parseInt(sub.total);
+                let o = parseInt(sub.obtained);
+
+                if (!isNaN(t)) calculatedTotalMarks += t;
+                else totalMarksValid = false; 
+                
+                if (!isNaN(o)) calculatedObtainedMarks += o;
+            });
+
+            const totMarks = totalMarksValid && calculatedTotalMarks > 0 ? calculatedTotalMarks : (parseInt(record.totalMarks) || 0);
+            const obtMarks = calculatedObtainedMarks > 0 ? calculatedObtainedMarks : (parseInt(record.totalObtained) || 0);
+
+            let finalPercentageStr = "-";
+            let numericPercentage = 0;
+            
+            if (totMarks > 0) {
+                numericPercentage = (obtMarks / totMarks) * 100;
+                finalPercentageStr = numericPercentage.toFixed(2) + "%";
+            } else if (record.percentage && record.percentage !== "-") {
+                numericPercentage = parseFloat(record.percentage);
+                finalPercentageStr = isNaN(numericPercentage) ? record.percentage : numericPercentage.toFixed(2) + "%";
+            }
+
+            let finalGrade = record.grade;
+            if (!finalGrade || finalGrade === "FALSE" || !isNaN(finalGrade)) {
+                finalGrade = calculateFallbackGrade(numericPercentage);
+            }
+            if (obtMarks === 0 && finalGrade !== "Absent" && subjectsList.length > 0 && subjectsList[0].obtained === "A") {
+                finalGrade = "Absent";
+            }
+
+            const currentStatus = record.status || "PASS";
+            const statusClass = (currentStatus.toUpperCase() === "PASS" || currentStatus.toUpperCase() === "PASSED") ? "status-pill pass" : "status-pill fail";
 
             let subjectsRows = '';
-            record.subjects.forEach(sub => {
-                subjectsRows += `
-                    <tr>
-                        <td style="font-weight: 500; color: var(--primary-blue);">${sub.name}</td>
-                        <td style="font-weight: 600; text-align: center; color: var(--text-muted); font-size: 14px;">${sub.total || "-"}</td>
-                        <td style="font-weight: 700; text-align: right; font-size: 14px;">${sub.obtained}</td>
-                    </tr>
-                `;
-            });
+            if(subjectsList.length === 0) {
+                subjectsRows = `<tr><td colspan="3" style="text-align:center; color:var(--danger-red); font-weight:600; padding:20px;">All Examination Subjects Absent</td></tr>`;
+            } else {
+                subjectsList.forEach(sub => {
+                    subjectsRows += `
+                        <tr>
+                            <td style="font-weight: 500; color: var(--primary-blue);">${sub.name}</td>
+                            <td style="font-weight: 600; text-align: center; color: var(--text-muted); font-size: 14px;">${sub.total || "-"}</td>
+                            <td style="font-weight: 700; text-align: right; font-size: 14px; color: ${sub.obtained === 'A' ? 'var(--danger-red)' : 'var(--text-dark)'};">${sub.obtained}</td>
+                        </tr>
+                    `;
+                });
+            }
 
             return `
                 <div class="marksheet-container" style="display: block; margin-bottom: 30px;">
@@ -2019,10 +308,10 @@
                     </div>
 
                     <div class="student-bio-grid">
-                        <div class="bio-item">Student Name: <strong>${record.name}</strong></div>
+                        <div class="bio-item">Student Name: <strong>${record.name.toUpperCase()}</strong></div>
                         <div class="bio-item">Roll Number: <strong>${rollNum.toUpperCase()}</strong></div>
-                        <div class="bio-item">Class / Section: <strong>${record.class}</strong></div>
-                        <div class="bio-item">Examination Month: <strong>${record.month}</strong></div>
+                        <div class="bio-item">Class / Section: <strong>${(record.class || '').toUpperCase()}</strong></div>
+                        <div class="bio-item">Examination Month: <strong>${record.month || 'June 2026 (MONTHLY TEST)'}</strong></div>
                     </div>
 
                     <div class="table-responsive-wrapper">
@@ -2043,10 +332,10 @@
                     <div class="sheet-footer">
                         <div class="metrics-block">
                             <div class="metric-box">Marks Obtained <span>${obtMarks} / ${totMarks}</span></div>
-                            <div class="metric-box">Percentage <span>${parseFloat(record.percentage).toFixed(2)}%</span></div>
-                            <div class="metric-box">Grade <span>${record.grade}</span></div>
+                            <div class="metric-box">Percentage <span>${finalPercentageStr}</span></div>
+                            <div class="metric-box">Grade <span>${finalGrade}</span></div>
                         </div>
-                        <div class="${statusClass}">${record.status}</div>
+                        <div class="${statusClass}">${currentStatus}</div>
                     </div>
 
                     <div class="marksheet-note">
@@ -2067,43 +356,80 @@
             `;
         }
 
-        function generateReport() {
+        // 3. Real-time Firebase Realtime Database query execution
+        async function generateReport() {
             const inputVal = document.getElementById('rollNumberInput').value.trim().toLowerCase();
             const printArea = document.getElementById('printArea');
             const printBar = document.getElementById('printControlBar');
             const errorBlock = document.getElementById('errorMessage');
+            const errorTitle = document.getElementById('errorTitle');
+            const errorDesc = document.getElementById('errorDesc');
 
-            if(inputVal === "print-all") {
-                errorBlock.style.display = 'none';
-                let masterHTML = '';
-                
-                Object.keys(reportDatabase).forEach(roll => {
-                    masterHTML += createMarksheetHTML(roll, reportDatabase[roll]);
-                });
-
-                printArea.innerHTML = masterHTML;
-                printBar.style.display = 'flex';
-                
-                setTimeout(() => { window.print(); }, 500);
-                return;
-            }
+            // Reset States
+            printArea.innerHTML = '';
+            printBar.style.display = 'none';
+            errorBlock.style.display = 'none';
 
             if(inputVal === "") {
-                printArea.innerHTML = ''; 
-                printBar.style.display = 'none';
+                errorTitle.innerText = "Roll Number Khaali Hai";
+                errorDesc.innerText = "Meharbani kar ke check kr ke number enter karein.";
                 errorBlock.style.display = 'block';
                 return;
             }
 
-            const record = reportDatabase[inputVal];
+            // Ensure database script is completely loaded
+            if (typeof firebase.database !== 'function') {
+                setTimeout(generateReport, 200);
+                return;
+            }
 
-            if(record) {
-                errorBlock.style.display = 'none';
-                printArea.innerHTML = createMarksheetHTML(inputVal, record);
-                printBar.style.display = 'flex';
-            } else {
-                printArea.innerHTML = '';
-                printBar.style.display = 'none';
+            const dbRef = firebase.database().ref('reportDatabase');
+
+            // Print All Logic
+            if(inputVal === "print-all") {
+                try {
+                    const snapshot = await dbRef.once('value');
+                    if(!snapshot.exists()) {
+                        errorTitle.innerText = "Database Khaali Hai";
+                        errorDesc.innerText = "Filhal Database mein koi data saved nahi mila.";
+                        errorBlock.style.display = 'block';
+                        return;
+                    }
+
+                    let masterHTML = '';
+                    snapshot.forEach(childSnapshot => {
+                        masterHTML += createMarksheetHTML(childSnapshot.key, childSnapshot.val());
+                    });
+
+                    printArea.innerHTML = masterHTML;
+                    printBar.style.display = 'flex';
+                    
+                    setTimeout(() => { window.print(); }, 600);
+                } catch (err) {
+                    console.error("Firebase fetch error:", err);
+                    errorTitle.innerText = "Server Error";
+                    errorDesc.innerText = "Data load nahi ho saka, internet connection check karein.";
+                    errorBlock.style.display = 'block';
+                }
+                return;
+            }
+
+            // Fetch single document dynamically from node
+            try {
+                const snapshot = await dbRef.child(inputVal).once('value');
+
+                if (snapshot.exists()) {
+                    printArea.innerHTML = createMarksheetHTML(inputVal, snapshot.val());
+                    printBar.style.display = 'flex';
+                } else {
+                    errorTitle.innerText = "Roll Number Nahi Mila";
+                    errorDesc.innerText = "Database mein ye roll number register nahi hai.";
+                    errorBlock.style.display = 'block';
+                }
+            } catch (err) {
+                console.error("Firebase transaction error:", err);
+                errorTitle.innerText = "Connection Failed";
+                errorDesc.innerText = "Firebase se data fetch krny mein rukawat aai.";
                 errorBlock.style.display = 'block';
             }
         }
