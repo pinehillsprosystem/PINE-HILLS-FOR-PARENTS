@@ -105,6 +105,7 @@
             scroll-snap-type: y mandatory;
             scrollbar-width: none;
             -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
         }
         .results-feed::-webkit-scrollbar { display: none; }
 
@@ -127,7 +128,6 @@
             align-items: center;
             justify-content: center;
             background-color: #000;
-            cursor: pointer;
             position: relative;
         }
         
@@ -145,13 +145,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 60px;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             z-index: 10;
-            text-shadow: 0 0 15px rgba(0,0,0,0.4);
+            text-shadow: 0 0 15px rgba(0,0,0,0.6);
         }
         .play-pause-overlay-icon.animate-pop {
             opacity: 1;
@@ -320,12 +320,10 @@
         const db = getFirestore(app);
         const feed = document.getElementById('resultsFeed');
 
-        // Making Firebase instances globally accessible to our click handlers safely
         window.db = db;
         window.updateDoc = updateDoc;
         window.doc = doc;
 
-        // Live Dynamic Firebase Content Synchronization
         const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
             const noResultsHTML = document.getElementById('noResults').outerHTML;
@@ -340,20 +338,17 @@
                 const data = docSnap.data();
                 const id = docSnap.id;
                 
-                // Get totals of nested comments array if it exists
                 const commentsArray = data.comments || [];
                 const commentsCount = commentsArray.length;
 
-                // Sync comments live to our global frontend variable
                 window.globalCommentsStorage[id] = commentsArray;
 
-                // Check if user has already liked this video previously via localStorage
                 const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
                 const isLikedByMe = userLikes[id] ? 'liked' : '';
 
                 const cardHTML = `
                     <div class="activity-marksheet-card" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
-                        <div class="video-wrapper" onclick="togglePlayPause(this, event)">
+                        <div class="video-wrapper" onclick="togglePlayPause(this, event)" ontouchstart="handleTouchStart(event)">
                             <video src="${data.videoUrl}" playsinline preload="auto" loop muted></video>
                             <!-- TikTok Style Center Alert Status Overlay Icon -->
                             <i class="fa-solid fa-play play-pause-overlay-icon"></i>
@@ -393,7 +388,6 @@
                 feed.insertAdjacentHTML('beforeend', cardHTML);
             });
 
-            // Re-initialize intersection observer for dynamic elements & trigger initial run
             if (typeof initVideoObserver === "function") {
                 initVideoObserver();
             }
@@ -405,24 +399,37 @@
         window.globalCommentsStorage = {};
         let activeVideoId = "";
         let activeCounterElement = null;
-        let userInteracted = false; // Flag to trace user click/interaction state for unmuting
+        let userInteracted = false; 
 
-        // Listen for screen engagement touch points to unmute audio safely inside browser regulations
+        // Screen touch or click unlock logic for mobile sound rules
         const unlockAudio = () => {
             if(userInteracted) return;
             userInteracted = true;
+            
             document.querySelectorAll('.activity-marksheet-card video').forEach(v => {
                 v.muted = false;
             });
-            // Try to catch and play current visible video with sound right away
-            const currentCard = document.querySelector('.activity-marksheet-card');
-            if(currentCard) {
-                const currentVid = currentCard.querySelector('video');
+
+            // Play the currently centered/first visible video properly with sound
+            const cards = document.querySelectorAll('.activity-marksheet-card');
+            let visibleCard = cards[0];
+            
+            // Find which card is currently visible inside the viewport scroll
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if(rect.top >= 0 && rect.top < window.innerHeight) {
+                    visibleCard = card;
+                }
+            });
+
+            if(visibleCard) {
+                const currentVid = visibleCard.querySelector('video');
                 if(currentVid) {
                     currentVid.muted = false;
-                    currentVid.play().catch(e=>console.log(e));
+                    currentVid.play().catch(e => console.log("Audio kickstart caught safely: ", e));
                 }
             }
+
             window.removeEventListener('click', unlockAudio);
             window.removeEventListener('touchstart', unlockAudio);
         };
@@ -444,10 +451,18 @@
 
                 if (entry.isIntersecting) {
                     if(userInteracted) video.muted = false;
-                    video.play().catch(err => console.log("Auto-play initiated safely."));
+                    
+                    // Mobile fix: force play state trigger securely
+                    let playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(err => {
+                            // Backup if unmuted gets rejected -> play muted first, click will handle sound
+                            video.muted = true;
+                            video.play();
+                        });
+                    }
                 } else {
                     video.pause();
-                    // Hide any lingering center overlays on unseen items
                     const icon = entry.target.querySelector('.play-pause-overlay-icon');
                     if(icon) icon.className = "fa-solid fa-play play-pause-overlay-icon";
                 }
@@ -465,8 +480,10 @@
                 if (!document.body.classList.contains('grid-mode') && cards.length > 0) {
                     const firstVideo = cards[0].querySelector('video');
                     if (firstVideo && firstVideo.paused) {
-                        if(userInteracted) firstVideo.muted = false;
-                        firstVideo.play().catch(e => console.log("Initial autoplay triggered."));
+                        firstVideo.play().catch(e => {
+                            firstVideo.muted = true;
+                            firstVideo.play();
+                        });
                     }
                 }
             }, 800);
@@ -476,6 +493,12 @@
             initVideoObserver();
         });
 
+        // Mobile touch trigger interface tracking handler
+        function handleTouchStart(event) {
+            // Unmute trigger path on mobile check
+            if(!userInteracted) unlockAudio();
+        }
+
         function togglePlayPause(wrapper, event) {
             event.stopPropagation();
             if (document.body.classList.contains('grid-mode')) return;
@@ -484,22 +507,22 @@
             const icon = wrapper.querySelector('.play-pause-overlay-icon');
             if(!video || !icon) return;
 
-            // Trigger unmuting just in case this tap was the first target action
             if(!userInteracted) unlockAudio();
             video.muted = false;
 
-            // Clear previous animation timing classes
             icon.className = "play-pause-overlay-icon";
             
             if(video.paused) {
-                video.play();
+                video.play().catch(err => {
+                    video.muted = true;
+                    video.play();
+                });
                 icon.className = "fa-solid fa-play play-pause-overlay-icon animate-pop";
             } else {
                 video.pause();
                 icon.className = "fa-solid fa-pause play-pause-overlay-icon animate-pop";
             }
 
-            // Remove overlay popup display visual look smoothly after brief pause timer duration
             setTimeout(() => {
                 icon.classList.remove('animate-pop');
             }, 500);
@@ -675,9 +698,12 @@
 
                 const video = cardElement.querySelector('video');
                 if(video) {
-                    if(userInteracted) video.muted = false;
+                    video.muted = false;
                     video.style.pointerEvents = 'auto';
-                    video.play();
+                    video.play().catch(e => {
+                        video.muted = true;
+                        video.play();
+                    });
                 }
             }
         }
