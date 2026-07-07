@@ -105,7 +105,6 @@
             scroll-snap-type: y mandatory;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            -webkit-overflow-scrolling: touch;
         }
         .results-feed::-webkit-scrollbar { display: none; }
 
@@ -128,6 +127,7 @@
             align-items: center;
             justify-content: center;
             background-color: #000;
+            cursor: pointer;
             position: relative;
         }
         
@@ -137,6 +137,29 @@
             object-fit: contain; 
             max-width: 100%;
             max-height: 100%;
+            background: #000;
+            z-index: 2;
+        }
+
+        /* --- TIKTOK LOADER (Will spin until video actually loads data) --- */
+        .video-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42px;
+            height: 42px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #fe2c55; 
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            z-index: 1;
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         /* --- DYNAMIC TIKTOK PLAY/PAUSE STATE ICONS --- */
@@ -145,13 +168,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 60px;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             z-index: 10;
-            text-shadow: 0 0 15px rgba(0,0,0,0.6);
+            text-shadow: 0 0 15px rgba(0,0,0,0.4);
         }
         .play-pause-overlay-icon.animate-pop {
             opacity: 1;
@@ -183,7 +206,6 @@
         .sidebar-action-item:active { transform: scale(0.9); }
         .sidebar-action-item i { font-size: 26px; margin-bottom: 4px; }
         
-        /* Interactive dynamic button colors */
         .sidebar-action-item.liked i { color: #fe2c55; }
         .sidebar-action-item.favorited i { color: #facd3b; }
         .sidebar-action-item span { font-size: 12px; font-weight: 500; }
@@ -237,7 +259,6 @@
         .comment-form input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
         .comment-submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
 
-        /* Background overlay structure */
         .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; display:none; }
         .drawer-backdrop.show { display: block; }
 
@@ -247,6 +268,7 @@
         body.grid-mode .activity-marksheet-card { width: 100%; height: auto; aspect-ratio: 9/16; border-radius: 12px; scroll-snap-align: unset; flex-shrink: unset; cursor: pointer; background: #000; }
         body.grid-mode .tiktok-sidebar { display: none; }
         body.grid-mode .video-wrapper video { pointer-events: none; object-fit: contain; }
+        body.grid-mode .video-loader { display: none !important; }
         body.grid-mode .student-profile { padding: 40px 10px 10px 10px; background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent); }
         body.grid-mode .val { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         body.grid-mode .cls-sec { font-size: 10px; }
@@ -272,18 +294,14 @@
         </div>
     </header>
 
-    <!-- BACKDROP FOR DRAWER -->
     <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeCommentDrawer()"></div>
 
-    <!-- MAIN COMMENT DRAWER -->
     <div class="comment-drawer" id="commentDrawer">
         <div class="comment-drawer-header">
             <h3>Comments (<span id="totalCommentCount">0</span>)</h3>
             <button class="close-comments" onclick="closeCommentDrawer()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="comments-list" id="commentsListContainer">
-            <!-- Dynamic Comments injection here -->
-        </div>
+        <div class="comments-list" id="commentsListContainer"></div>
         <div class="comment-form">
             <input type="text" id="parentNameInput" placeholder="Parent Name (e.g., Ali's Father)...">
             <input type="text" id="parentCommentInput" placeholder="Add a sweet comment for your child...">
@@ -292,7 +310,6 @@
     </div>
 
     <div class="results-feed" id="resultsFeed">
-        <!-- NO RESULTS AREA -->
         <div class="no-results" id="noResults">
             <i class="fa-regular fa-face-frown"></i>
             <h3>Koi record nahi mila</h3>
@@ -305,7 +322,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Real credentials mapped dynamically from admin infrastructure[cite: 4]
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
             authDomain: "pine-hills-school.firebaseapp.com",
@@ -346,11 +362,17 @@
                 const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
                 const isLikedByMe = userLikes[id] ? 'liked' : '';
 
+                // FIX 1: Added crossorigin="anonymous" to bypass Cloudinary CORS stream blocking
+                // FIX 2: Added dynamic JS events straight to video tags for instant loader tracking
                 const cardHTML = `
                     <div class="activity-marksheet-card" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
-                        <div class="video-wrapper" onclick="togglePlayPause(this, event)" ontouchstart="handleTouchStart(event)">
-                            <video src="${data.videoUrl}" playsinline preload="auto" loop muted></video>
-                            <!-- TikTok Style Center Alert Status Overlay Icon -->
+                        <div class="video-wrapper" onclick="togglePlayPause(this, event)">
+                            <div class="video-loader" id="loader-${id}"></div>
+                            <video id="vid-${id}" src="${data.videoUrl}" playsinline preload="auto" loop muted crossorigin="anonymous"
+                                   onplaying="document.getElementById('loader-${id}').style.display='none';"
+                                   onwaiting="document.getElementById('loader-${id}').style.display='block';"
+                                   onloadeddata="document.getElementById('loader-${id}').style.display='none';">
+                            </video>
                             <i class="fa-solid fa-play play-pause-overlay-icon"></i>
                         </div>
                         
@@ -401,35 +423,20 @@
         let activeCounterElement = null;
         let userInteracted = false; 
 
-        // Screen touch or click unlock logic for mobile sound rules
         const unlockAudio = () => {
             if(userInteracted) return;
             userInteracted = true;
-            
             document.querySelectorAll('.activity-marksheet-card video').forEach(v => {
                 v.muted = false;
             });
-
-            // Play the currently centered/first visible video properly with sound
-            const cards = document.querySelectorAll('.activity-marksheet-card');
-            let visibleCard = cards[0];
-            
-            // Find which card is currently visible inside the viewport scroll
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                if(rect.top >= 0 && rect.top < window.innerHeight) {
-                    visibleCard = card;
-                }
-            });
-
-            if(visibleCard) {
-                const currentVid = visibleCard.querySelector('video');
+            const currentCard = document.querySelector('.activity-marksheet-card');
+            if(currentCard) {
+                const currentVid = currentCard.querySelector('video');
                 if(currentVid) {
                     currentVid.muted = false;
-                    currentVid.play().catch(e => console.log("Audio kickstart caught safely: ", e));
+                    currentVid.play().catch(e=>console.log(e));
                 }
             }
-
             window.removeEventListener('click', unlockAudio);
             window.removeEventListener('touchstart', unlockAudio);
         };
@@ -439,7 +446,7 @@
         const observerOptions = {
             root: document.getElementById('resultsFeed'),
             rootMargin: '0px',
-            threshold: 0.6
+            threshold: 0.5
         };
 
         const videoObserver = new IntersectionObserver((entries) => {
@@ -447,20 +454,15 @@
 
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
+                const loader = entry.target.querySelector('.video-loader');
                 if (!video) return;
 
                 if (entry.isIntersecting) {
                     if(userInteracted) video.muted = false;
                     
-                    // Mobile fix: force play state trigger securely
-                    let playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(err => {
-                            // Backup if unmuted gets rejected -> play muted first, click will handle sound
-                            video.muted = true;
-                            video.play();
-                        });
-                    }
+                    video.play()
+                        .then(() => { if(loader) loader.style.display = 'none'; })
+                        .catch(err => console.log("Waiting for interaction..."));
                 } else {
                     video.pause();
                     const icon = entry.target.querySelector('.play-pause-overlay-icon');
@@ -471,32 +473,24 @@
 
         function initVideoObserver() {
             const cards = document.querySelectorAll('.activity-marksheet-card');
-            cards.forEach(card => {
+            cards.forEach((card) => {
                 videoObserver.unobserve(card);
                 videoObserver.observe(card);
             });
 
+            // Force play first video instantly
             setTimeout(() => {
                 if (!document.body.classList.contains('grid-mode') && cards.length > 0) {
                     const firstVideo = cards[0].querySelector('video');
+                    const loader = cards[0].querySelector('.video-loader');
                     if (firstVideo && firstVideo.paused) {
-                        firstVideo.play().catch(e => {
-                            firstVideo.muted = true;
-                            firstVideo.play();
-                        });
+                        if(userInteracted) firstVideo.muted = false;
+                        firstVideo.play()
+                            .then(() => { if(loader) loader.style.display = 'none'; })
+                            .catch(e => console.log("First play ready."));
                     }
                 }
-            }, 800);
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            initVideoObserver();
-        });
-
-        // Mobile touch trigger interface tracking handler
-        function handleTouchStart(event) {
-            // Unmute trigger path on mobile check
-            if(!userInteracted) unlockAudio();
+            }, 300);
         }
 
         function togglePlayPause(wrapper, event) {
@@ -509,14 +503,10 @@
 
             if(!userInteracted) unlockAudio();
             video.muted = false;
-
             icon.className = "play-pause-overlay-icon";
             
             if(video.paused) {
-                video.play().catch(err => {
-                    video.muted = true;
-                    video.play();
-                });
+                video.play();
                 icon.className = "fa-solid fa-play play-pause-overlay-icon animate-pop";
             } else {
                 video.pause();
@@ -662,7 +652,9 @@
 
             if (input === "") {
                 document.body.classList.remove('grid-mode');
-                cards.forEach(card => card.style.display = 'block');
+                cards.forEach(card => {
+                    card.style.display = 'block';
+                });
                 noResults.style.display = 'none';
                 initVideoObserver();
                 return;
@@ -670,13 +662,14 @@
 
             document.body.classList.add('grid-mode');
             cards.forEach(card => {
+                const video = card.querySelector('video');
                 if (card.getAttribute('data-roll').toLowerCase().includes(input) || card.textContent.toLowerCase().includes(input)) {
                     card.style.display = 'block';
                     matchFound = true;
+                    if(video) video.pause();
                 } else {
                     card.style.display = 'none';
-                    const video = card.querySelector('video');
-                    if(video) video.pause(); 
+                    if(video) video.pause();
                 }
             });
 
@@ -697,20 +690,21 @@
                 });
 
                 const video = cardElement.querySelector('video');
+                const loader = cardElement.querySelector('.video-loader');
                 if(video) {
-                    video.muted = false;
+                    if(userInteracted) video.muted = false;
                     video.style.pointerEvents = 'auto';
-                    video.play().catch(e => {
-                        video.muted = true;
-                        video.play();
-                    });
+                    if(loader) loader.style.display = 'block';
+                    video.play().then(() => { if(loader) loader.style.display = 'none'; });
                 }
             }
         }
 
         function exitSinglePlay() {
             document.body.classList.remove('single-play-mode');
-            document.querySelectorAll('.activity-marksheet-card video').forEach(v => v.pause());
+            document.querySelectorAll('.activity-marksheet-card video').forEach(v => {
+                v.pause();
+            });
             searchStudent();
         }
     </script>
