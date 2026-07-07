@@ -141,7 +141,7 @@
             z-index: 2;
         }
 
-        /* --- TIKTOK LOADER (Will spin until video actually loads data) --- */
+        /* --- TIKTOK LOADER --- */
         .video-loader {
             position: absolute;
             top: 50%;
@@ -162,7 +162,7 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* --- DYNAMIC TIKTOK PLAY/PAUSE STATE ICONS --- */
+        /* --- PLAY/PAUSE OVERLAY --- */
         .play-pause-overlay-icon {
             position: absolute;
             top: 50%;
@@ -229,7 +229,7 @@
         .cls-sec { font-size: 13px; font-weight: 500; color: #93c5fd; text-shadow: 0 1px 2px rgba(0,0,0,0.9); }
         .lbl { font-size: 10px; text-transform: uppercase; opacity: 0.6; color: #e2e8f0; }
 
-        /* --- COMMENT PANEL SLIDEOUT SYSTEM --- */
+        /* --- COMMENT PANEL --- */
         .comment-drawer {
             position: fixed;
             bottom: -100%;
@@ -262,7 +262,7 @@
         .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; display:none; }
         .drawer-backdrop.show { display: block; }
 
-        /* --- SEARCH ACTIVE: GRID MODE --- */
+        /* --- GRID MODE --- */
         body.grid-mode { background-color: #fafbfc; }
         body.grid-mode .results-feed { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 90px 12px 20px 12px; scroll-snap-type: none; overflow-y: auto; }
         body.grid-mode .activity-marksheet-card { width: 100%; height: auto; aspect-ratio: 9/16; border-radius: 12px; scroll-snap-align: unset; flex-shrink: unset; cursor: pointer; background: #000; }
@@ -320,7 +320,7 @@
     <!-- FIREBASE MODULE LOGIC INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
@@ -340,80 +340,90 @@
         window.updateDoc = updateDoc;
         window.doc = doc;
 
-        const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
-            const noResultsHTML = document.getElementById('noResults').outerHTML;
-            feed.innerHTML = noResultsHTML;
+        // FIXED: Using getDocs instead of onSnapshot to prevent re-rendering/re-downloading videos
+        async function loadActivities() {
+            const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+            try {
+                const snapshot = await getDocs(q);
+                const noResultsHTML = document.getElementById('noResults').outerHTML;
+                feed.innerHTML = noResultsHTML;
 
-            if (snapshot.empty) {
-                document.getElementById('noResults').style.display = 'block';
-                return;
+                if (snapshot.empty) {
+                    document.getElementById('noResults').style.display = 'block';
+                    return;
+                }
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    
+                    const commentsArray = data.comments || [];
+                    const commentsCount = commentsArray.length;
+
+                    window.globalCommentsStorage[id] = commentsArray;
+
+                    const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
+                    const isLikedByMe = userLikes[id] ? 'liked' : '';
+
+                    const userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
+                    const isFavoritedByMe = userFavs[id] ? 'favorited' : '';
+
+                    const cardHTML = `
+                        <div class="activity-marksheet-card" id="card-${id}" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
+                            <div class="video-wrapper" onclick="togglePlayPause(this, event)">
+                                <div class="video-loader" id="loader-${id}"></div>
+                                <video id="vid-${id}" src="${data.videoUrl}" playsinline preload="auto" loop muted crossorigin="anonymous"
+                                       onplaying="document.getElementById('loader-${id}').style.display='none';"
+                                       onwaiting="document.getElementById('loader-${id}').style.display='block';"
+                                       onloadeddata="document.getElementById('loader-${id}').style.display='none';">
+                                </video>
+                                <i class="fa-solid fa-play play-pause-overlay-icon"></i>
+                            </div>
+                            
+                            <div class="tiktok-sidebar">
+                                <div class="sidebar-action-item like-btn ${isLikedByMe}" onclick="toggleLike(this, '${id}', event)">
+                                    <i class="fa-solid fa-heart"></i>
+                                    <span>${data.likes || 0}</span>
+                                </div>
+                                <div class="sidebar-action-item" onclick="openCommentDrawer('${id}', this, event)">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                    <span class="cmt-count">${commentsCount}</span>
+                                </div>
+                                <div class="sidebar-action-item fav-btn ${isFavoritedByMe}" onclick="toggleFavorite(this, '${id}', event)">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span>${data.favorites || 0}</span>
+                                </div>
+                                <div class="sidebar-action-item" onclick="shareToWhatsApp('${data.studentNames || ''}', event)">
+                                    <i class="fa-solid fa-share"></i>
+                                    <span>Share</span>
+                                </div>
+                            </div>
+
+                            <div class="student-profile">
+                                <div>
+                                    <span class="val">${data.studentNames || ''}</span>
+                                    <p class="lbl">Student Name</p>
+                                </div>
+                                <div>
+                                    <span class="cls-sec">${data.classSection || ''}</span>
+                                    <p class="lbl">Class & Section</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    feed.insertAdjacentHTML('beforeend', cardHTML);
+                });
+
+                if (typeof initVideoObserver === "function") {
+                    initVideoObserver();
+                }
+            } catch (err) {
+                console.error("Error fetching data: ", err);
             }
+        }
 
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                
-                const commentsArray = data.comments || [];
-                const commentsCount = commentsArray.length;
-
-                window.globalCommentsStorage[id] = commentsArray;
-
-                const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
-                const isLikedByMe = userLikes[id] ? 'liked' : '';
-
-                // FIX 1: Added crossorigin="anonymous" to bypass Cloudinary CORS stream blocking
-                // FIX 2: Added dynamic JS events straight to video tags for instant loader tracking
-                const cardHTML = `
-                    <div class="activity-marksheet-card" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
-                        <div class="video-wrapper" onclick="togglePlayPause(this, event)">
-                            <div class="video-loader" id="loader-${id}"></div>
-                            <video id="vid-${id}" src="${data.videoUrl}" playsinline preload="auto" loop muted crossorigin="anonymous"
-                                   onplaying="document.getElementById('loader-${id}').style.display='none';"
-                                   onwaiting="document.getElementById('loader-${id}').style.display='block';"
-                                   onloadeddata="document.getElementById('loader-${id}').style.display='none';">
-                            </video>
-                            <i class="fa-solid fa-play play-pause-overlay-icon"></i>
-                        </div>
-                        
-                        <div class="tiktok-sidebar">
-                            <div class="sidebar-action-item ${isLikedByMe}" onclick="toggleLike(this, '${id}', event)">
-                                <i class="fa-solid fa-heart"></i>
-                                <span>${data.likes || 0}</span>
-                            </div>
-                            <div class="sidebar-action-item" onclick="openCommentDrawer('${id}', this, event)">
-                                <i class="fa-solid fa-comment-dots"></i>
-                                <span class="cmt-count">${commentsCount}</span>
-                            </div>
-                            <div class="sidebar-action-item" onclick="toggleFavorite(this, '${id}', event)">
-                                <i class="fa-solid fa-bookmark"></i>
-                                <span>${data.favorites || 0}</span>
-                            </div>
-                            <div class="sidebar-action-item" onclick="shareToWhatsApp('${data.studentNames || ''}', event)">
-                                <i class="fa-solid fa-share"></i>
-                                <span>Share</span>
-                            </div>
-                        </div>
-
-                        <div class="student-profile">
-                            <div>
-                                <span class="val">${data.studentNames || ''}</span>
-                                <p class="lbl">Student Name</p>
-                            </div>
-                            <div>
-                                <span class="cls-sec">${data.classSection || ''}</span>
-                                <p class="lbl">Class & Section</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                feed.insertAdjacentHTML('beforeend', cardHTML);
-            });
-
-            if (typeof initVideoObserver === "function") {
-                initVideoObserver();
-            }
-        });
+        // Run once on load
+        loadActivities();
     </script>
 
     <!-- GLOBAL COMPONENT STATE SCRIPT -->
@@ -478,7 +488,6 @@
                 videoObserver.observe(card);
             });
 
-            // Force play first video instantly
             setTimeout(() => {
                 if (!document.body.classList.contains('grid-mode') && cards.length > 0) {
                     const firstVideo = cards[0].querySelector('video');
@@ -628,13 +637,25 @@
 
         async function toggleFavorite(element, videoId, event) {
             event.stopPropagation();
-            element.classList.toggle('favorited');
+            
+            let userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
             let countSpan = element.querySelector('span');
             let currentCount = parseInt(countSpan.innerText) || 0;
-            
-            let finalCount = element.classList.contains('favorited') ? currentCount + 1 : currentCount - 1;
+            let finalCount = currentCount;
+
+            if (userFavs[videoId]) {
+                element.classList.remove('favorited');
+                finalCount = currentCount - 1;
+                delete userFavs[videoId];
+            } else {
+                element.classList.add('favorited');
+                finalCount = currentCount + 1;
+                userFavs[videoId] = true;
+            }
+
             if(finalCount < 0) finalCount = 0;
             countSpan.innerText = finalCount;
+            localStorage.setItem('user_favorited_activities', JSON.stringify(userFavs));
 
             try {
                 const docRef = window.doc(window.db, "activities", videoId);
