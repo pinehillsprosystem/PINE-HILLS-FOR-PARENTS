@@ -162,7 +162,7 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* --- PLAY/PAUSE OVERLAY --- */
+        /* --- PLAY/PAUSE ICONS --- */
         .play-pause-overlay-icon {
             position: absolute;
             top: 50%;
@@ -320,7 +320,7 @@
     <!-- FIREBASE MODULE LOGIC INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
@@ -340,12 +340,13 @@
         window.updateDoc = updateDoc;
         window.doc = doc;
 
-        // FIXED: Using getDocs instead of onSnapshot to prevent re-rendering/re-downloading videos
-        async function loadActivities() {
-            const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
-            try {
-                const snapshot = await getDocs(q);
-                const noResultsHTML = document.getElementById('noResults').outerHTML;
+        const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            const noResultsHTML = document.getElementById('noResults').outerHTML;
+            
+            // Render structured HTML if feed is empty
+            if (feed.children.length <= 1) {
                 feed.innerHTML = noResultsHTML;
 
                 if (snapshot.empty) {
@@ -359,7 +360,6 @@
                     
                     const commentsArray = data.comments || [];
                     const commentsCount = commentsArray.length;
-
                     window.globalCommentsStorage[id] = commentsArray;
 
                     const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
@@ -368,11 +368,12 @@
                     const userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
                     const isFavoritedByMe = userFavs[id] ? 'favorited' : '';
 
+                    // MOBILE MOBILE ATTRIBUTES FIX: added muted="true", autoplay, loop, playsinline directly to support all mobile clients
                     const cardHTML = `
                         <div class="activity-marksheet-card" id="card-${id}" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
                             <div class="video-wrapper" onclick="togglePlayPause(this, event)">
                                 <div class="video-loader" id="loader-${id}"></div>
-                                <video id="vid-${id}" src="${data.videoUrl}" playsinline preload="auto" loop muted crossorigin="anonymous"
+                                <video id="vid-${id}" src="${data.videoUrl}" playsinline webkit-playsinline preload="auto" loop muted="true" autoplay crossorigin="anonymous"
                                        onplaying="document.getElementById('loader-${id}').style.display='none';"
                                        onwaiting="document.getElementById('loader-${id}').style.display='block';"
                                        onloadeddata="document.getElementById('loader-${id}').style.display='none';">
@@ -417,13 +418,26 @@
                 if (typeof initVideoObserver === "function") {
                     initVideoObserver();
                 }
-            } catch (err) {
-                console.error("Error fetching data: ", err);
+            } else {
+                // Background quiet sync logic
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "modified") {
+                        const data = change.doc.data();
+                        const id = change.doc.id;
+                        const card = document.getElementById(`card-${id}`);
+                        if(card) {
+                            const lkSpan = card.querySelector('.like-btn span');
+                            const fvSpan = card.querySelector('.fav-btn span');
+                            const cmtSpan = card.querySelector('.cmt-count');
+                            if(lkSpan) lkSpan.innerText = data.likes || 0;
+                            if(fvSpan) fvSpan.innerText = data.favorites || 0;
+                            if(cmtSpan) cmtSpan.innerText = (data.comments || []).length;
+                        }
+                        window.globalCommentsStorage[id] = data.comments || [];
+                    }
+                });
             }
-        }
-
-        // Run once on load
-        loadActivities();
+        });
     </script>
 
     <!-- GLOBAL COMPONENT STATE SCRIPT -->
@@ -433,6 +447,7 @@
         let activeCounterElement = null;
         let userInteracted = false; 
 
+        // Fix to handle iOS/Android strict gesture decoding instantly
         const unlockAudio = () => {
             if(userInteracted) return;
             userInteracted = true;
@@ -456,7 +471,7 @@
         const observerOptions = {
             root: document.getElementById('resultsFeed'),
             rootMargin: '0px',
-            threshold: 0.5
+            threshold: 0.4 // Safe area for mobile scroll steps
         };
 
         const videoObserver = new IntersectionObserver((entries) => {
@@ -470,9 +485,17 @@
                 if (entry.isIntersecting) {
                     if(userInteracted) video.muted = false;
                     
-                    video.play()
-                        .then(() => { if(loader) loader.style.display = 'none'; })
-                        .catch(err => console.log("Waiting for interaction..."));
+                    // Fixed mobile async stream loop trigger
+                    let playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            if(loader) loader.style.display = 'none';
+                        }).catch(err => {
+                            // Mobile failsafe recovery
+                            video.muted = true;
+                            video.play();
+                        });
+                    }
                 } else {
                     video.pause();
                     const icon = entry.target.querySelector('.play-pause-overlay-icon');
@@ -492,11 +515,14 @@
                 if (!document.body.classList.contains('grid-mode') && cards.length > 0) {
                     const firstVideo = cards[0].querySelector('video');
                     const loader = cards[0].querySelector('.video-loader');
-                    if (firstVideo && firstVideo.paused) {
+                    if (firstVideo) {
                         if(userInteracted) firstVideo.muted = false;
                         firstVideo.play()
                             .then(() => { if(loader) loader.style.display = 'none'; })
-                            .catch(e => console.log("First play ready."));
+                            .catch(e => {
+                                firstVideo.muted = true;
+                                firstVideo.play();
+                            });
                     }
                 }
             }, 300);
@@ -515,7 +541,10 @@
             icon.className = "play-pause-overlay-icon";
             
             if(video.paused) {
-                video.play();
+                video.play().catch(e => {
+                    video.muted = true;
+                    video.play();
+                });
                 icon.className = "fa-solid fa-play play-pause-overlay-icon animate-pop";
             } else {
                 video.pause();
@@ -716,7 +745,10 @@
                     if(userInteracted) video.muted = false;
                     video.style.pointerEvents = 'auto';
                     if(loader) loader.style.display = 'block';
-                    video.play().then(() => { if(loader) loader.style.display = 'none'; });
+                    video.play().then(() => { if(loader) loader.style.display = 'none'; }).catch(e => {
+                        video.muted = true;
+                        video.play();
+                    });
                 }
             }
         }
