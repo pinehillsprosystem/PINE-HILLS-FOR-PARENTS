@@ -2,300 +2,151 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Student Activity - Pine Hills School</title>
-    <!-- Google Fonts & Font Awesome -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Activities - Pine Hills School</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        :root {
-            --white: #ffffff;
-            --yt-dark: #0f0f0f;
-            --yt-card-bg: #212121;
-            --yt-red: #ff0000;
-            --yt-grey: rgba(255, 255, 255, 0.1);
-            --yt-grey-hover: rgba(255, 255, 255, 0.2);
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        
-        html, body { 
-            height: 100%; 
-            width: 100%; 
-            background-color: var(--yt-dark); 
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { background-color: #f9f9f9; color: #030303; padding-top: 70px; padding-bottom: 30px; }
 
         /* --- YOUTUBE HEADER --- */
         header {
-            width: 100%;
-            background: rgba(15, 15, 15, 0.95);
-            backdrop-filter: blur(10px);
             position: fixed;
-            top: 0;
-            z-index: 2000;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            top: 0; left: 0; width: 100%; height: 60px;
+            background: #fff; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); z-index: 1000;
         }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { color: #030303; font-size: 20px; text-decoration: none; }
+        .logo-text { font-size: 18px; font-weight: 700; color: #ff0000; letter-spacing: -0.5px; }
+        .logo-text span { color: #030303; }
 
-        .back-btn {
-            color: var(--white);
-            font-size: 20px;
-            text-decoration: none;
-            padding: 4px 8px;
-        }
+        .search-container { position: relative; flex-grow: 1; max-width: 400px; margin: 0 10px; }
+        .search-input { width: 100%; padding: 8px 12px 8px 38px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; outline: none; background: #f8f8f8; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #606060; }
 
-        .search-container {
-            position: relative;
-            flex-grow: 1;
-            border-radius: 40px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-        }
+        /* --- MAIN CONTAINER --- */
+        .container { width: 100%; max-width: 800px; margin: 0 auto; padding: 0 12px; }
+        .section-title { font-size: 16px; font-weight: 700; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: #ff0000; }
 
-        .search-input {
-            width: 100%;
-            padding: 10px 15px 10px 45px;
-            border: none;
-            outline: none;
-            font-size: 15px;
-            color: var(--white);
-            background: transparent;
-        }
-        .search-input::placeholder { color: rgba(255, 255, 255, 0.5); }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 16px;
-        }
-
-        /* --- YOUTUBE SHORTS FEED (NORMAL MODE) --- */
-        .results-feed {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-        }
-        .results-feed::-webkit-scrollbar { display: none; }
-
-        .activity-marksheet-card {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            flex-shrink: 0;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .video-wrapper {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #000;
-            cursor: pointer;
-            position: relative;
-        }
+        /* --- SHORTS HORIZONTAL LIST --- */
+        .shorts-wrapper { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .shorts-wrapper::-webkit-scrollbar { display: none; }
         
-        .video-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; 
-            z-index: 2;
+        .short-card {
+            flex: 0 0 140px; aspect-ratio: 9/16; background: #000; border-radius: 12px;
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        .short-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .short-info {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff; font-size: 11px; font-weight: 500;
         }
 
-        /* LOCK OVERLAY */
-        .initial-lock-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* --- LONG VIDEOS FEED --- */
+        .video-feed { display: flex; flex-direction: column; gap: 24px; margin-top: 10px; }
+        .youtube-card { background: #fff; border-radius: 0; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .video-player-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
+        .video-player-container video { width: 100%; height: 100%; object-fit: contain; }
+        
+        .video-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer;
         }
-        .initial-lock-overlay i { color: var(--white); font-size: 60px; opacity: 0.9; }
-        .initial-lock-overlay.hidden { display: none !important; }
+        .video-overlay i { font-size: 55px; color: rgba(255, 255, 255, 0.9); text-shadow: 0px 4px 10px rgba(0,0,0,0.5); }
+        .video-overlay.hidden { display: none; }
 
-        /* --- YOUTUBE SEARCH GRID LAYOUT (JAB SEARCH KAREIN) --- */
-        .results-feed.grid-mode {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 80px 12px 20px 12px;
-            overflow-y: auto;
-            scroll-snap-type: none;
-            background: var(--yt-dark);
-        }
+        .video-details { padding: 12px 4px; display: flex; gap: 12px; }
+        .channel-avatar { width: 36px; height: 36px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #475569; font-size: 14px; flex-shrink: 0; }
+        .video-text { flex-grow: 1; }
+        .video-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #0f0f0f; margin-bottom: 4px; }
+        .video-meta { font-size: 12px; color: #606060; }
 
-        .results-feed.grid-mode .activity-marksheet-card {
-            height: 290px !important;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--yt-card-bg);
-            scroll-snap-align: unset;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        .video-actions { display: flex; gap: 15px; margin-top: 10px; padding-left: 48px; border-bottom: 1px solid #e5e5e5; padding-bottom: 12px; }
+        .action-btn { background: #f2f2f2; border: none; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .action-btn.liked i { color: #ff0000; }
 
-        /* Grid Mode overrides to look like YT Search results */
-        .results-feed.grid-mode .youtube-sidebar { display: none !important; }
-        .results-feed.grid-mode .initial-lock-overlay { display: none !important; }
-        .results-feed.grid-mode .student-profile {
-            padding: 12px 10px;
-            position: relative;
-            background: var(--yt-card-bg);
-            height: auto;
-        }
-        .results-feed.grid-mode .val { font-size: 13px; color: var(--white); font-weight: 500; }
-        .results-feed.grid-mode .cls-sec { font-size: 11px; color: #aaa; margin-top: 2px; }
-        .results-feed.grid-mode .lbl { display: none; }
-        .results-feed.grid-mode .video-wrapper { height: 75%; }
-        .results-feed.grid-mode .video-wrapper video { object-fit: cover !important; }
+        .comments-section { padding: 10px 0 10px 48px; background: #fdfdfd; display: none; }
+        .comment-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+        .comment-input-group input { flex-grow: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; outline: none; }
+        .comment-btn { background: #065fd4; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+        .comments-list-box { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; font-size: 12px; }
+        .single-comment { background: #f2f2f2; padding: 6px 10px; border-radius: 6px; }
+        .comment-author { font-weight: 700; color: #0f0f0f; margin-bottom: 2px; }
 
-        /* LOADER (YT RED) */
-        .video-loader {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 35px; height: 35px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-left-color: var(--yt-red); 
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            z-index: 5;
+        .no-results { text-align: center; padding: 40px; color: #606060; display: none; }
+
+        /* ========================================================
+           PRO SHORTS FULL-SCREEN SCROLL SYSTEM (YOUTUBE SHORTS)
+           ======================================================== */
+        .shorts-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: #000; z-index: 2000; display: none;
+            overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
         }
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        .shorts-modal::-webkit-scrollbar { display: none; }
+
+        .shorts-close-btn {
+            position: fixed; top: 20px; left: 20px; color: #fff;
+            font-size: 24px; z-index: 2100; cursor: pointer; background: rgba(0,0,0,0.5);
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
 
-        .play-pause-overlay-icon {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.5);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 50px;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 10;
+        .fullscreen-short-container {
+            width: 100%; height: 100vh; scroll-snap-align: start;
+            position: relative; display: flex; align-items: center; justify-content: center;
         }
-        .play-pause-overlay-icon.animate-pop { opacity: 1; transform: translate(-50%, -50%) scale(1.1); transition: all 0.2s ease; }
+        .fullscreen-short-container video {
+            width: 100%; height: 100%; object-fit: cover;
+        }
 
-        /* YOUTUBE SHORTS SIDEBAR BUTTONS */
-        .youtube-sidebar {
-            position: absolute;
-            right: 12px; bottom: 100px;
-            display: flex; flex-direction: column;
-            align-items: center; gap: 16px; z-index: 150;
+        .shorts-overlay-data {
+            position: absolute; bottom: 30px; left: 16px; color: #fff; z-index: 2050;
+            max-width: 75%; text-shadow: 0 1px 4px rgba(0,0,0,0.8);
         }
-        .sidebar-action-item { 
-            display: flex; flex-direction: column; align-items: center; color: var(--white); cursor: pointer; 
-        }
-        .sidebar-action-button {
-            width: 45px; height: 45px;
-            background: var(--yt-grey);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 5px;
-            transition: background 0.2s;
-        }
-        .sidebar-action-button:hover { background: var(--yt-grey-hover); }
-        .sidebar-action-item i { font-size: 20px; }
-        .sidebar-action-item.liked .sidebar-action-button { background: var(--yt-red); }
-        .sidebar-action-item.favorited i { color: #ffca28; }
-        .sidebar-action-item span { font-size: 12px; font-weight: 400; color: #f1f1f1; }
-
-        /* PROFILE OVERLAY (SHORTS STYLE) */
-        .student-profile {
-            position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            padding: 60px 80px 30px 16px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 20%, transparent);
-            color: var(--white); z-index: 100; pointer-events: none;
-            display: flex; flex-direction: column; gap: 2px;
-        }
-        .val { font-size: 16px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-        .cls-sec { font-size: 13px; color: #aaa; }
-        .lbl { font-size: 9px; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* YOUTUBE STYLE COMMENT PANEL */
-        .comment-drawer {
-            position: fixed;
-            bottom: -100%; left: 0; width: 100%; height: 65%;
-            background: #212121; border-top-left-radius: 16px; border-top-right-radius: 16px;
-            z-index: 3000; transition: bottom 0.3s ease-out;
-            display: flex; flex-direction: column; padding: 16px; color: var(--white);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .comment-drawer.open { bottom: 0; }
-        .comment-drawer-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .close-comments { background: none; border: none; font-size: 20px; color: var(--white); cursor: pointer; }
-        .comments-list { flex-grow: 1; overflow-y: auto; padding: 15px 0; display: flex; flex-direction: column; gap: 14px; }
-        .comment-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 13px; border: 1px solid rgba(255,255,255,0.02); }
-        .comment-user { font-weight: 500; color: #3ea6ff; margin-bottom: 2px; }
-        .comment-form { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
-        .comment-form input { width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; outline: none; }
-        .comment-form input:focus { border-color: #3ea6ff; }
-        .comment-submit-btn { width: 100%; background: #fff; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 500; cursor: pointer; }
-
-        .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 2500; display:none; }
-        .drawer-backdrop.show { display: block; }
-
-        .no-results { text-align: center; padding: 60px 20px; color: #aaa; display: none; grid-column: span 2; }
-        .no-results i { font-size: 40px; margin-bottom: 10px; color: var(--yt-red); }
+        .shorts-overlay-data h3 { font-size: 16px; margin-bottom: 5px; font-weight: 700; }
+        .shorts-overlay-data p { font-size: 13px; opacity: 0.9; }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+        <div class="header-left">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="logo-text">PineHills<span>Tube</span></div>
+        </div>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name..." onkeyup="searchStudent()">
+            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name..." onkeyup="searchVideos()">
         </div>
     </header>
 
-    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeCommentDrawer()"></div>
+    <div class="container">
+        <!-- HORIZONTAL SHORTS BAR -->
+        <div id="shortsSectionTitle" class="section-title"><i class="fa-solid fa-bolt"></i> Activity Shorts</div>
+        <div class="shorts-wrapper" id="shortsContainer"></div>
 
-    <!-- YT COMMENTS -->
-    <div class="comment-drawer" id="commentDrawer">
-        <div class="comment-drawer-header">
-            <h3>Comments (<span id="totalCommentCount">0</span>)</h3>
-            <button class="close-comments" onclick="closeCommentDrawer()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="comments-list" id="commentsListContainer"></div>
-        <div class="comment-form">
-            <input type="text" id="parentNameInput" placeholder="Your Name...">
-            <input type="text" id="parentCommentInput" placeholder="Add a public comment...">
-            <button class="comment-submit-btn" onclick="submitParentComment()">Comment</button>
+        <!-- LONG FEED CONTAINER -->
+        <div id="longSectionTitle" class="section-title"><i class="fa-regular fa-play-circle"></i> Activity Videos</div>
+        <div class="video-feed" id="longVideosContainer">
+            <div class="no-results" id="noResults"><h3>Koi record nahi mila</h3></div>
         </div>
     </div>
 
-    <!-- YT FEED CONTAINER -->
-    <div class="results-feed" id="resultsFeed">
-        <div class="no-results" id="noResults">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <h3>No results found</h3>
-        </div>
+    <!-- ==========================================
+       FULLSCREEN SHORTS CONTAINER (MODAL VIEW)
+       ========================================== -->
+    <div class="shorts-modal" id="shortsModal">
+        <div class="shorts-close-btn" onclick="closeShortsModal()"><i class="fa-solid fa-xmark"></i></div>
+        <div id="modalShortsFeed"></div>
     </div>
 
+    <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -312,265 +163,267 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const feed = document.getElementById('resultsFeed');
 
-        window.db = db;
-        window.updateDoc = updateDoc;
-        window.doc = doc;
-
-        const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+        window.db = db; window.updateDoc = updateDoc; window.doc = doc;
+        window.globalComments = {}; window.allShortsData = []; // Array to store shorts
         
+        let initialLoadDone = false;
+        const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+
         onSnapshot(q, (snapshot) => {
+            const shortsContainer = document.getElementById('shortsContainer');
+            const longContainer = document.getElementById('longVideosContainer');
             const noResultsHTML = document.getElementById('noResults').outerHTML;
-            
-            if (feed.children.length <= 1) {
-                feed.innerHTML = noResultsHTML;
-                if (snapshot.empty) return;
 
-                let isFirstCard = true;
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const id = docSnap.id;
-                    window.globalCommentsStorage[id] = data.comments || [];
+            if (initialLoadDone) return; 
 
-                    const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
-                    const isLikedByMe = userLikes[id] ? 'liked' : '';
-                    const userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
-                    const isFavoritedByMe = userFavs[id] ? 'favorited' : '';
-                    const overlayClass = isFirstCard ? '' : 'hidden';
+            shortsContainer.innerHTML = '';
+            longContainer.innerHTML = noResultsHTML;
+            window.allShortsData = [];
 
-                    const cardHTML = `
-                        <div class="activity-marksheet-card" id="card-${id}" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="selectGridVideo('${id}')">
-                            <div class="video-wrapper" onclick="togglePlayPause(this, event)">
-                                <div class="initial-lock-overlay ${overlayClass}" id="lock-${id}" onclick="unlockFirstVideo('${id}', event)">
-                                    <i class="fa-solid fa-play"></i>
-                                </div>
-                                <div class="video-loader" id="loader-${id}"></div>
-                                <video id="vid-${id}" src="${data.videoUrl}" playsinline webkit-playsinline preload="auto" loop muted crossorigin="anonymous"
-                                       onplaying="document.getElementById('loader-${id}').style.display='none';"
-                                       onwaiting="document.getElementById('loader-${id}').style.display='block';">
-                                </video>
-                                <i class="fa-solid fa-play play-pause-overlay-icon"></i>
-                            </div>
-                            
-                            <!-- YT SHORTS STYLE SIDEBAR -->
-                            <div class="youtube-sidebar">
-                                <div class="sidebar-action-item like-btn ${isLikedByMe}" onclick="toggleLike(this, '${id}', event)">
-                                    <div class="sidebar-action-button"><i class="fa-solid fa-thumbs-up"></i></div>
-                                    <span>${data.likes || 0}</span>
-                                </div>
-                                <div class="sidebar-action-item" onclick="openCommentDrawer('${id}', this, event)">
-                                    <div class="sidebar-action-button"><i class="fa-solid fa-comment"></i></div>
-                                    <span class="cmt-count">${(data.comments || []).length}</span>
-                                </div>
-                                <div class="sidebar-action-item fav-btn ${isFavoritedByMe}" onclick="toggleFavorite(this, '${id}', event)">
-                                    <div class="sidebar-action-button"><i class="fa-solid fa-bookmark"></i></div>
-                                    <span>${data.favorites || 0}</span>
-                                </div>
-                                <div class="sidebar-action-item" onclick="shareToWhatsApp('${data.studentNames || ''}', event)">
-                                    <div class="sidebar-action-button"><i class="fa-solid fa-share"></i></div>
-                                    <span>Share</span>
-                                </div>
-                            </div>
-
-                            <div class="student-profile">
-                                <div><span class="val">${data.studentNames || ''}</span><p class="lbl">Student Name</p></div>
-                                <div><span class="cls-sec">${data.classSection || ''}</span><p class="lbl">Class & Section</p></div>
-                            </div>
-                        </div>
-                    `;
-                    feed.insertAdjacentHTML('beforeend', cardHTML);
-                    isFirstCard = false;
-                });
-                initVideoObserver();
-            }
-        });
-    </script>
-
-    <script>
-        window.globalCommentsStorage = {};
-        let activeVideoId = "";
-        let activeCounterElement = null;
-        let userInteracted = false; 
-        let isGridMode = false;
-
-        function unlockFirstVideo(id, event) {
-            event.stopPropagation();
-            const overlay = document.getElementById(`lock-${id}`);
-            const video = document.getElementById(`vid-${id}`);
-            if (overlay) overlay.classList.add('hidden');
-            userInteracted = true; 
-            if (video) { video.muted = false; video.play().catch(e => {}); }
-        }
-
-        const observerOptions = { root: document.getElementById('resultsFeed'), rootMargin: '0px', threshold: 0.6 };
-        const videoObserver = new IntersectionObserver((entries) => {
-            if(isGridMode) return; 
-            entries.forEach(entry => {
-                const video = entry.target.querySelector('video');
-                const lockOverlay = entry.target.querySelector('.initial-lock-overlay');
-                if (!video) return;
-
-                if (entry.isIntersecting) {
-                    if(lockOverlay && !lockOverlay.classList.contains('hidden')) return;
-                    if(userInteracted) { video.muted = false; video.play().catch(e => {}); }
-                } else {
-                    video.pause();
-                }
-            });
-        }, observerOptions);
-
-        function initVideoObserver() {
-            const cards = document.querySelectorAll('.activity-marksheet-card');
-            cards.forEach(card => { videoObserver.observe(card); });
-        }
-
-        function togglePlayPause(wrapper, event) {
-            if(isGridMode) return; 
-            event.stopPropagation();
-            const video = wrapper.querySelector('video');
-            const icon = wrapper.querySelector('.play-pause-overlay-icon');
-            
-            if(!video || !icon) return;
-            userInteracted = true;
-            video.muted = false;
-            
-            if(video.paused) {
-                video.play().catch(e => { video.muted = true; video.play(); });
-                icon.className = "fa-solid fa-play play-pause-overlay-icon animate-pop";
-            } else {
-                video.pause();
-                icon.className = "fa-solid fa-pause play-pause-overlay-icon animate-pop";
-            }
-            setTimeout(() => { icon.classList.remove('animate-pop'); }, 500);
-        }
-
-        // YT SEARCH GRID FUNCTION
-        function searchStudent() {
-            const input = document.getElementById('studentSearch').value.toLowerCase().trim();
-            const feed = document.getElementById('resultsFeed');
-            const cards = document.querySelectorAll('.activity-marksheet-card');
-            const noResults = document.getElementById('noResults');
-            
-            document.querySelectorAll('video').forEach(v => v.pause());
-
-            if (input === "") {
-                isGridMode = false;
-                feed.classList.remove('grid-mode');
-                noResults.style.display = 'none';
-                
-                cards.forEach(card => { card.style.display = 'block'; });
-                initVideoObserver();
+            if(snapshot.empty) {
+                document.getElementById('noResults').style.display = 'block';
                 return;
             }
 
-            isGridMode = true;
-            feed.classList.add('grid-mode');
-            let matchFound = false;
+            let indexCount = 0;
 
-            cards.forEach(card => {
-                const nameAttr = card.getAttribute('data-name') || '';
-                if (nameAttr.includes(input)) {
-                    card.style.display = 'block';
-                    matchFound = true;
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                window.globalComments[id] = data.comments || [];
+
+                const userLikes = JSON.parse(localStorage.getItem('yt_liked') || '{}');
+                const isLiked = userLikes[id] ? 'liked' : '';
+                const isShortVideo = data.videoUrl.includes("short") || (data.studentNames && data.studentNames.toLowerCase().includes("short"));
+
+                if(isShortVideo) {
+                    // Save short details into array
+                    window.allShortsData.push({ id, ...data });
+
+                    const shortIndex = window.allShortsData.length - 1;
+                    const shortHTML = `
+                        <div class="short-card" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="openShortsModal(${shortIndex})">
+                            <video src="${data.videoUrl}" preload="metadata" muted loop playsinline></video>
+                            <div class="short-info"><div>${data.studentNames || 'Student'}</div></div>
+                        </div>
+                    `;
+                    shortsContainer.insertAdjacentHTML('beforeend', shortHTML);
                 } else {
-                    card.style.display = 'none';
+                    indexCount++;
+                    const firstLetter = data.studentNames ? data.studentNames.charAt(0).toUpperCase() : 'P';
+                    const showOverlay = indexCount === 1 ? '' : 'hidden';
+
+                    const longHTML = `
+                        <div class="youtube-card" id="card-${id}" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}">
+                            <div class="video-player-container">
+                                <div class="video-overlay ${showOverlay}" id="overlay-${id}" onclick="startFirstVideo('${id}')"><i class="fa-solid fa-circle-play"></i></div>
+                                <video id="vid-${id}" class="feed-video" src="${data.videoUrl}" controls preload="metadata" playsinline crossorigin="anonymous" onplay="pauseOtherVideos(this)"></video>
+                            </div>
+                            <!-- Actions & Info layout maps properly -->
+                            <div class="video-details">
+                                <div class="channel-avatar">${firstLetter}</div>
+                                <div class="video-text">
+                                    <div class="video-title">${data.studentNames || 'Student Performance'}</div>
+                                    <div class="video-meta">${data.classSection || 'All Classes'} • Pine Hills School</div>
+                                </div>
+                            </div>
+                            <div class="video-actions">
+                                <button class="action-btn ${isLiked}" onclick="handleLike(this, '${id}')"><i class="fa-solid fa-thumbs-up"></i> <span>${data.likes || 0}</span></button>
+                                <button class="action-btn" onclick="toggleCommentsBox('${id}')"><i class="fa-solid fa-message"></i> <span class="cmt-btn-txt-${id}">Comments (${window.globalComments[id].length})</span></button>
+                                <button class="action-btn" onclick="shareVideo('${data.studentNames || ''}')"><i class="fa-solid fa-share"></i> <span>Share</span></button>
+                            </div>
+                            <div class="comments-section" id="comments-box-${id}">
+                                <div class="comment-input-group">
+                                    <input type="text" id="name-input-${id}" placeholder="Name..."><input type="text" id="text-input-${id}" placeholder="Write comment..."><button class="comment-btn" onclick="postComment('${id}')">Post</button>
+                                </div>
+                                <div class="comments-list-box" id="comments-list-${id}">
+                                    ${window.globalComments[id].map(c => `<div class="single-comment"><div class="comment-author">${c.name}</div><div>${c.text}</div></div>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    longContainer.insertAdjacentHTML('beforeend', longHTML);
                 }
             });
 
-            noResults.style.display = matchFound ? 'none' : 'block';
+            initialLoadDone = true;
+            initScrollAutoplay(); 
+        });
+    </script>
+
+    <!-- PRO AUTOPLAY & VERTICAL SHORTS ENGINE -->
+    <script>
+        let hasUserActivated = false;
+        let shortsObserver;
+
+        // OPEN SHORTS FULLSCREEN MODE WITH CONTINUOUS SCROLL
+        function openShortsModal(startIndex) {
+            // Pause all running long videos first
+            document.querySelectorAll('.feed-video').forEach(v => v.pause());
+
+            const modal = document.getElementById('shortsModal');
+            const feed = document.getElementById('modalShortsFeed');
+            feed.innerHTML = ''; 
+
+            // Dynamic layout injection for infinite vertical scroll structure
+            window.allShortsData.forEach((short, idx) => {
+                const fullscreenShortHTML = `
+                    <div class="fullscreen-short-container" id="short-block-${idx}">
+                        <video class="shorts-fullscreen-video" src="${short.videoUrl}" loop playsinline unmuted volume="1"></video>
+                        <div class="shorts-overlay-data">
+                            <h3>@ ${short.studentNames || 'Student Performance'}</h3>
+                            <p>${short.classSection || 'Pine Hills Activity'}</p>
+                        </div>
+                    </div>
+                `;
+                feed.insertAdjacentHTML('beforeend', fullscreenShortHTML);
+            });
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Main screen background block
+
+            // Target click base index track focus
+            const targetElement = document.getElementById(`short-block-${startIndex}`);
+            if(targetElement) targetElement.scrollIntoView();
+
+            initVerticalShortsObserver();
         }
 
-        function selectGridVideo(id) {
-            if(!isGridMode) return;
+        // VERTICAL SHORTS OBSERVER ENGINE (YOUTUBE SHORTS CLONE)
+        function initVerticalShortsObserver() {
+            if(shortsObserver) shortsObserver.disconnect();
 
-            document.getElementById('studentSearch').value = "";
-            isGridMode = false;
+            const options = { root: document.getElementById('shortsModal'), threshold: 0.6 };
+
+            shortsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play().catch(e => console.log("Shorts auto play lock:", e));
+                    } else {
+                        video.pause();
+                        video.currentTime = 0; // Reset content progress
+                    }
+                });
+            }, options);
+
+            const activeShorts = document.querySelectorAll('.shorts-fullscreen-video');
+            activeShorts.forEach(v => shortsObserver.observe(v));
+        }
+
+        function closeShortsModal() {
+            document.getElementById('shortsModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable background scrolling
             
-            const feed = document.getElementById('resultsFeed');
-            feed.classList.remove('grid-mode');
+            // Stop all playing shorts immediately
+            document.querySelectorAll('.shorts-fullscreen-video').forEach(v => {
+                v.pause();
+                v.src = ""; // Flush buffer stream leaks
+            });
+            if(shortsObserver) shortsObserver.disconnect();
+        }
+
+        // LONG FEED VIDEOS CORE FUNCTIONS
+        function startFirstVideo(id) {
+            const overlay = document.getElementById(`overlay-${id}`);
+            const video = document.getElementById(`vid-${id}`);
+            if (overlay) overlay.classList.add('hidden');
+            if (video) video.play();
+            hasUserActivated = true;
+        }
+
+        function initScrollAutoplay() {
+            const options = { root: null, threshold: 0.6 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    const overlay = video.parentElement.querySelector('.video-overlay');
+                    if (entry.isIntersecting) {
+                        if (overlay && !overlay.classList.contains('hidden')) return;
+                        if (hasUserActivated) video.play().catch(e => {});
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, options);
+
+            setTimeout(() => {
+                document.querySelectorAll('.feed-video').forEach(v => observer.observe(v));
+            }, 1000);
+        }
+
+        function pauseOtherVideos(currentPlayingVideo) {
+            document.querySelectorAll('.feed-video').forEach(video => {
+                if (video !== currentPlayingVideo) video.pause();
+            });
+            hasUserActivated = true;
+            const activeOverlay = currentPlayingVideo.parentElement.querySelector('.video-overlay');
+            if(activeOverlay) activeOverlay.classList.add('hidden');
+        }
+
+        function toggleCommentsBox(id) {
+            const box = document.getElementById(`comments-box-${id}`);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function postComment(id) {
+            const nameIn = document.getElementById(`name-input-${id}`);
+            const textIn = document.getElementById(`text-input-${id}`);
+            if(!nameIn.value.trim() || !textIn.value.trim()) return;
+
+            const newCmt = { name: nameIn.value.trim(), text: textIn.value.trim() };
+            window.globalComments[id].push(newCmt);
+
+            document.getElementById(`comments-list-${id}`).insertAdjacentHTML('beforeend', `
+                <div class="single-comment"><div class="comment-author">${newCmt.name}</div><div>${newCmt.text}</div></div>
+            `);
             
-            const cards = document.querySelectorAll('.activity-marksheet-card');
-            cards.forEach(card => { card.style.display = 'block'; });
+            const cmtBtnText = document.querySelector(`.cmt-btn-txt-${id}`);
+            if(cmtBtnText) cmtBtnText.innerText = `Comments (${window.globalComments[id].length})`;
+            textIn.value = "";
 
-            const targetCard = document.getElementById(`card-${id}`);
-            if(targetCard) {
-                targetCard.scrollIntoView();
-                userInteracted = true;
-                const lockOverlay = targetCard.querySelector('.initial-lock-overlay');
-                if(lockOverlay) lockOverlay.classList.add('hidden');
-                
-                const activeVid = targetCard.querySelector('video');
-                if(activeVid) {
-                    activeVid.muted = false;
-                    activeVid.play().catch(e => {});
-                }
-            }
-            initVideoObserver();
-        }
-
-        function shareToWhatsApp(studentNames, event) {
-            event.stopPropagation();
-            const pageUrl = window.location.href;
-            window.open(`https://api.whatsapp.com/send?text=Watch+student+${encodeURIComponent(studentNames)}+on+Pine+Hills+School:${encodeURIComponent(pageUrl)}`, '_blank');
-        }
-
-        function openCommentDrawer(videoId, element, event) {
-            event.stopPropagation(); activeVideoId = videoId;
-            activeCounterElement = element.querySelector('.cmt-count');
-            renderCommentsList();
-            document.getElementById('commentDrawer').classList.add('open');
-            document.getElementById('drawerBackdrop').classList.add('show');
-        }
-        function closeCommentDrawer() {
-            document.getElementById('commentDrawer').classList.remove('open');
-            document.getElementById('drawerBackdrop').classList.remove('show');
-        }
-        function renderCommentsList() {
-            const container = document.getElementById('commentsListContainer');
-            const comments = window.globalCommentsStorage[activeVideoId] || [];
-            document.getElementById('totalCommentCount').innerText = comments.length;
-            if(comments.length === 0) { container.innerHTML = `<p style="text-align:center;font-size:13px;color:#aaa;margin-top:20px;">No comments yet.</p>`; return; }
-            container.innerHTML = comments.map(c => `<div class="comment-item"><div class="comment-user">${c.name}</div><div>${c.text}</div></div>`).join('');
-        }
-        async function submitParentComment() {
-            const nameInput = document.getElementById('parentNameInput');
-            const commentInput = document.getElementById('parentCommentInput');
-            if(!nameInput.value.trim() || !commentInput.value.trim()) return;
-            const newComment = { name: nameInput.value.trim(), text: commentInput.value.trim() };
-            window.globalCommentsStorage[activeVideoId].push(newComment);
             try {
-                const docRef = window.doc(window.db, "activities", activeVideoId);
-                await window.updateDoc(docRef, { comments: window.globalCommentsStorage[activeVideoId] });
-            } catch (e) {}
-            if(activeCounterElement) activeCounterElement.innerText = window.globalCommentsStorage[activeVideoId].length;
-            commentInput.value = ""; renderCommentsList();
+                await window.updateDoc(window.doc(window.db, "activities", id), { comments: window.globalComments[id] });
+            } catch(e) { console.log(e); }
         }
-        async function toggleLike(element, videoId, event) {
-            event.stopPropagation();
-            let userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
-            let countSpan = element.querySelector('span');
-            let currentCount = parseInt(countSpan.innerText) || 0;
-            let finalCount = userLikes[videoId] ? currentCount - 1 : currentCount + 1;
-            if(finalCount < 0) finalCount = 0;
-            countSpan.innerText = finalCount;
-            if(userLikes[videoId]) { element.classList.remove('liked'); delete userLikes[videoId]; }
-            else { element.classList.add('liked'); userLikes[videoId] = true; }
-            localStorage.setItem('user_liked_activities', JSON.stringify(userLikes));
-            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { likes: finalCount }); } catch (e) {}
+
+        async function handleLike(btn, id) {
+            let likesObj = JSON.parse(localStorage.getItem('yt_liked') || '{}');
+            let span = btn.querySelector('span');
+            let count = parseInt(span.innerText) || 0;
+
+            if(likesObj[id]) { btn.classList.remove('liked'); count--; delete likesObj[id]; } 
+            else { btn.classList.add('liked'); count++; likesObj[id] = true; }
+
+            span.innerText = count;
+            localStorage.setItem('yt_liked', JSON.stringify(likesObj));
+
+            try {
+                await window.updateDoc(window.doc(window.db, "activities", id), { likes: count });
+            } catch(e) { console.log(e); }
         }
-        async function toggleFavorite(element, videoId, event) {
-            event.stopPropagation();
-            let userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
-            let countSpan = element.querySelector('span');
-            let currentCount = parseInt(countSpan.innerText) || 0;
-            let finalCount = userFavs[videoId] ? currentCount - 1 : currentCount + 1;
-            if(finalCount < 0) finalCount = 0;
-            countSpan.innerText = finalCount;
-            if(userFavs[videoId]) { element.classList.remove('favorited'); delete userFavs[videoId]; }
-            else { element.classList.add('favorited'); userFavs[videoId] = true; }
-            localStorage.setItem('user_favorited_activities', JSON.stringify(userFavs));
-            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { favorites: finalCount }); } catch (e_err) {}
+
+        function shareVideo(name) {
+            const msg = encodeURIComponent(`Watch ${name}'s amazing performance on Pine Hills School portal: ${window.location.href}`);
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+        }
+
+        function searchVideos() {
+            const val = document.getElementById('studentSearch').value.toLowerCase().trim();
+            let hasResults = false;
+
+            document.querySelectorAll('.youtube-card').forEach(c => {
+                if(c.getAttribute('data-name').includes(val)) { c.style.display = 'flex'; hasResults = true; } 
+                else { c.style.display = 'none'; const v = c.querySelector('video'); if(v) v.pause(); }
+            });
+
+            document.querySelectorAll('.short-card').forEach(c => {
+                if(c.getAttribute('data-name').includes(val)) { c.style.display = 'block'; hasResults = true; } 
+                else c.style.display = 'none';
+            });
+
+            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
         }
     </script>
 </body>
