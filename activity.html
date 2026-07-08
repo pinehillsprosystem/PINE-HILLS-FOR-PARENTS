@@ -2,436 +2,615 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Activities - Pine Hills School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TikTok Premium Portal</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f9f9f9; color: #030303; padding-top: 70px; padding-bottom: 30px; }
-
-        /* --- YOUTUBE HEADER --- */
-        header {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 60px;
-            background: #fff; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 16px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); z-index: 1000;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .back-btn { color: #030303; font-size: 20px; text-decoration: none; }
-        .logo-text { font-size: 18px; font-weight: 700; color: #ff0000; letter-spacing: -0.5px; }
-        .logo-text span { color: #030303; }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            position: relative;
+            overflow: hidden; 
+            background-color: #000;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
 
-        .search-container { position: relative; flex-grow: 1; max-width: 400px; margin: 0 10px; }
-        .search-input { width: 100%; padding: 8px 12px 8px 38px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; outline: none; background: #f8f8f8; }
-        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #606060; }
+        /* Fixed Top Header */
+        .header-wrapper {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 20px 40px 20px;
+            z-index: 1000; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            pointer-events: none; 
+        }
 
-        /* --- MAIN CONTAINER --- */
-        .container { width: 100%; max-width: 800px; margin: 0 auto; padding: 0 12px; }
-        .section-title { font-size: 16px; font-weight: 700; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
-        .section-title i { color: #ff0000; }
-
-        /* --- SHORTS HORIZONTAL LIST --- */
-        .shorts-wrapper { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .shorts-wrapper::-webkit-scrollbar { display: none; }
+        .search-control-container {
+            pointer-events: auto;
+            z-index: 45;
+        }
+        .search-trigger-btn { 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            color: #fff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8)); 
+        }
+        .search-trigger-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         
-        .short-card {
-            flex: 0 0 140px; aspect-ratio: 9/16; background: #000; border-radius: 12px;
-            position: relative; overflow: hidden; cursor: pointer;
+        /* Search Overlay */
+        .search-overlay-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            z-index: 1050;
+            display: none; 
+            flex-direction: column;
+            padding: 15px;
         }
-        .short-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; background: #000; }
-        .short-info {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff; font-size: 11px; font-weight: 500;
+        .search-header-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        .search-page-input {
+            width: 100%;
+            padding: 12px 16px;
+            padding-left: 40px;
+            border-radius: 25px;
+            border: none;
+            background: #262626;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+        .search-icon-inside {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            stroke: #8a8a8a;
+            stroke-width: 2.5;
+            fill: none;
+        }
+        .close-search-btn {
+            background: none;
+            border: none;
+            color: #fe2c55;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        /* --- LONG VIDEOS FEED --- */
-        .video-feed { display: flex; flex-direction: column; gap: 24px; margin-top: 10px; }
-        .youtube-card { background: #fff; border-radius: 0; overflow: hidden; display: flex; flex-direction: column; }
+        /* Grid System */
+        .search-results-grid {
+            flex: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding-bottom: 20px;
+        }
+        .search-results-grid::-webkit-scrollbar { display: none; }
         
-        .video-player-container { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; }
-        .video-player-container video { width: 100%; height: 100%; object-fit: contain; }
+        .grid-video-tile {
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 9 / 14;
+            cursor: pointer;
+        }
+        .grid-video-tile video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .grid-tile-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 10px 10px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .grid-tile-user {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Dynamic Feed Container */
+        #dynamicFeed {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Main Video Post Layout */
+        .video-post { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000; 
+            overflow: hidden;
+        }
         
-        .video-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer;
-        }
-        .video-overlay i { font-size: 55px; color: rgba(255, 255, 255, 0.9); text-shadow: 0px 4px 10px rgba(0,0,0,0.5); }
-        .video-overlay.hidden { display: none; }
-
-        /* RED YOUTUBE LOADER SPIN */
-        .loading-spinner {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2);
-            border-left-color: #ff0000; border-radius: 50%; animation: spin 0.8s linear infinite;
-            display: none; z-index: 9;
-        }
-        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-
-        .video-details { padding: 12px 4px; display: flex; gap: 12px; }
-        .channel-avatar { width: 36px; height: 36px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #475569; font-size: 14px; flex-shrink: 0; }
-        .video-text { flex-grow: 1; }
-        .video-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #0f0f0f; margin-bottom: 4px; }
-        .video-meta { font-size: 12px; color: #606060; }
-
-        .video-actions { display: flex; gap: 15px; margin-top: 10px; padding-left: 48px; border-bottom: 1px solid #e5e5e5; padding-bottom: 12px; }
-        .action-btn { background: #f2f2f2; border: none; padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .action-btn.liked i { color: #ff0000; }
-
-        .comments-section { padding: 10px 0 10px 48px; background: #fdfdfd; display: none; }
-        .comment-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
-        .comment-input-group input { flex-grow: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; outline: none; }
-        .comment-btn { background: #065fd4; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; }
-        .comments-list-box { display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto; font-size: 12px; }
-        .single-comment { background: #f2f2f2; padding: 6px 10px; border-radius: 6px; }
-        .comment-author { font-weight: 700; color: #0f0f0f; margin-bottom: 2px; }
-
-        .no-results { text-align: center; padding: 40px; color: #606060; display: none; }
-
-        /* Shorts Screen */
-        .shorts-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #000; z-index: 2000; display: none;
-            overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
-        }
-        .shorts-modal::-webkit-scrollbar { display: none; }
-
-        .shorts-close-btn {
-            position: fixed; top: 20px; left: 20px; color: #fff;
-            font-size: 24px; z-index: 2100; cursor: pointer; background: rgba(0,0,0,0.5);
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
+        /* Video Element - STRICT FULL SCREEN FILL */
+        video { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            z-index: 1;
         }
 
-        .fullscreen-short-container {
-            width: 100%; height: 100vh; scroll-snap-align: start;
-            position: relative; display: flex; align-items: center; justify-content: center; background: #000;
+        /* Center Play Button */
+        .play-overlay-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.2s, transform 0.2s;
         }
-        .fullscreen-short-container video { width: 100%; height: 100%; object-fit: cover; }
+        .play-overlay-btn svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
+        .video-post.is-playing .play-overlay-btn { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
 
-        .shorts-overlay-data {
-            position: absolute; bottom: 30px; left: 16px; color: #fff; z-index: 2050;
-            max-width: 75%; text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        /* Sidebar Actions - Standard Floating TikTok Layout */
+        .action-sidebar { 
+            position: absolute; 
+            right: 12px; 
+            bottom: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 16px; 
+            z-index: 10; 
         }
-        .shorts-overlay-data h3 { font-size: 16px; margin-bottom: 5px; font-weight: 700; }
-        .shorts-overlay-data p { font-size: 13px; opacity: 0.9; }
+        .action-btn { 
+            background: none; 
+            border: none; 
+            color: white; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            font-size: 12px; 
+            font-weight: 600; 
+        }
+        
+        .icon-circle {
+            width: 45px;
+            height: 45px;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        .action-btn svg { width: 24px; height: 24px; fill: #fff; }
+        .action-btn.liked .icon-circle svg { fill: #fe2c55; }
+        .action-btn span {
+            font-size: 11px;
+            color: #ffffff;
+            text-shadow: 0px 1px 3px rgba(0, 0, 0, 1);
+            font-weight: 600;
+        }
+
+        /* Rotating Music Disk */
+        .music-disk {
+            width: 36px;
+            height: 36px;
+            background: radial-gradient(circle, #333 20%, #111 21%, #111 100%);
+            border: 3px solid #222;
+            border-radius: 50%;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            animation: rotateDisk 4s linear infinite;
+            animation-play-state: paused;
+        }
+        .video-post.is-playing .music-disk { animation-play-state: running; }
+        .music-disk::after { content: ''; width: 10px; height: 10px; background: #fe2c55; border-radius: 50%; }
+
+        @keyframes rotateDisk {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* FIXED OVERLAY TEXT POSITIONING WITH REAL SAFE PADDING */
+        .video-info-overlay { 
+            position: absolute; 
+            left: 0; 
+            bottom: 0;
+            width: 100%;
+            padding: 60px 90px 24px 14px; /* Proper padding keeps it perfectly placed */
+            z-index: 9; 
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            pointer-events: none;
+        }
+        .user-block {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            pointer-events: auto;
+        }
+        .username { 
+            font-size: 15px; 
+            font-weight: 700; 
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .verified-badge { width: 14px; height: 14px; fill: #20d5ec; }
+        .description { 
+            font-size: 13.5px; 
+            line-height: 1.4; 
+            color: #eff1f3;
+            pointer-events: auto;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        .no-data { text-align: center; padding-top: 50%; color: #888; font-size: 16px; }
     </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
-            <div class="logo-text">PineHills<span>Tube</span></div>
+    <div class="app-container" id="appContainer">
+        
+        <!-- Header -->
+        <div class="header-wrapper">
+            <div class="search-control-container">
+                <button class="search-trigger-btn" onclick="openSearchSystem()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </div>
         </div>
-        <div class="search-container">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name..." onkeyup="searchVideos()">
+
+        <!-- Search Overlay Screen -->
+        <div class="search-overlay-page" id="searchOverlayPage">
+            <div class="search-header-bar">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon-inside" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="searchPageInput" class="search-page-input" placeholder="Search creators or tags..." onkeyup="performGridSearch()">
+                </div>
+                <button class="close-search-btn" onclick="closeSearchSystem()">Cancel</button>
+            </div>
+            <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
-    </header>
 
-    <div class="container">
-        <div id="shortsSectionTitle" class="section-title"><i class="fa-solid fa-bolt"></i> Activity Shorts</div>
-        <div class="shorts-wrapper" id="shortsContainer"></div>
-
-        <div id="longSectionTitle" class="section-title"><i class="fa-regular fa-play-circle"></i> Activity Videos</div>
-        <div class="video-feed" id="longVideosContainer">
-            <div class="no-results" id="noResults"><h3>Koi record nahi mila</h3></div>
+        <!-- Dynamic Feed -->
+        <div id="dynamicFeed">
+            <div class="no-data">Syncing with server...</div>
         </div>
     </div>
 
-    <div class="shorts-modal" id="shortsModal">
-        <div class="shorts-close-btn" onclick="closeShortsModal()"><i class="fa-solid fa-xmark"></i></div>
-        <div id="modalShortsFeed"></div>
-    </div>
-
-    <!-- FIREBASE MODULE -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+    <script>
+        // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
             authDomain: "pine-hills-school.firebaseapp.com",
-            databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com",
             projectId: "pine-hills-school",
             storageBucket: "pine-hills-school.firebasestorage.app",
             messagingSenderId: "310029732655",
             appId: "1:310029732655:web:37edd331495239524cefda"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.db = db; window.updateDoc = updateDoc; window.doc = doc;
-        window.globalComments = {}; window.allShortsData = []; 
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const container = document.getElementById('appContainer');
+        const feed = document.getElementById('dynamicFeed');
         
-        let initialLoadDone = false;
-        const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
+        let isUserInteracted = false;
+        let localVideosData = []; 
+        let currentFeedIndex = 0;
+        let totalFeedCount = 0;
 
-        onSnapshot(q, (snapshot) => {
-            const shortsContainer = document.getElementById('shortsContainer');
-            const longContainer = document.getElementById('longVideosContainer');
-            const noResultsHTML = document.getElementById('noResults').outerHTML;
+        function updateVideoPlayback() {
+            const posts = document.querySelectorAll('.video-post');
+            posts.forEach((post, index) => {
+                const video = post.querySelector('video');
+                if (!video) return;
 
-            if (initialLoadDone) return; 
+                if (index === currentFeedIndex) {
+                    if (!isUserInteracted && index === 0) {
+                        video.pause();
+                        post.classList.remove('is-playing');
+                    } else {
+                        video.muted = false;
+                        video.play().then(() => {
+                            post.classList.add('is-playing');
+                        }).catch(() => {
+                            video.muted = true;
+                            video.play();
+                        });
+                    }
+                } else {
+                    video.pause();
+                    video.currentTime = 0;
+                    post.classList.remove('is-playing');
+                }
+            });
+        }
 
-            shortsContainer.innerHTML = '';
-            longContainer.innerHTML = noResultsHTML;
-            window.allShortsData = [];
+        // Fetch Data Realtime
+        database.ref('videos').on('value', (snapshot) => {
+            const data = snapshot.val();
+            feed.innerHTML = '';
+            localVideosData = []; 
 
-            if(snapshot.empty) {
-                document.getElementById('noResults').style.display = 'block';
+            if(!data) {
+                feed.innerHTML = '<div class="no-data">No content available right now.</div>';
+                totalFeedCount = 0;
                 return;
             }
 
-            let indexCount = 0;
+            let index = 0;
+            for(let id in data) {
+                const videoData = data[id];
+                
+                localVideosData.push({
+                    domIndex: index,
+                    username: videoData.username,
+                    description: videoData.description,
+                    videoUrl: videoData.videoUrl
+                });
 
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                window.globalComments[id] = data.comments || [];
+                let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
 
-                const userLikes = JSON.parse(localStorage.getItem('yt_liked') || '{}');
-                const isLiked = userLikes[id] ? 'liked' : '';
-                const isShortVideo = data.videoUrl.includes("short") || (data.studentNames && data.studentNames.toLowerCase().includes("short"));
+                const postBlock = document.createElement('div');
+                postBlock.className = 'video-post';
+                postBlock.style.height = container.clientHeight + 'px';
+                postBlock.setAttribute('data-index', index);
 
-                if(isShortVideo) {
-                    window.allShortsData.push({ id, ...data });
-                    const shortIndex = window.allShortsData.length - 1;
-                    const shortHTML = `
-                        <div class="short-card" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="openShortsModal(${shortIndex})">
-                            <video data-src="${data.videoUrl}" preload="none" muted loop playsinline></video>
-                            <div class="short-info"><div>${data.studentNames || 'Student'}</div></div>
+                postBlock.innerHTML = `
+                    <video loop muted playsinline src="${videoData.videoUrl}"></video>
+                    
+                    <div class="play-overlay-btn">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+
+                    <!-- Sidebar Buttons -->
+                    <div class="action-sidebar">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <div class="icon-circle">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </div>
+                            <span>${videoData.likes || '0'}</span>
+                        </button>
+                        
+                        <button class="action-btn" style="cursor: default;">
+                            <div class="icon-circle">
+                                <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                            </div>
+                            <span>${totalCommentsCount}</span>
+                        </button>
+
+                        <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
+                            <div class="icon-circle" style="background: rgba(37, 211, 102, 0.25);">
+                                <svg viewBox="0 0 24 24" style="fill: #25D366;"><path d="M24 11.66c0 6.44-5.22 11.66-11.66 11.66-2.06 0-3.99-.54-5.68-1.48L0 24l2.21-6.5C1.16 15.8 0.53 13.8 0.53 11.66 0.53 5.22 5.75 0 12.19 0 18.72 0 24 5.22 24 11.66zM12.19 1.9c-5.38 0-9.76 4.38-9.76 9.76 0 2.24.76 4.32 2.03 6l-1.33 3.93 4.07-1.31c1.6.99 3.49 1.57 5.51 1.57 5.38 0 9.76-4.38 9.76-9.76 0-5.38-4.38-9.76-9.76-9.76z"/></svg>
+                            </div>
+                            <span>Share</span>
+                        </button>
+
+                        <div class="music-disk"></div>
+                    </div>
+
+                    <div class="video-info-overlay">
+                        <div class="user-block">
+                            <span class="username">${videoData.username}</span>
+                            <svg class="verified-badge" viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM375 201L239 337c-4.7 4.7-11 7-17 7s-12.3-2.3-17-7l-69-69c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l52.1 52.1L341.1 167c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/></svg>
                         </div>
-                    `;
-                    shortsContainer.insertAdjacentHTML('beforeend', shortHTML);
-                } else {
-                    indexCount++;
-                    const firstLetter = data.studentNames ? data.studentNames.charAt(0).toUpperCase() : 'P';
-                    const showOverlay = indexCount === 1 ? '' : 'hidden';
-
-                    const longHTML = `
-                        <div class="youtube-card" id="card-${id}" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}">
-                            <div class="video-player-container">
-                                <div class="loading-spinner" id="spinner-${id}"></div>
-                                <div class="video-overlay ${showOverlay}" id="overlay-${id}" onclick="startFirstVideo('${id}')"><i class="fa-solid fa-circle-play"></i></div>
-                                <video id="vid-${id}" class="feed-video" data-src="${data.videoUrl}" controls preload="none" playsinline crossorigin="anonymous" 
-                                    onplay="pauseOtherVideos(this)"
-                                    onwaiting="document.getElementById('spinner-${id}').style.display='block';"
-                                    onplaying="document.getElementById('spinner-${id}').style.display='none';">
-                                </video>
-                            </div>
-                            <div class="video-details">
-                                <div class="channel-avatar">${firstLetter}</div>
-                                <div class="video-text">
-                                    <div class="video-title">${data.studentNames || 'Student Performance'}</div>
-                                    <div class="video-meta">${data.classSection || 'All Classes'} • Pine Hills School</div>
-                                </div>
-                            </div>
-                            <div class="video-actions">
-                                <button class="action-btn ${isLiked}" onclick="handleLike(this, '${id}')"><i class="fa-solid fa-thumbs-up"></i> <span>${data.likes || 0}</span></button>
-                                <button class="action-btn" onclick="toggleCommentsBox('${id}')"><i class="fa-solid fa-message"></i> <span class="cmt-btn-txt-${id}">Comments (${window.globalComments[id].length})</span></button>
-                                <button class="action-btn" onclick="shareVideo('${data.studentNames || ''}')"><i class="fa-solid fa-share"></i> <span>Share</span></button>
-                            </div>
-                            <div class="comments-section" id="comments-box-${id}">
-                                <div class="comment-input-group">
-                                    <input type="text" id="name-input-${id}" placeholder="Name..."><input type="text" id="text-input-${id}" placeholder="Write comment..."><button class="comment-btn" onclick="postComment('${id}')">Post</button>
-                                </div>
-                                <div class="comments-list-box" id="comments-list-${id}">
-                                    ${window.globalComments[id].map(c => `<div class="single-comment"><div class="comment-author">${c.name}</div><div>${c.text}</div></div>`).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    longContainer.insertAdjacentHTML('beforeend', longHTML);
-                }
-            });
-
-            initialLoadDone = true;
-            initScrollAutoplay(); 
-        });
-    </script>
-
-    <!-- AUTOMATIC LAZY-STREAM ENGINE -->
-    <script>
-        let hasUserActivated = false;
-        let shortsObserver;
-
-        function openShortsModal(startIndex) {
-            document.querySelectorAll('.feed-video').forEach(v => { v.pause(); });
-
-            const modal = document.getElementById('shortsModal');
-            const feed = document.getElementById('modalShortsFeed');
-            feed.innerHTML = ''; 
-
-            window.allShortsData.forEach((short, idx) => {
-                const fullscreenShortHTML = `
-                    <div class="fullscreen-short-container" id="short-block-${idx}">
-                        <div class="loading-spinner" id="short-spin-${idx}" style="display:block;"></div>
-                        <video class="shorts-fullscreen-video" data-src="${short.videoUrl}" preload="none" loop playsinline volume="1"
-                            onplaying="document.getElementById('short-spin-${idx}').style.display='none';"
-                            onwaiting="document.getElementById('short-spin-${idx}').style.display='block';">
-                        </video>
-                        <div class="shorts-overlay-data">
-                            <h3>@ ${short.studentNames || 'Student Performance'}</h3>
-                            <p>${short.classSection || 'Pine Hills Activity'}</p>
-                        </div>
+                        <div class="description">${videoData.description}</div>
                     </div>
                 `;
-                feed.insertAdjacentHTML('beforeend', fullscreenShortHTML);
-            });
-
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; 
-
-            const targetElement = document.getElementById(`short-block-${startIndex}`);
-            if(targetElement) targetElement.scrollIntoView();
-
-            initVerticalShortsObserver();
-        }
-
-        function initVerticalShortsObserver() {
-            if(shortsObserver) shortsObserver.disconnect();
-            const options = { root: document.getElementById('shortsModal'), threshold: 0.6 };
-
-            shortsObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target.querySelector('video');
-                    if (!video) return;
-
-                    if (entry.isIntersecting) {
-                        // Lazy load content instantly on active viewport scroll block
-                        if(!video.src) { video.src = video.getAttribute('data-src'); }
-                        video.play().catch(e => {});
-                    } else {
-                        video.pause();
-                    }
-                });
-            }, options);
-
-            const activeShortContainers = document.querySelectorAll('.fullscreen-short-container');
-            activeShortContainers.forEach(container => shortsObserver.observe(container));
-        }
-
-        function closeShortsModal() {
-            document.getElementById('shortsModal').style.display = 'none';
-            document.body.style.overflow = 'auto'; 
-            document.querySelectorAll('.shorts-fullscreen-video').forEach(v => {
-                v.pause();
-                v.removeAttribute('src'); // Completely flush streaming heap allocation memory 
-                v.load();
-            });
-            if(shortsObserver) shortsObserver.disconnect();
-        }
-
-        function startFirstVideo(id) {
-            const overlay = document.getElementById(`overlay-${id}`);
-            const video = document.getElementById(`vid-${id}`);
-            if (overlay) overlay.classList.add('hidden');
-            if (video) {
-                if(!video.src) { video.src = video.getAttribute('data-src'); }
-                video.play();
+                feed.appendChild(postBlock);
+                index++;
             }
-            hasUserActivated = true;
+            totalFeedCount = index;
+            currentFeedIndex = 0;
+            feed.style.transform = `translateY(0px)`;
+            isUserInteracted = false;
+            updateVideoPlayback();
+        });
+
+        // Window resize adjustment
+        window.addEventListener('resize', () => {
+            const containerHeight = container.clientHeight;
+            document.querySelectorAll('.video-post').forEach(post => {
+                post.style.height = containerHeight + 'px';
+            });
+            feed.style.transform = `translateY(-${currentFeedIndex * containerHeight}px)`;
+        });
+
+        function triggerWebsiteShare(username) {
+            const currentWebsiteUrl = window.location.href; 
+            const messageText = encodeURIComponent(`🔥 Check out amazing activity video of ${username} on Pine Hills Portal:\n\n👉 ${currentWebsiteUrl}`);
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${messageText}`;
+            window.open(whatsappUrl, '_blank');
         }
 
-        function initScrollAutoplay() {
-            const options = { root: null, threshold: 0.6 };
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target;
-                    const overlay = video.parentElement.querySelector('.video-overlay');
-                    if (entry.isIntersecting) {
-                        if (overlay && !overlay.classList.contains('hidden')) return;
-                        if (hasUserActivated) {
-                            if(!video.src) { video.src = video.getAttribute('data-src'); }
-                            video.play().catch(e => {});
-                        }
+        function openSearchSystem() {
+            document.querySelectorAll('video').forEach(v => v.pause());
+            document.getElementById('searchOverlayPage').style.display = 'flex';
+            const input = document.getElementById('searchPageInput');
+            input.value = '';
+            input.focus();
+        }
+
+        function closeSearchSystem() {
+            document.getElementById('searchOverlayPage').style.display = 'none';
+            updateVideoPlayback();
+        }
+
+        function performGridSearch() {
+            const query = document.getElementById('searchPageInput').value.toLowerCase().trim();
+            const gridContainer = document.getElementById('searchResultsGrid');
+            gridContainer.innerHTML = '';
+
+            if (query === "") return;
+
+            const filtered = localVideosData.filter(item => 
+                item.username.toLowerCase().includes(query) || 
+                item.description.toLowerCase().includes(query)
+            );
+
+            filtered.forEach(item => {
+                const tile = document.createElement('div');
+                tile.className = 'grid-video-tile';
+                tile.onclick = () => scrollToSelectedVideo(item.domIndex);
+                tile.innerHTML = `
+                    <video src="${item.videoUrl}" muted playsinline></video>
+                    <div class="grid-tile-overlay">
+                        <div class="grid-tile-user">${item.username}</div>
+                    </div>
+                `;
+                gridContainer.appendChild(tile);
+            });
+        }
+
+        function scrollToSelectedVideo(targetIndex) {
+            document.getElementById('searchOverlayPage').style.display = 'none';
+            if (targetIndex >= 0 && targetIndex < totalFeedCount) {
+                isUserInteracted = true;
+                currentFeedIndex = targetIndex;
+                feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
+                setTimeout(updateVideoPlayback, 100);
+            }
+        }
+
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+        }
+
+        container.addEventListener('click', (e) => {
+            if(e.target.closest('.action-sidebar') || e.target.closest('.search-control-container') || e.target.closest('.search-overlay-page')) return;
+            
+            const posts = document.querySelectorAll('.video-post');
+            const currentPost = posts[currentFeedIndex];
+            if(currentPost) {
+                const video = currentPost.querySelector('video');
+                if(video) {
+                    isUserInteracted = true;
+                    video.muted = false;
+                    if(video.paused) {
+                        video.play();
+                        currentPost.classList.add('is-playing');
                     } else {
                         video.pause();
+                        currentPost.classList.remove('is-playing');
                     }
-                });
-            }, options);
+                }
+            }
+        });
 
-            setTimeout(() => {
-                document.querySelectorAll('.feed-video').forEach(v => observer.observe(v));
-            }, 1000);
-        }
+        let isScrollThrottled = false;
+        container.addEventListener('wheel', (e) => {
+            if (e.target.closest('.search-overlay-page')) return;
+            e.preventDefault(); 
+            if (isScrollThrottled || totalFeedCount <= 0) return;
 
-        function pauseOtherVideos(currentPlayingVideo) {
-            document.querySelectorAll('.feed-video').forEach(video => {
-                if (video !== currentPlayingVideo) video.pause();
-            });
-            hasUserActivated = true;
-            const activeOverlay = currentPlayingVideo.parentElement.querySelector('.video-overlay');
-            if(activeOverlay) activeOverlay.classList.add('hidden');
-        }
+            if (Math.abs(e.deltaY) > 20) { 
+                let previousIndex = currentFeedIndex;
+                if (e.deltaY > 0) {
+                    if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
+                } else {
+                    if (currentFeedIndex > 0) currentFeedIndex--;
+                }
 
-        function toggleCommentsBox(id) {
-            const box = document.getElementById(`comments-box-${id}`);
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
+                if (currentFeedIndex !== previousIndex) {
+                    isScrollThrottled = true;
+                    isUserInteracted = true;
+                    feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
+                    updateVideoPlayback();
+                    setTimeout(() => { isScrollThrottled = false; }, 700); 
+                }
+            }
+        }, { passive: false });
 
-        async function postComment(id) {
-            const nameIn = document.getElementById(`name-input-${id}`);
-            const textIn = document.getElementById(`text-input-${id}`);
-            if(!nameIn.value.trim() || !textIn.value.trim()) return;
+        let touchStartY = 0;
+        container.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
 
-            const newCmt = { name: nameIn.value.trim(), text: textIn.value.trim() };
-            window.globalComments[id].push(newCmt);
+        container.addEventListener('touchend', (e) => {
+            if (e.target.closest('.search-overlay-page')) return;
+            let touchEndY = e.changedTouches[0].clientY;
+            let diffY = touchStartY - touchEndY;
 
-            document.getElementById(`comments-list-${id}`).insertAdjacentHTML('beforeend', `
-                <div class="single-comment"><div class="comment-author">${newCmt.name}</div><div>${newCmt.text}</div></div>
-            `);
-            
-            const cmtBtnText = document.querySelector(`.cmt-btn-txt-${id}`);
-            if(cmtBtnText) cmtBtnText.innerText = `Comments (${window.globalComments[id].length})`;
-            textIn.value = "";
+            if (Math.abs(diffY) > 60) {
+                let previousIndex = currentFeedIndex;
+                if (diffY > 0) {
+                    if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
+                } else {
+                    if (currentFeedIndex > 0) currentFeedIndex--;
+                }
 
-            try {
-                await window.updateDoc(window.doc(window.db, "activities", id), { comments: window.globalComments[id] });
-            } catch(e) { console.log(e); }
-        }
-
-        async function handleLike(btn, id) {
-            let likesObj = JSON.parse(localStorage.getItem('yt_liked') || '{}');
-            let span = btn.querySelector('span');
-            let count = parseInt(span.innerText) || 0;
-
-            if(likesObj[id]) { btn.classList.remove('liked'); count--; delete likesObj[id]; } 
-            else { btn.classList.add('liked'); count++; likesObj[id] = true; }
-
-            span.innerText = count;
-            localStorage.setItem('yt_liked', JSON.stringify(likesObj));
-
-            try {
-                await window.updateDoc(window.doc(window.db, "activities", id), { likes: count });
-            } catch(e) { console.log(e); }
-        }
-
-        function shareVideo(name) {
-            const msg = encodeURIComponent(`Watch ${name}'s amazing performance on Pine Hills School portal: ${window.location.href}`);
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
-        }
-
-        function searchVideos() {
-            const val = document.getElementById('studentSearch').value.toLowerCase().trim();
-            let hasResults = false;
-
-            document.querySelectorAll('.youtube-card').forEach(c => {
-                if(c.getAttribute('data-name').includes(val)) { c.style.display = 'flex'; hasResults = true; } 
-                else { c.style.display = 'none'; const v = c.querySelector('video'); if(v) v.pause(); }
-            });
-
-            document.querySelectorAll('.short-card').forEach(c => {
-                if(c.getAttribute('data-name').includes(val)) { c.style.display = 'block'; hasResults = true; } 
-                else c.style.display = 'none';
-            });
-
-            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
-        }
+                if (currentFeedIndex !== previousIndex) {
+                    isUserInteracted = true;
+                    feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
+                    updateVideoPlayback();
+                }
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
