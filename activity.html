@@ -40,7 +40,7 @@
             flex: 0 0 140px; aspect-ratio: 9/16; background: #000; border-radius: 12px;
             position: relative; overflow: hidden; cursor: pointer;
         }
-        .short-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        .short-card video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; background: #000; }
         .short-info {
             position: absolute; bottom: 0; left: 0; width: 100%;
             padding: 8px; background: linear-gradient(transparent, rgba(0,0,0,0.8));
@@ -60,6 +60,15 @@
         }
         .video-overlay i { font-size: 55px; color: rgba(255, 255, 255, 0.9); text-shadow: 0px 4px 10px rgba(0,0,0,0.5); }
         .video-overlay.hidden { display: none; }
+
+        /* RED YOUTUBE LOADER SPIN */
+        .loading-spinner {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2);
+            border-left-color: #ff0000; border-radius: 50%; animation: spin 0.8s linear infinite;
+            display: none; z-index: 9;
+        }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
         .video-details { padding: 12px 4px; display: flex; gap: 12px; }
         .channel-avatar { width: 36px; height: 36px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #475569; font-size: 14px; flex-shrink: 0; }
@@ -81,9 +90,7 @@
 
         .no-results { text-align: center; padding: 40px; color: #606060; display: none; }
 
-        /* ========================================================
-           PRO SHORTS FULL-SCREEN SCROLL SYSTEM (YOUTUBE SHORTS)
-           ======================================================== */
+        /* Shorts Screen */
         .shorts-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background: #000; z-index: 2000; display: none;
@@ -99,11 +106,9 @@
 
         .fullscreen-short-container {
             width: 100%; height: 100vh; scroll-snap-align: start;
-            position: relative; display: flex; align-items: center; justify-content: center;
+            position: relative; display: flex; align-items: center; justify-content: center; background: #000;
         }
-        .fullscreen-short-container video {
-            width: 100%; height: 100%; object-fit: cover;
-        }
+        .fullscreen-short-container video { width: 100%; height: 100%; object-fit: cover; }
 
         .shorts-overlay-data {
             position: absolute; bottom: 30px; left: 16px; color: #fff; z-index: 2050;
@@ -127,20 +132,15 @@
     </header>
 
     <div class="container">
-        <!-- HORIZONTAL SHORTS BAR -->
         <div id="shortsSectionTitle" class="section-title"><i class="fa-solid fa-bolt"></i> Activity Shorts</div>
         <div class="shorts-wrapper" id="shortsContainer"></div>
 
-        <!-- LONG FEED CONTAINER -->
         <div id="longSectionTitle" class="section-title"><i class="fa-regular fa-play-circle"></i> Activity Videos</div>
         <div class="video-feed" id="longVideosContainer">
             <div class="no-results" id="noResults"><h3>Koi record nahi mila</h3></div>
         </div>
     </div>
 
-    <!-- ==========================================
-       FULLSCREEN SHORTS CONTAINER (MODAL VIEW)
-       ========================================== -->
     <div class="shorts-modal" id="shortsModal">
         <div class="shorts-close-btn" onclick="closeShortsModal()"><i class="fa-solid fa-xmark"></i></div>
         <div id="modalShortsFeed"></div>
@@ -165,7 +165,7 @@
         const db = getFirestore(app);
 
         window.db = db; window.updateDoc = updateDoc; window.doc = doc;
-        window.globalComments = {}; window.allShortsData = []; // Array to store shorts
+        window.globalComments = {}; window.allShortsData = []; 
         
         let initialLoadDone = false;
         const q = query(collection(db, "activities"), orderBy("timestamp", "desc"));
@@ -198,13 +198,11 @@
                 const isShortVideo = data.videoUrl.includes("short") || (data.studentNames && data.studentNames.toLowerCase().includes("short"));
 
                 if(isShortVideo) {
-                    // Save short details into array
                     window.allShortsData.push({ id, ...data });
-
                     const shortIndex = window.allShortsData.length - 1;
                     const shortHTML = `
                         <div class="short-card" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="openShortsModal(${shortIndex})">
-                            <video src="${data.videoUrl}" preload="metadata" muted loop playsinline></video>
+                            <video data-src="${data.videoUrl}" preload="none" muted loop playsinline></video>
                             <div class="short-info"><div>${data.studentNames || 'Student'}</div></div>
                         </div>
                     `;
@@ -217,10 +215,14 @@
                     const longHTML = `
                         <div class="youtube-card" id="card-${id}" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}">
                             <div class="video-player-container">
+                                <div class="loading-spinner" id="spinner-${id}"></div>
                                 <div class="video-overlay ${showOverlay}" id="overlay-${id}" onclick="startFirstVideo('${id}')"><i class="fa-solid fa-circle-play"></i></div>
-                                <video id="vid-${id}" class="feed-video" src="${data.videoUrl}" controls preload="metadata" playsinline crossorigin="anonymous" onplay="pauseOtherVideos(this)"></video>
+                                <video id="vid-${id}" class="feed-video" data-src="${data.videoUrl}" controls preload="none" playsinline crossorigin="anonymous" 
+                                    onplay="pauseOtherVideos(this)"
+                                    onwaiting="document.getElementById('spinner-${id}').style.display='block';"
+                                    onplaying="document.getElementById('spinner-${id}').style.display='none';">
+                                </video>
                             </div>
-                            <!-- Actions & Info layout maps properly -->
                             <div class="video-details">
                                 <div class="channel-avatar">${firstLetter}</div>
                                 <div class="video-text">
@@ -252,25 +254,26 @@
         });
     </script>
 
-    <!-- PRO AUTOPLAY & VERTICAL SHORTS ENGINE -->
+    <!-- AUTOMATIC LAZY-STREAM ENGINE -->
     <script>
         let hasUserActivated = false;
         let shortsObserver;
 
-        // OPEN SHORTS FULLSCREEN MODE WITH CONTINUOUS SCROLL
         function openShortsModal(startIndex) {
-            // Pause all running long videos first
-            document.querySelectorAll('.feed-video').forEach(v => v.pause());
+            document.querySelectorAll('.feed-video').forEach(v => { v.pause(); });
 
             const modal = document.getElementById('shortsModal');
             const feed = document.getElementById('modalShortsFeed');
             feed.innerHTML = ''; 
 
-            // Dynamic layout injection for infinite vertical scroll structure
             window.allShortsData.forEach((short, idx) => {
                 const fullscreenShortHTML = `
                     <div class="fullscreen-short-container" id="short-block-${idx}">
-                        <video class="shorts-fullscreen-video" src="${short.videoUrl}" loop playsinline unmuted volume="1"></video>
+                        <div class="loading-spinner" id="short-spin-${idx}" style="display:block;"></div>
+                        <video class="shorts-fullscreen-video" data-src="${short.videoUrl}" preload="none" loop playsinline volume="1"
+                            onplaying="document.getElementById('short-spin-${idx}').style.display='none';"
+                            onwaiting="document.getElementById('short-spin-${idx}').style.display='block';">
+                        </video>
                         <div class="shorts-overlay-data">
                             <h3>@ ${short.studentNames || 'Student Performance'}</h3>
                             <p>${short.classSection || 'Pine Hills Activity'}</p>
@@ -281,55 +284,56 @@
             });
 
             modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Main screen background block
+            document.body.style.overflow = 'hidden'; 
 
-            // Target click base index track focus
             const targetElement = document.getElementById(`short-block-${startIndex}`);
             if(targetElement) targetElement.scrollIntoView();
 
             initVerticalShortsObserver();
         }
 
-        // VERTICAL SHORTS OBSERVER ENGINE (YOUTUBE SHORTS CLONE)
         function initVerticalShortsObserver() {
             if(shortsObserver) shortsObserver.disconnect();
-
             const options = { root: document.getElementById('shortsModal'), threshold: 0.6 };
 
             shortsObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    const video = entry.target;
+                    const video = entry.target.querySelector('video');
+                    if (!video) return;
+
                     if (entry.isIntersecting) {
-                        video.play().catch(e => console.log("Shorts auto play lock:", e));
+                        // Lazy load content instantly on active viewport scroll block
+                        if(!video.src) { video.src = video.getAttribute('data-src'); }
+                        video.play().catch(e => {});
                     } else {
                         video.pause();
-                        video.currentTime = 0; // Reset content progress
                     }
                 });
             }, options);
 
-            const activeShorts = document.querySelectorAll('.shorts-fullscreen-video');
-            activeShorts.forEach(v => shortsObserver.observe(v));
+            const activeShortContainers = document.querySelectorAll('.fullscreen-short-container');
+            activeShortContainers.forEach(container => shortsObserver.observe(container));
         }
 
         function closeShortsModal() {
             document.getElementById('shortsModal').style.display = 'none';
-            document.body.style.overflow = 'auto'; // Re-enable background scrolling
-            
-            // Stop all playing shorts immediately
+            document.body.style.overflow = 'auto'; 
             document.querySelectorAll('.shorts-fullscreen-video').forEach(v => {
                 v.pause();
-                v.src = ""; // Flush buffer stream leaks
+                v.removeAttribute('src'); // Completely flush streaming heap allocation memory 
+                v.load();
             });
             if(shortsObserver) shortsObserver.disconnect();
         }
 
-        // LONG FEED VIDEOS CORE FUNCTIONS
         function startFirstVideo(id) {
             const overlay = document.getElementById(`overlay-${id}`);
             const video = document.getElementById(`vid-${id}`);
             if (overlay) overlay.classList.add('hidden');
-            if (video) video.play();
+            if (video) {
+                if(!video.src) { video.src = video.getAttribute('data-src'); }
+                video.play();
+            }
             hasUserActivated = true;
         }
 
@@ -341,7 +345,10 @@
                     const overlay = video.parentElement.querySelector('.video-overlay');
                     if (entry.isIntersecting) {
                         if (overlay && !overlay.classList.contains('hidden')) return;
-                        if (hasUserActivated) video.play().catch(e => {});
+                        if (hasUserActivated) {
+                            if(!video.src) { video.src = video.getAttribute('data-src'); }
+                            video.play().catch(e => {});
+                        }
                     } else {
                         video.pause();
                     }
