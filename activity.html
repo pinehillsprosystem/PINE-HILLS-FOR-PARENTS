@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Student Activity - Pine Hills School</title>
-    <!-- Google Fonts & Robust Font Awesome Kit -->
+    <!-- Google Fonts & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -28,7 +28,7 @@
         /* --- SEARCH HEADER --- */
         header {
             width: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.4));
             position: fixed;
             top: 0;
             z-index: 2000;
@@ -36,12 +36,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.3s ease;
-        }
-
-        body.grid-mode header {
-            background: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .back-btn {
@@ -49,9 +43,6 @@
             font-size: 22px;
             text-decoration: none;
             padding-right: 10px;
-        }
-        body.grid-mode .back-btn {
-            color: var(--text-dark);
         }
 
         .search-container {
@@ -63,10 +54,6 @@
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        body.grid-mode .search-container {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-        }
 
         .search-input {
             width: 100%;
@@ -77,11 +64,7 @@
             color: var(--white);
             background: transparent;
         }
-        body.grid-mode .search-input {
-            color: var(--text-dark);
-        }
         .search-input::placeholder { color: rgba(255, 255, 255, 0.8); }
-        body.grid-mode .search-input::placeholder { color: #94a3b8; }
 
         .search-icon {
             position: absolute;
@@ -91,11 +74,8 @@
             color: var(--white);
             font-size: 16px;
         }
-        body.grid-mode .search-icon {
-            color: #94a3b8;
-        }
 
-        /* --- MAIN FEED --- */
+        /* --- MAIN TIKTOK FEED (NORMAL MODE) --- */
         .results-feed {
             display: flex;
             flex-direction: column;
@@ -104,7 +84,6 @@
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scrollbar-width: none;
-            -ms-overflow-style: none;
         }
         .results-feed::-webkit-scrollbar { display: none; }
 
@@ -135,162 +114,139 @@
             width: 100%;
             height: 100%;
             object-fit: contain; 
-            max-width: 100%;
-            max-height: 100%;
-            background: #000;
             z-index: 2;
         }
 
-        /* --- TIKTOK LOADER --- */
+        /* LOCK OVERLAY */
+        .initial-lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .initial-lock-overlay i { color: rgba(255,255,255,0.85); font-size: 65px; }
+        .initial-lock-overlay.hidden { display: none !important; }
+
+        /* TIKTOK STYLE SEARCH GRID LAYOUT (JAB SEARCH KAREIN) */
+        .results-feed.grid-mode {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 85px 12px 20px 12px;
+            overflow-y: auto;
+            scroll-snap-type: none;
+            background: #121212;
+        }
+
+        .results-feed.grid-mode .activity-marksheet-card {
+            height: 280px !important;
+            border-radius: 8px;
+            overflow: hidden;
+            scroll-snap-align: unset;
+        }
+
+        /* Grid Mode mein elements ko chota aur clean karna */
+        .results-feed.grid-mode .tiktok-sidebar { display: none !important; }
+        .results-feed.grid-mode .initial-lock-overlay { display: none !important; }
+        .results-feed.grid-mode .student-profile {
+            padding: 30px 10px 10px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        .results-feed.grid-mode .val { font-size: 12px; }
+        .results-feed.grid-mode .cls-sec { font-size: 10px; }
+        .results-feed.grid-mode .lbl { display: none; }
+        .results-feed.grid-mode .video-wrapper video { object-fit: cover !important; }
+
+        /* LOADER */
         .video-loader {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 42px;
-            height: 42px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 35px; height: 35px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-left-color: #fe2c55; 
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             z-index: 5;
-            display: block;
         }
-
         @keyframes spin {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* --- PLAY/PAUSE ICONS --- */
         .play-pause-overlay-icon {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
             color: rgba(255, 255, 255, 0.8);
-            font-size: 60px;
+            font-size: 50px;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s ease;
             z-index: 10;
-            text-shadow: 0 0 15px rgba(0,0,0,0.4);
         }
-        .play-pause-overlay-icon.animate-pop {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
+        .play-pause-overlay-icon.animate-pop { opacity: 1; transform: translate(-50%, -50%) scale(1.2); transition: all 0.3s ease; }
 
-        /* --- TIKTOK SIDEBAR ACTIONS --- */
+        /* SIDEBAR ACTIONS */
         .tiktok-sidebar {
             position: absolute;
-            right: 15px;
-            bottom: 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 150;
+            right: 15px; bottom: 120px;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 20px; z-index: 150;
         }
-
-        .sidebar-action-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--white);
-            cursor: pointer;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-            transition: transform 0.2s ease;
-        }
-
-        .sidebar-action-item:active { transform: scale(0.9); }
+        .sidebar-action-item { display: flex; flex-direction: column; align-items: center; color: var(--white); cursor: pointer; }
         .sidebar-action-item i { font-size: 26px; margin-bottom: 4px; }
-        
         .sidebar-action-item.liked i { color: #fe2c55; }
         .sidebar-action-item.favorited i { color: #facd3b; }
-        .sidebar-action-item span { font-size: 12px; font-weight: 500; }
+        .sidebar-action-item span { font-size: 12px; }
 
-        /* Full Screen Student Profile Overlay */
+        /* Profile Overlay */
         .student-profile {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+            bottom: 0; left: 0; width: 100%;
             padding: 80px 80px 40px 20px;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.4) 70%, transparent);
-            color: var(--white);
-            z-index: 100;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            color: var(--white); z-index: 100; pointer-events: none;
+            display: flex; flex-direction: column; gap: 2px;
         }
-        .val { font-size: 15px; font-weight: 600; color: var(--white); text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
-        .cls-sec { font-size: 13px; font-weight: 500; color: #93c5fd; text-shadow: 0 1px 2px rgba(0,0,0,0.9); }
-        .lbl { font-size: 10px; text-transform: uppercase; opacity: 0.6; color: #e2e8f0; }
+        .val { font-size: 15px; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+        .cls-sec { font-size: 13px; color: #93c5fd; }
+        .lbl { font-size: 10px; opacity: 0.6; text-transform: uppercase; }
 
-        /* --- COMMENT PANEL --- */
+        /* COMMENT PANEL */
         .comment-drawer {
             position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 60%;
-            background: #ffffff;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            z-index: 3000;
-            transition: bottom 0.3s cubic-bezier(0.1, 0.76, 0.55, 0.94);
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            color: var(--text-dark);
+            bottom: -100%; left: 0; width: 100%; height: 60%;
+            background: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;
+            z-index: 3000; transition: bottom 0.3s ease-out;
+            display: flex; flex-direction: column; padding: 16px; color: var(--text-dark);
         }
         .comment-drawer.open { bottom: 0; }
         .comment-drawer-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
-        .comment-drawer-header h3 { font-size: 15px; font-weight: 700; }
-        .close-comments { background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b; }
-        
+        .close-comments { background: none; border: none; font-size: 18px; cursor: pointer; }
         .comments-list { flex-grow: 1; overflow-y: auto; padding: 15px 0; display: flex; flex-direction: column; gap: 12px; }
         .comment-item { background: #f8fafc; padding: 10px 14px; border-radius: 12px; font-size: 13px; }
-        .comment-user { font-weight: 700; color: #2563eb; margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
-        
+        .comment-user { font-weight: 700; color: #2563eb; }
         .comment-form { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
-        .comment-form input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        .comment-submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .comment-form input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; }
+        .comment-submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; }
 
         .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; display:none; }
         .drawer-backdrop.show { display: block; }
 
-        /* --- GRID MODE --- */
-        body.grid-mode { background-color: #fafbfc; }
-        body.grid-mode .results-feed { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 90px 12px 20px 12px; scroll-snap-type: none; overflow-y: auto; }
-        body.grid-mode .activity-marksheet-card { width: 100%; height: auto; aspect-ratio: 9/16; border-radius: 12px; scroll-snap-align: unset; flex-shrink: unset; cursor: pointer; background: #000; }
-        body.grid-mode .tiktok-sidebar { display: none; }
-        body.grid-mode .video-wrapper video { pointer-events: none; object-fit: contain; }
-        body.grid-mode .video-loader { display: none !important; }
-        body.grid-mode .student-profile { padding: 40px 10px 10px 10px; background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent); }
-        body.grid-mode .val { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        body.grid-mode .cls-sec { font-size: 10px; }
-        body.grid-mode .lbl { display: none; }
-
-        .close-player-btn { display: none; position: fixed; top: 20px; left: 20px; z-index: 2100; color: #fff; font-size: 24px; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center; border: none; cursor: pointer; }
-        body.single-play-mode .close-player-btn { display: flex; }
-        body.single-play-mode header { display: none; }
-
-        .no-results { grid-column: span 2; text-align: center; padding: 50px 20px; color: #64748b; display: none; }
-        .no-results i { font-size: 40px; color: #cbd5e1; margin-bottom: 12px; }
+        .no-results { text-align: center; padding: 60px 20px; color: #cbd5e1; display: none; grid-column: span 2; }
+        .no-results i { font-size: 40px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-
-    <button class="close-player-btn" onclick="exitSinglePlay()"><i class="fa-solid fa-chevron-left"></i></button>
 
     <header>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-angle-left"></i></a>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="studentSearch" class="search-input" placeholder="Search name or roll no (e.g., Fahad)..." onkeyup="searchStudent()">
+            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name (e.g., Ali)..." onkeyup="searchStudent()">
         </div>
     </header>
 
@@ -303,21 +259,20 @@
         </div>
         <div class="comments-list" id="commentsListContainer"></div>
         <div class="comment-form">
-            <input type="text" id="parentNameInput" placeholder="Parent Name (e.g., Ali's Father)...">
-            <input type="text" id="parentCommentInput" placeholder="Add a sweet comment for your child...">
+            <input type="text" id="parentNameInput" placeholder="Your Name...">
+            <input type="text" id="parentCommentInput" placeholder="Add a comment...">
             <button class="comment-submit-btn" onclick="submitParentComment()">Post Comment</button>
         </div>
     </div>
 
+    <!-- FEED CONTAINER -->
     <div class="results-feed" id="resultsFeed">
         <div class="no-results" id="noResults">
             <i class="fa-regular fa-face-frown"></i>
-            <h3>Koi record nahi mila</h3>
-            <p style="font-size: 12px; opacity: 0.8; margin-top: 5px;">Meharbani kar ke spelling check karein.</p>
+            <h3>No results found</h3>
         </div>
     </div>
 
-    <!-- FIREBASE MODULE LOGIC INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -345,38 +300,32 @@
         onSnapshot(q, (snapshot) => {
             const noResultsHTML = document.getElementById('noResults').outerHTML;
             
-            // Check if DOM already has rendering cards to avoid resetting loop
             if (feed.children.length <= 1) {
                 feed.innerHTML = noResultsHTML;
+                if (snapshot.empty) return;
 
-                if (snapshot.empty) {
-                    document.getElementById('noResults').style.display = 'block';
-                    return;
-                }
-
+                let isFirstCard = true;
                 snapshot.forEach((docSnap) => {
                     const data = docSnap.data();
                     const id = docSnap.id;
-                    
-                    const commentsArray = data.comments || [];
-                    const commentsCount = commentsArray.length;
-                    window.globalCommentsStorage[id] = commentsArray;
+                    window.globalCommentsStorage[id] = data.comments || [];
 
                     const userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
                     const isLikedByMe = userLikes[id] ? 'liked' : '';
-
                     const userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
                     const isFavoritedByMe = userFavs[id] ? 'favorited' : '';
+                    const overlayClass = isFirstCard ? '' : 'hidden';
 
-                    // FIX: Reverted back to explicit valid src layout but with preload="metadata" to keep browser light without blanking out
                     const cardHTML = `
-                        <div class="activity-marksheet-card" id="card-${id}" data-roll="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="playSelectedVideo(this)">
+                        <div class="activity-marksheet-card" id="card-${id}" data-name="${data.studentNames ? data.studentNames.toLowerCase() : ''}" onclick="selectGridVideo('${id}')">
                             <div class="video-wrapper" onclick="togglePlayPause(this, event)">
+                                <div class="initial-lock-overlay ${overlayClass}" id="lock-${id}" onclick="unlockFirstVideo('${id}', event)">
+                                    <i class="fa-solid fa-play"></i>
+                                </div>
                                 <div class="video-loader" id="loader-${id}"></div>
-                                <video id="vid-${id}" src="${data.videoUrl}" playsinline webkit-playsinline preload="metadata" loop muted crossorigin="anonymous"
+                                <video id="vid-${id}" src="${data.videoUrl}" playsinline webkit-playsinline preload="auto" loop muted crossorigin="anonymous"
                                        onplaying="document.getElementById('loader-${id}').style.display='none';"
-                                       onwaiting="document.getElementById('loader-${id}').style.display='block';"
-                                       onloadeddata="document.getElementById('loader-${id}').style.display='none';">
+                                       onwaiting="document.getElementById('loader-${id}').style.display='block';">
                                 </video>
                                 <i class="fa-solid fa-play play-pause-overlay-icon"></i>
                             </div>
@@ -388,7 +337,7 @@
                                 </div>
                                 <div class="sidebar-action-item" onclick="openCommentDrawer('${id}', this, event)">
                                     <i class="fa-solid fa-comment-dots"></i>
-                                    <span class="cmt-count">${commentsCount}</span>
+                                    <span class="cmt-count">${(data.comments || []).length}</span>
                                 </div>
                                 <div class="sidebar-action-item fav-btn ${isFavoritedByMe}" onclick="toggleFavorite(this, '${id}', event)">
                                     <i class="fa-solid fa-bookmark"></i>
@@ -401,359 +350,207 @@
                             </div>
 
                             <div class="student-profile">
-                                <div>
-                                    <span class="val">${data.studentNames || ''}</span>
-                                    <p class="lbl">Student Name</p>
-                                </div>
-                                <div>
-                                    <span class="cls-sec">${data.classSection || ''}</span>
-                                    <p class="lbl">Class & Section</p>
-                                </div>
+                                <div><span class="val">${data.studentNames || ''}</span><p class="lbl">Student Name</p></div>
+                                <div><span class="cls-sec">${data.classSection || ''}</span><p class="lbl">Class & Section</p></div>
                             </div>
                         </div>
                     `;
                     feed.insertAdjacentHTML('beforeend', cardHTML);
+                    isFirstCard = false;
                 });
-
                 initVideoObserver();
-            } else {
-                // Background updates sync
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === "modified") {
-                        const data = change.doc.data();
-                        const id = change.doc.id;
-                        const card = document.getElementById(`card-${id}`);
-                        if(card) {
-                            const lkSpan = card.querySelector('.like-btn span');
-                            const fvSpan = card.querySelector('.fav-btn span');
-                            const cmtSpan = card.querySelector('.cmt-count');
-                            if(lkSpan) lkSpan.innerText = data.likes || 0;
-                            if(fvSpan) fvSpan.innerText = data.favorites || 0;
-                            if(cmtSpan) cmtSpan.innerText = (data.comments || []).length;
-                        }
-                        window.globalCommentsStorage[id] = data.comments || [];
-                    }
-                });
             }
         });
     </script>
 
-    <!-- GLOBAL COMPONENT STATE SCRIPT -->
     <script>
         window.globalCommentsStorage = {};
         let activeVideoId = "";
         let activeCounterElement = null;
         let userInteracted = false; 
+        let isGridMode = false;
 
-        const unlockAudio = () => {
-            if(userInteracted) return;
-            userInteracted = true;
-            document.querySelectorAll('.activity-marksheet-card video').forEach(v => {
-                v.muted = false;
-            });
-            const currentCard = document.querySelector('.activity-marksheet-card');
-            if(currentCard) {
-                const currentVid = currentCard.querySelector('video');
-                if(currentVid) {
-                    currentVid.muted = false;
-                    currentVid.play().catch(e=>console.log(e));
-                }
-            }
-            window.removeEventListener('click', unlockAudio);
-            window.removeEventListener('touchstart', unlockAudio);
-        };
-        window.addEventListener('click', unlockAudio);
-        window.addEventListener('touchstart', unlockAudio);
+        function unlockFirstVideo(id, event) {
+            event.stopPropagation();
+            const overlay = document.getElementById(`lock-${id}`);
+            const video = document.getElementById(`vid-${id}`);
+            if (overlay) overlay.classList.add('hidden');
+            userInteracted = true; 
+            if (video) { video.muted = false; video.play().catch(e => {}); }
+        }
 
-        const observerOptions = {
-            root: document.getElementById('resultsFeed'),
-            rootMargin: '0px',
-            threshold: 0.5 
-        };
-
+        const observerOptions = { root: document.getElementById('resultsFeed'), rootMargin: '0px', threshold: 0.6 };
         const videoObserver = new IntersectionObserver((entries) => {
-            if (document.body.classList.contains('grid-mode')) return;
-
+            if(isGridMode) return; // Grid mode mein autoplay bnd rakein
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
-                const loader = entry.target.querySelector('.video-loader');
+                const lockOverlay = entry.target.querySelector('.initial-lock-overlay');
                 if (!video) return;
 
                 if (entry.isIntersecting) {
-                    if(userInteracted) video.muted = false;
-                    
-                    let playPromise = video.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            if(loader) loader.style.display = 'none';
-                        }).catch(err => {
-                            video.muted = true;
-                            video.play().catch(e => console.log(e));
-                        });
-                    }
+                    if(lockOverlay && !lockOverlay.classList.contains('hidden')) return;
+                    if(userInteracted) { video.muted = false; video.play().catch(e => {}); }
                 } else {
                     video.pause();
-                    const icon = entry.target.querySelector('.play-pause-overlay-icon');
-                    if(icon) icon.className = "fa-solid fa-play play-pause-overlay-icon";
                 }
             });
         }, observerOptions);
 
         function initVideoObserver() {
             const cards = document.querySelectorAll('.activity-marksheet-card');
-            cards.forEach((card) => {
-                videoObserver.unobserve(card);
-                videoObserver.observe(card);
-            });
-
-            setTimeout(() => {
-                if (!document.body.classList.contains('grid-mode') && cards.length > 0) {
-                    const firstVideo = cards[0].querySelector('video');
-                    const loader = cards[0].querySelector('.video-loader');
-                    if (firstVideo) {
-                        if(userInteracted) firstVideo.muted = false;
-                        firstVideo.play()
-                            .then(() => { if(loader) loader.style.display = 'none'; })
-                            .catch(e => {
-                                firstVideo.muted = true;
-                                firstVideo.play().catch(err => console.log(err));
-                            });
-                    }
-                }
-            }, 300);
+            cards.forEach(card => { videoObserver.observe(card); });
         }
 
         function togglePlayPause(wrapper, event) {
+            if(isGridMode) return; // Grid layout me direct click handle na ho
             event.stopPropagation();
-            if (document.body.classList.contains('grid-mode')) return;
-
             const video = wrapper.querySelector('video');
             const icon = wrapper.querySelector('.play-pause-overlay-icon');
+            
             if(!video || !icon) return;
-
-            if(!userInteracted) unlockAudio();
+            userInteracted = true;
             video.muted = false;
-            icon.className = "play-pause-overlay-icon";
             
             if(video.paused) {
-                video.play().catch(e => {
-                    video.muted = true;
-                    video.play();
-                });
+                video.play().catch(e => { video.muted = true; video.play(); });
                 icon.className = "fa-solid fa-play play-pause-overlay-icon animate-pop";
             } else {
                 video.pause();
                 icon.className = "fa-solid fa-pause play-pause-overlay-icon animate-pop";
             }
-
-            setTimeout(() => {
-                icon.classList.remove('animate-pop');
-            }, 500);
+            setTimeout(() => { icon.classList.remove('animate-pop'); }, 500);
         }
 
-        function shareToWhatsApp(studentNames, event) {
-            event.stopPropagation();
-            const pageUrl = window.location.href;
-            const customMessage = encodeURIComponent(`Pine Hills School Activity Report! 🌟 Watch our students (${studentNames}) performing beautifully on this link: ${pageUrl}`);
-            window.open(`https://api.whatsapp.com/send?text=${customMessage}`, '_blank');
-        }
-
-        function openCommentDrawer(videoId, element, event) {
-            event.stopPropagation();
-            activeVideoId = videoId;
-            activeCounterElement = element.querySelector('.cmt-count');
-
-            if (!window.globalCommentsStorage[videoId]) {
-                window.globalCommentsStorage[videoId] = [];
-            }
-
-            renderCommentsList();
-            
-            document.getElementById('commentDrawer').classList.add('open');
-            document.getElementById('drawerBackdrop').classList.add('show');
-        }
-
-        function closeCommentDrawer() {
-            document.getElementById('commentDrawer').classList.remove('open');
-            document.getElementById('drawerBackdrop').classList.remove('show');
-        }
-
-        function renderCommentsList() {
-            const container = document.getElementById('commentsListContainer');
-            const comments = window.globalCommentsStorage[activeVideoId] || [];
-            document.getElementById('totalCommentCount').innerText = comments.length;
-
-            if(comments.length === 0) {
-                container.innerHTML = `<p style="text-align:center;font-size:13px;color:#94a3b8;margin-top:20px;">No comments yet. Be the first parent to comment! ✨</p>`;
-                return;
-            }
-
-            container.innerHTML = comments.map(c => `
-                <div class="comment-item">
-                    <div class="comment-user"><i class="fa-solid fa-circle-user"></i> ${c.name}</div>
-                    <div>${c.text}</div>
-                </div>
-            `).join('');
-        }
-
-        async function submitParentComment() {
-            const nameInput = document.getElementById('parentNameInput');
-            const commentInput = document.getElementById('parentCommentInput');
-
-            if(!nameInput.value.trim() || !commentInput.value.trim()) {
-                alert("Please fill out your Name and Comment first!");
-                return;
-            }
-
-            const newComment = {
-                name: nameInput.value.trim(),
-                text: commentInput.value.trim()
-            };
-
-            window.globalCommentsStorage[activeVideoId].push(newComment);
-
-            try {
-                const docRef = window.doc(window.db, "activities", activeVideoId);
-                await window.updateDoc(docRef, {
-                    comments: window.globalCommentsStorage[activeVideoId]
-                });
-            } catch (error) {
-                console.error("Error saving comment to Firebase:", error);
-            }
-
-            if(activeCounterElement) {
-                activeCounterElement.innerText = window.globalCommentsStorage[activeVideoId].length;
-            }
-
-            commentInput.value = ""; 
-            renderCommentsList();
-        }
-
-        async function toggleLike(element, videoId, event) {
-            event.stopPropagation();
-            
-            let userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
-            let countSpan = element.querySelector('span');
-            let currentCount = parseInt(countSpan.innerText) || 0;
-            let finalCount = currentCount;
-
-            if (userLikes[videoId]) {
-                element.classList.remove('liked');
-                finalCount = currentCount - 1;
-                delete userLikes[videoId];
-            } else {
-                element.classList.add('liked');
-                finalCount = currentCount + 1;
-                userLikes[videoId] = true;
-            }
-
-            if(finalCount < 0) finalCount = 0;
-            countSpan.innerText = finalCount;
-            localStorage.setItem('user_liked_activities', JSON.stringify(userLikes));
-
-            try {
-                const docRef = window.doc(window.db, "activities", videoId);
-                await window.updateDoc(docRef, { likes: finalCount });
-            } catch (error) {
-                console.error("Firebase update failed: ", error);
-            }
-        }
-
-        async function toggleFavorite(element, videoId, event) {
-            event.stopPropagation();
-            
-            let userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
-            let countSpan = element.querySelector('span');
-            let currentCount = parseInt(countSpan.innerText) || 0;
-            let finalCount = currentCount;
-
-            if (userFavs[videoId]) {
-                element.classList.remove('favorited');
-                finalCount = currentCount - 1;
-                delete userFavs[videoId];
-            } else {
-                element.classList.add('favorited');
-                finalCount = currentCount + 1;
-                userFavs[videoId] = true;
-            }
-
-            if(finalCount < 0) finalCount = 0;
-            countSpan.innerText = finalCount;
-            localStorage.setItem('user_liked_activities', JSON.stringify(userFavs));
-
-            try {
-                const docRef = window.doc(window.db, "activities", videoId);
-                await window.updateDoc(docRef, { favorites: finalCount });
-            } catch (error) {
-                console.error("Firebase update failed: ", error);
-            }
-        }
-
+        // TIKTOK REAL GRID SEARCH SYSTEM
         function searchStudent() {
             const input = document.getElementById('studentSearch').value.toLowerCase().trim();
+            const feed = document.getElementById('resultsFeed');
             const cards = document.querySelectorAll('.activity-marksheet-card');
             const noResults = document.getElementById('noResults');
-            let matchFound = false;
+            
+            // Sabhi Chalte videos ko pehle rokhien
+            document.querySelectorAll('video').forEach(v => v.pause());
 
             if (input === "") {
-                document.body.classList.remove('grid-mode');
-                cards.forEach(card => {
-                    card.style.display = 'block';
-                });
+                isGridMode = false;
+                feed.classList.remove('grid-mode');
                 noResults.style.display = 'none';
+                
+                cards.forEach(card => { card.style.display = 'block'; });
                 initVideoObserver();
                 return;
             }
 
-            document.body.classList.add('grid-mode');
+            isGridMode = true;
+            feed.classList.add('grid-mode');
+            let matchFound = false;
+
             cards.forEach(card => {
-                const video = card.querySelector('video');
-                if (card.getAttribute('data-roll').toLowerCase().includes(input) || card.textContent.toLowerCase().includes(input)) {
+                const nameAttr = card.getAttribute('data-name') || '';
+                if (nameAttr.includes(input)) {
                     card.style.display = 'block';
                     matchFound = true;
-                    if(video) video.pause();
                 } else {
                     card.style.display = 'none';
-                    if(video) video.pause();
                 }
             });
 
             noResults.style.display = matchFound ? 'none' : 'block';
         }
 
-        function playSelectedVideo(cardElement) {
-            if (document.body.classList.contains('grid-mode')) {
-                document.body.classList.remove('grid-mode');
-                document.body.classList.add('single-play-mode');
-                
-                document.querySelectorAll('.activity-marksheet-card').forEach(card => {
-                    if(card !== cardElement) {
-                        card.style.display = 'none';
-                        const hiddenVideo = card.querySelector('video');
-                        if(hiddenVideo) hiddenVideo.pause();
-                    }
-                });
+        // GRID KI VIDEO PAR CLICK KARNE SE FULLSCREEN PAR CHALANA
+        function selectGridVideo(id) {
+            if(!isGridMode) return;
 
-                const video = cardElement.querySelector('video');
-                const loader = cardElement.querySelector('.video-loader');
-                if(video) {
-                    if(userInteracted) video.muted = false;
-                    video.style.pointerEvents = 'auto';
-                    if(loader) loader.style.display = 'block';
-                    video.play().then(() => { if(loader) loader.style.display = 'none'; }).catch(e => {
-                        video.muted = true;
-                        video.play().catch(err => console.log(err));
-                    });
+            // Clear search text and return to normal mode
+            document.getElementById('studentSearch').value = "";
+            isGridMode = false;
+            
+            const feed = document.getElementById('resultsFeed');
+            feed.classList.remove('grid-mode');
+            
+            const cards = document.querySelectorAll('.activity-marksheet-card');
+            cards.forEach(card => { card.style.display = 'block'; });
+
+            // Specific target card scroll view and trigger
+            const targetCard = document.getElementById(`card-${id}`);
+            if(targetCard) {
+                targetCard.scrollIntoView();
+                userInteracted = true;
+                const lockOverlay = targetCard.querySelector('.initial-lock-overlay');
+                if(lockOverlay) lockOverlay.classList.add('hidden');
+                
+                const activeVid = targetCard.querySelector('video');
+                if(activeVid) {
+                    activeVid.muted = false;
+                    activeVid.play().catch(e => {});
                 }
             }
+            initVideoObserver();
         }
 
-        function exitSinglePlay() {
-            document.body.classList.remove('single-play-mode');
-            document.querySelectorAll('.activity-marksheet-card video').forEach(v => {
-                v.pause();
-            });
-            searchStudent();
+        function shareToWhatsApp(studentNames, event) {
+            event.stopPropagation();
+            const pageUrl = window.location.href;
+            window.open(`https://api.whatsapp.com/send?text=Watch+student+${encodeURIComponent(studentNames)}+on+Pine+Hills+School:${encodeURIComponent(pageUrl)}`, '_blank');
+        }
+
+        function openCommentDrawer(videoId, element, event) {
+            event.stopPropagation(); activeVideoId = videoId;
+            activeCounterElement = element.querySelector('.cmt-count');
+            renderCommentsList();
+            document.getElementById('commentDrawer').classList.add('open');
+            document.getElementById('drawerBackdrop').classList.add('show');
+        }
+        function closeCommentDrawer() {
+            document.getElementById('commentDrawer').classList.remove('open');
+            document.getElementById('drawerBackdrop').classList.remove('show');
+        }
+        function renderCommentsList() {
+            const container = document.getElementById('commentsListContainer');
+            const comments = window.globalCommentsStorage[activeVideoId] || [];
+            document.getElementById('totalCommentCount').innerText = comments.length;
+            if(comments.length === 0) { container.innerHTML = `<p style="text-align:center;font-size:13px;color:#94a3b8;margin-top:20px;">No comments yet.</p>`; return; }
+            container.innerHTML = comments.map(c => `<div class="comment-item"><div class="comment-user">${c.name}</div><div>${c.text}</div></div>`).join('');
+        }
+        async function submitParentComment() {
+            const nameInput = document.getElementById('parentNameInput');
+            const commentInput = document.getElementById('parentCommentInput');
+            if(!nameInput.value.trim() || !commentInput.value.trim()) return;
+            const newComment = { name: nameInput.value.trim(), text: commentInput.value.trim() };
+            window.globalCommentsStorage[activeVideoId].push(newComment);
+            try {
+                const docRef = window.doc(window.db, "activities", activeVideoId);
+                await window.updateDoc(docRef, { comments: window.globalCommentsStorage[activeVideoId] });
+            } catch (e) {}
+            if(activeCounterElement) activeCounterElement.innerText = window.globalCommentsStorage[activeVideoId].length;
+            commentInput.value = ""; renderCommentsList();
+        }
+        async function toggleLike(element, videoId, event) {
+            event.stopPropagation();
+            let userLikes = JSON.parse(localStorage.getItem('user_liked_activities') || '{}');
+            let countSpan = element.querySelector('span');
+            let currentCount = parseInt(countSpan.innerText) || 0;
+            let finalCount = userLikes[videoId] ? currentCount - 1 : currentCount + 1;
+            if(finalCount < 0) finalCount = 0;
+            countSpan.innerText = finalCount;
+            if(userLikes[videoId]) { element.classList.remove('liked'); delete userLikes[videoId]; }
+            else { element.classList.add('liked'); userLikes[videoId] = true; }
+            localStorage.setItem('user_liked_activities', JSON.stringify(userLikes));
+            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { likes: finalCount }); } catch (e) {}
+        }
+        async function toggleFavorite(element, videoId, event) {
+            event.stopPropagation();
+            let userFavs = JSON.parse(localStorage.getItem('user_favorited_activities') || '{}');
+            let countSpan = element.querySelector('span');
+            let currentCount = parseInt(countSpan.innerText) || 0;
+            let finalCount = userFavs[videoId] ? currentCount - 1 : currentCount + 1;
+            if(finalCount < 0) finalCount = 0;
+            countSpan.innerText = finalCount;
+            if(userFavs[videoId]) { element.classList.remove('favorited'); delete userFavs[videoId]; }
+            else { element.classList.add('favorited'); userFavs[videoId] = true; }
+            localStorage.setItem('user_favorited_activities', JSON.stringify(userFavs));
+            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { favorites: finalCount }); } catch (e) {}
         }
     </script>
 </body>
