@@ -5,77 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Student Activity - Pine Hills School</title>
     <!-- Google Fonts & Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
             --white: #ffffff;
-            --text-dark: #0f172a;
-            --bg-dark: #000000;
+            --yt-dark: #0f0f0f;
+            --yt-card-bg: #212121;
+            --yt-red: #ff0000;
+            --yt-grey: rgba(255, 255, 255, 0.1);
+            --yt-grey-hover: rgba(255, 255, 255, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         
         html, body { 
             height: 100%; 
             width: 100%; 
-            background-color: #000; 
+            background-color: var(--yt-dark); 
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SEARCH HEADER --- */
+        /* --- YOUTUBE HEADER --- */
         header {
             width: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.4));
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
             position: fixed;
             top: 0;
             z-index: 2000;
-            padding: 15px 16px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .back-btn {
             color: var(--white);
-            font-size: 22px;
+            font-size: 20px;
             text-decoration: none;
-            padding-right: 10px;
+            padding: 4px 8px;
         }
 
         .search-container {
             position: relative;
             flex-grow: 1;
-            border-radius: 50px;
+            border-radius: 40px;
             overflow: hidden;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
         }
 
         .search-input {
             width: 100%;
-            padding: 12px 15px 12px 45px;
+            padding: 10px 15px 10px 45px;
             border: none;
             outline: none;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--white);
             background: transparent;
         }
-        .search-input::placeholder { color: rgba(255, 255, 255, 0.8); }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.5); }
 
         .search-icon {
             position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--white);
+            left: 16px;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 16px;
         }
 
-        /* --- MAIN TIKTOK FEED (NORMAL MODE) --- */
+        /* --- YOUTUBE SHORTS FEED (NORMAL MODE) --- */
         .results-feed {
             display: flex;
             flex-direction: column;
@@ -121,53 +125,58 @@
         .initial-lock-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
             z-index: 20;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .initial-lock-overlay i { color: rgba(255,255,255,0.85); font-size: 65px; }
+        .initial-lock-overlay i { color: var(--white); font-size: 60px; opacity: 0.9; }
         .initial-lock-overlay.hidden { display: none !important; }
 
-        /* TIKTOK STYLE SEARCH GRID LAYOUT (JAB SEARCH KAREIN) */
+        /* --- YOUTUBE SEARCH GRID LAYOUT (JAB SEARCH KAREIN) --- */
         .results-feed.grid-mode {
             display: grid !important;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding: 85px 12px 20px 12px;
+            gap: 12px;
+            padding: 80px 12px 20px 12px;
             overflow-y: auto;
             scroll-snap-type: none;
-            background: #121212;
+            background: var(--yt-dark);
         }
 
         .results-feed.grid-mode .activity-marksheet-card {
-            height: 280px !important;
-            border-radius: 8px;
+            height: 290px !important;
+            border-radius: 12px;
             overflow: hidden;
+            background: var(--yt-card-bg);
             scroll-snap-align: unset;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Grid Mode mein elements ko chota aur clean karna */
-        .results-feed.grid-mode .tiktok-sidebar { display: none !important; }
+        /* Grid Mode overrides to look like YT Search results */
+        .results-feed.grid-mode .youtube-sidebar { display: none !important; }
         .results-feed.grid-mode .initial-lock-overlay { display: none !important; }
         .results-feed.grid-mode .student-profile {
-            padding: 30px 10px 10px 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 12px 10px;
+            position: relative;
+            background: var(--yt-card-bg);
+            height: auto;
         }
-        .results-feed.grid-mode .val { font-size: 12px; }
-        .results-feed.grid-mode .cls-sec { font-size: 10px; }
+        .results-feed.grid-mode .val { font-size: 13px; color: var(--white); font-weight: 500; }
+        .results-feed.grid-mode .cls-sec { font-size: 11px; color: #aaa; margin-top: 2px; }
         .results-feed.grid-mode .lbl { display: none; }
+        .results-feed.grid-mode .video-wrapper { height: 75%; }
         .results-feed.grid-mode .video-wrapper video { object-fit: cover !important; }
 
-        /* LOADER */
+        /* LOADER (YT RED) */
         .video-loader {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 35px; height: 35px;
             border: 3px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #fe2c55; 
+            border-left-color: var(--yt-red); 
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             z-index: 5;
@@ -181,77 +190,91 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 50px;
             opacity: 0;
             pointer-events: none;
             z-index: 10;
         }
-        .play-pause-overlay-icon.animate-pop { opacity: 1; transform: translate(-50%, -50%) scale(1.2); transition: all 0.3s ease; }
+        .play-pause-overlay-icon.animate-pop { opacity: 1; transform: translate(-50%, -50%) scale(1.1); transition: all 0.2s ease; }
 
-        /* SIDEBAR ACTIONS */
-        .tiktok-sidebar {
+        /* YOUTUBE SHORTS SIDEBAR BUTTONS */
+        .youtube-sidebar {
             position: absolute;
-            right: 15px; bottom: 120px;
+            right: 12px; bottom: 100px;
             display: flex; flex-direction: column;
-            align-items: center; gap: 20px; z-index: 150;
+            align-items: center; gap: 16px; z-index: 150;
         }
-        .sidebar-action-item { display: flex; flex-direction: column; align-items: center; color: var(--white); cursor: pointer; }
-        .sidebar-action-item i { font-size: 26px; margin-bottom: 4px; }
-        .sidebar-action-item.liked i { color: #fe2c55; }
-        .sidebar-action-item.favorited i { color: #facd3b; }
-        .sidebar-action-item span { font-size: 12px; }
+        .sidebar-action-item { 
+            display: flex; flex-direction: column; align-items: center; color: var(--white); cursor: pointer; 
+        }
+        .sidebar-action-button {
+            width: 45px; height: 45px;
+            background: var(--yt-grey);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 5px;
+            transition: background 0.2s;
+        }
+        .sidebar-action-button:hover { background: var(--yt-grey-hover); }
+        .sidebar-action-item i { font-size: 20px; }
+        .sidebar-action-item.liked .sidebar-action-button { background: var(--yt-red); }
+        .sidebar-action-item.favorited i { color: #ffca28; }
+        .sidebar-action-item span { font-size: 12px; font-weight: 400; color: #f1f1f1; }
 
-        /* Profile Overlay */
+        /* PROFILE OVERLAY (SHORTS STYLE) */
         .student-profile {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
-            padding: 80px 80px 40px 20px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.4) 70%, transparent);
+            padding: 60px 80px 30px 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 20%, transparent);
             color: var(--white); z-index: 100; pointer-events: none;
             display: flex; flex-direction: column; gap: 2px;
         }
-        .val { font-size: 15px; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
-        .cls-sec { font-size: 13px; color: #93c5fd; }
-        .lbl { font-size: 10px; opacity: 0.6; text-transform: uppercase; }
+        .val { font-size: 16px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .cls-sec { font-size: 13px; color: #aaa; }
+        .lbl { font-size: 9px; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* COMMENT PANEL */
+        /* YOUTUBE STYLE COMMENT PANEL */
         .comment-drawer {
             position: fixed;
-            bottom: -100%; left: 0; width: 100%; height: 60%;
-            background: #ffffff; border-top-left-radius: 20px; border-top-right-radius: 20px;
+            bottom: -100%; left: 0; width: 100%; height: 65%;
+            background: #212121; border-top-left-radius: 16px; border-top-right-radius: 16px;
             z-index: 3000; transition: bottom 0.3s ease-out;
-            display: flex; flex-direction: column; padding: 16px; color: var(--text-dark);
+            display: flex; flex-direction: column; padding: 16px; color: var(--white);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
         .comment-drawer.open { bottom: 0; }
-        .comment-drawer-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; }
-        .close-comments { background: none; border: none; font-size: 18px; cursor: pointer; }
-        .comments-list { flex-grow: 1; overflow-y: auto; padding: 15px 0; display: flex; flex-direction: column; gap: 12px; }
-        .comment-item { background: #f8fafc; padding: 10px 14px; border-radius: 12px; font-size: 13px; }
-        .comment-user { font-weight: 700; color: #2563eb; }
-        .comment-form { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 12px; }
-        .comment-form input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; }
-        .comment-submit-btn { width: 100%; background: #000; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 600; }
+        .comment-drawer-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .close-comments { background: none; border: none; font-size: 20px; color: var(--white); cursor: pointer; }
+        .comments-list { flex-grow: 1; overflow-y: auto; padding: 15px 0; display: flex; flex-direction: column; gap: 14px; }
+        .comment-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 13px; border: 1px solid rgba(255,255,255,0.02); }
+        .comment-user { font-weight: 500; color: #3ea6ff; margin-bottom: 2px; }
+        .comment-form { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+        .comment-form input { width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; outline: none; }
+        .comment-form input:focus { border-color: #3ea6ff; }
+        .comment-submit-btn { width: 100%; background: #fff; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 500; cursor: pointer; }
 
-        .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 2500; display:none; }
+        .drawer-backdrop { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 2500; display:none; }
         .drawer-backdrop.show { display: block; }
 
-        .no-results { text-align: center; padding: 60px 20px; color: #cbd5e1; display: none; grid-column: span 2; }
-        .no-results i { font-size: 40px; margin-bottom: 10px; }
+        .no-results { text-align: center; padding: 60px 20px; color: #aaa; display: none; grid-column: span 2; }
+        .no-results i { font-size: 40px; margin-bottom: 10px; color: var(--yt-red); }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-angle-left"></i></a>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name (e.g., Ali)..." onkeyup="searchStudent()">
+            <input type="text" id="studentSearch" class="search-input" placeholder="Search student name..." onkeyup="searchStudent()">
         </div>
     </header>
 
     <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeCommentDrawer()"></div>
 
+    <!-- YT COMMENTS -->
     <div class="comment-drawer" id="commentDrawer">
         <div class="comment-drawer-header">
             <h3>Comments (<span id="totalCommentCount">0</span>)</h3>
@@ -260,15 +283,15 @@
         <div class="comments-list" id="commentsListContainer"></div>
         <div class="comment-form">
             <input type="text" id="parentNameInput" placeholder="Your Name...">
-            <input type="text" id="parentCommentInput" placeholder="Add a comment...">
-            <button class="comment-submit-btn" onclick="submitParentComment()">Post Comment</button>
+            <input type="text" id="parentCommentInput" placeholder="Add a public comment...">
+            <button class="comment-submit-btn" onclick="submitParentComment()">Comment</button>
         </div>
     </div>
 
-    <!-- FEED CONTAINER -->
+    <!-- YT FEED CONTAINER -->
     <div class="results-feed" id="resultsFeed">
         <div class="no-results" id="noResults">
-            <i class="fa-regular fa-face-frown"></i>
+            <i class="fa-solid fa-triangle-exclamation"></i>
             <h3>No results found</h3>
         </div>
     </div>
@@ -330,21 +353,22 @@
                                 <i class="fa-solid fa-play play-pause-overlay-icon"></i>
                             </div>
                             
-                            <div class="tiktok-sidebar">
+                            <!-- YT SHORTS STYLE SIDEBAR -->
+                            <div class="youtube-sidebar">
                                 <div class="sidebar-action-item like-btn ${isLikedByMe}" onclick="toggleLike(this, '${id}', event)">
-                                    <i class="fa-solid fa-heart"></i>
+                                    <div class="sidebar-action-button"><i class="fa-solid fa-thumbs-up"></i></div>
                                     <span>${data.likes || 0}</span>
                                 </div>
                                 <div class="sidebar-action-item" onclick="openCommentDrawer('${id}', this, event)">
-                                    <i class="fa-solid fa-comment-dots"></i>
+                                    <div class="sidebar-action-button"><i class="fa-solid fa-comment"></i></div>
                                     <span class="cmt-count">${(data.comments || []).length}</span>
                                 </div>
                                 <div class="sidebar-action-item fav-btn ${isFavoritedByMe}" onclick="toggleFavorite(this, '${id}', event)">
-                                    <i class="fa-solid fa-bookmark"></i>
+                                    <div class="sidebar-action-button"><i class="fa-solid fa-bookmark"></i></div>
                                     <span>${data.favorites || 0}</span>
                                 </div>
                                 <div class="sidebar-action-item" onclick="shareToWhatsApp('${data.studentNames || ''}', event)">
-                                    <i class="fa-solid fa-share"></i>
+                                    <div class="sidebar-action-button"><i class="fa-solid fa-share"></i></div>
                                     <span>Share</span>
                                 </div>
                             </div>
@@ -381,7 +405,7 @@
 
         const observerOptions = { root: document.getElementById('resultsFeed'), rootMargin: '0px', threshold: 0.6 };
         const videoObserver = new IntersectionObserver((entries) => {
-            if(isGridMode) return; // Grid mode mein autoplay bnd rakein
+            if(isGridMode) return; 
             entries.forEach(entry => {
                 const video = entry.target.querySelector('video');
                 const lockOverlay = entry.target.querySelector('.initial-lock-overlay');
@@ -402,7 +426,7 @@
         }
 
         function togglePlayPause(wrapper, event) {
-            if(isGridMode) return; // Grid layout me direct click handle na ho
+            if(isGridMode) return; 
             event.stopPropagation();
             const video = wrapper.querySelector('video');
             const icon = wrapper.querySelector('.play-pause-overlay-icon');
@@ -421,14 +445,13 @@
             setTimeout(() => { icon.classList.remove('animate-pop'); }, 500);
         }
 
-        // TIKTOK REAL GRID SEARCH SYSTEM
+        // YT SEARCH GRID FUNCTION
         function searchStudent() {
             const input = document.getElementById('studentSearch').value.toLowerCase().trim();
             const feed = document.getElementById('resultsFeed');
             const cards = document.querySelectorAll('.activity-marksheet-card');
             const noResults = document.getElementById('noResults');
             
-            // Sabhi Chalte videos ko pehle rokhien
             document.querySelectorAll('video').forEach(v => v.pause());
 
             if (input === "") {
@@ -458,11 +481,9 @@
             noResults.style.display = matchFound ? 'none' : 'block';
         }
 
-        // GRID KI VIDEO PAR CLICK KARNE SE FULLSCREEN PAR CHALANA
         function selectGridVideo(id) {
             if(!isGridMode) return;
 
-            // Clear search text and return to normal mode
             document.getElementById('studentSearch').value = "";
             isGridMode = false;
             
@@ -472,7 +493,6 @@
             const cards = document.querySelectorAll('.activity-marksheet-card');
             cards.forEach(card => { card.style.display = 'block'; });
 
-            // Specific target card scroll view and trigger
             const targetCard = document.getElementById(`card-${id}`);
             if(targetCard) {
                 targetCard.scrollIntoView();
@@ -510,7 +530,7 @@
             const container = document.getElementById('commentsListContainer');
             const comments = window.globalCommentsStorage[activeVideoId] || [];
             document.getElementById('totalCommentCount').innerText = comments.length;
-            if(comments.length === 0) { container.innerHTML = `<p style="text-align:center;font-size:13px;color:#94a3b8;margin-top:20px;">No comments yet.</p>`; return; }
+            if(comments.length === 0) { container.innerHTML = `<p style="text-align:center;font-size:13px;color:#aaa;margin-top:20px;">No comments yet.</p>`; return; }
             container.innerHTML = comments.map(c => `<div class="comment-item"><div class="comment-user">${c.name}</div><div>${c.text}</div></div>`).join('');
         }
         async function submitParentComment() {
@@ -550,7 +570,7 @@
             if(userFavs[videoId]) { element.classList.remove('favorited'); delete userFavs[videoId]; }
             else { element.classList.add('favorited'); userFavs[videoId] = true; }
             localStorage.setItem('user_favorited_activities', JSON.stringify(userFavs));
-            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { favorites: finalCount }); } catch (e) {}
+            try { await window.updateDoc(window.doc(window.db, "activities", videoId), { favorites: finalCount }); } catch (e_err) {}
         }
     </script>
 </body>
