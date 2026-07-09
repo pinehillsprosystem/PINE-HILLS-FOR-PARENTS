@@ -423,59 +423,51 @@
         let totalFeedCount = 0;
         let isInitialLoadFinished = false; 
 
-        // Service Worker REGISTRATION FOR LIVE HTTPS SITES
+        // FIXED SERVICE WORKER PATH FOR GITHUB PAGES SUB-DIRECTORY
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker Active for Push Alerts:', reg.scope))
-                .catch(err => console.error('Service Worker Error:', err));
+                navigator.serviceWorker.register('./sw.js') // Added relative path dot (.) for github subfolder
+                .then(reg => console.log('GitHub SW Registered Successfully:', reg.scope))
+                .catch(err => console.error('GitHub SW Registration Error:', err));
             });
         }
 
-        // PERMANENT MEMORY CHECK: Check localStorage & Native Browser State
+        // CONTROL POPUP ON GITHUB PRODUCTION ENVIRONMENT
         function checkNotificationStatus() {
             if ("Notification" in window) {
                 const isAlreadySaved = localStorage.getItem('parent_notif_allowed');
                 
-                // Agar pehle se allowed hai ya local memory me status safe hai to popup nhi aayega
+                // Agar already saved hai to display close rakhein
                 if (Notification.permission === "granted" || isAlreadySaved === "true") {
                     document.getElementById('notificationOverlay').style.display = 'none';
                     return;
                 }
                 
-                // Agar blocked hai ya default hai to central banner popup khulega
-                if (Notification.permission === "default" || Notification.permission === "denied") {
-                    document.getElementById('notificationOverlay').style.display = 'flex';
-                }
+                // Open overlay for first interaction
+                document.getElementById('notificationOverlay').style.display = 'flex';
             } else {
-                // Background fallback agar browser supports na kare
                 document.getElementById('notificationOverlay').style.display = 'flex';
             }
         }
 
-        // Action when Parents click "OK" - Voice prompt + Native Permission Dialog
+        // Action when Parents click "OK"
         function grantMobileNotification() {
-            // 1. Voice Output (Siri/Google Clear Prompt Accent)
+            // 1. Text to Speech voice processing with instant activation
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Reset any ongoing speech threads
+                window.speechSynthesis.cancel();
                 let speech = new SpeechSynthesisUtterance();
                 speech.text = "Upar allow par click karein";
                 speech.lang = "hi-IN"; 
-                speech.rate = 0.95; // Slightly clear and slow pace
+                speech.rate = 0.9; 
                 window.speechSynthesis.speak(speech);
             }
 
-            // 2. Request Native Dialog Popup
+            // 2. Request native platform dialog prompt
             if ("Notification" in window) {
                 Notification.requestPermission().then(permission => {
                     document.getElementById('notificationOverlay').style.display = 'none';
-                    
-                    // State safe in Memory permanent
-                    if(permission === 'granted' || permission === 'default') {
-                        localStorage.setItem('parent_notif_allowed', 'true');
-                    }
+                    localStorage.setItem('parent_notif_allowed', 'true');
                 }).catch(() => {
-                    // Mobile Edge/Safari handling error backup
                     localStorage.setItem('parent_notif_allowed', 'true');
                     document.getElementById('notificationOverlay').style.display = 'none';
                 });
@@ -485,8 +477,8 @@
             }
         }
 
-        // Trigger check 1.2 seconds after core load finishes
-        setTimeout(checkNotificationStatus, 1200);
+        // Trigger prompt popup instantly on page load finish
+        setTimeout(checkNotificationStatus, 1000);
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
