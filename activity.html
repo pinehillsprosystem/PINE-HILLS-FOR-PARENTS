@@ -426,24 +426,24 @@
         // FIXED SERVICE WORKER PATH FOR GITHUB PAGES SUB-DIRECTORY
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js') // Added relative path dot (.) for github subfolder
+                navigator.serviceWorker.register('./sw.js')
                 .then(reg => console.log('GitHub SW Registered Successfully:', reg.scope))
                 .catch(err => console.error('GitHub SW Registration Error:', err));
             });
         }
 
-        // CONTROL POPUP ON GITHUB PRODUCTION ENVIRONMENT
+        // TRIGGER CONTROL POPUP VIA MOBILE USER GESTURE (TOUCH)
         function checkNotificationStatus() {
             if ("Notification" in window) {
                 const isAlreadySaved = localStorage.getItem('parent_notif_allowed');
                 
-                // Agar already saved hai to display close rakhein
+                // If allowed, exit instantly
                 if (Notification.permission === "granted" || isAlreadySaved === "true") {
                     document.getElementById('notificationOverlay').style.display = 'none';
                     return;
                 }
                 
-                // Open overlay for first interaction
+                // Show overlay explicitly on user interaction anchor
                 document.getElementById('notificationOverlay').style.display = 'flex';
             } else {
                 document.getElementById('notificationOverlay').style.display = 'flex';
@@ -452,7 +452,7 @@
 
         // Action when Parents click "OK"
         function grantMobileNotification() {
-            // 1. Text to Speech voice processing with instant activation
+            // 1. Voice prompt for mobile optimization
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 let speech = new SpeechSynthesisUtterance();
@@ -462,7 +462,7 @@
                 window.speechSynthesis.speak(speech);
             }
 
-            // 2. Request native platform dialog prompt
+            // 2. Fire Prompt
             if ("Notification" in window) {
                 Notification.requestPermission().then(permission => {
                     document.getElementById('notificationOverlay').style.display = 'none';
@@ -476,9 +476,6 @@
                 document.getElementById('notificationOverlay').style.display = 'none';
             }
         }
-
-        // Trigger prompt popup instantly on page load finish
-        setTimeout(checkNotificationStatus, 1000);
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
@@ -632,7 +629,6 @@
             }
         });
 
-        // Window resize adjustment
         window.addEventListener('resize', () => {
             const containerHeight = container.clientHeight;
             document.querySelectorAll('.video-post').forEach(post => {
@@ -701,7 +697,13 @@
             btn.classList.toggle('liked');
         }
 
+        // CAPTURE FIRST USER INTERACTION CLICK TO TRIGGER MOBILE NOTIFICATIONS LAZILY
         container.addEventListener('click', (e) => {
+            // Mobile Optimization Check Trigger
+            if(!isUserInteracted) {
+                checkNotificationStatus();
+            }
+
             if(e.target.closest('.action-sidebar') || e.target.closest('.search-control-container') || e.target.closest('.search-overlay-page') || e.target.closest('.notif-overlay-bg')) return;
             
             const posts = document.querySelectorAll('.video-post');
@@ -757,6 +759,11 @@
             let diffY = touchStartY - touchEndY;
 
             if (Math.abs(diffY) > 60) {
+                // Mobile Gesture Anchor trigger
+                if(!isUserInteracted) {
+                    checkNotificationStatus();
+                }
+
                 let previousIndex = currentFeedIndex;
                 if (diffY > 0) {
                     if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
