@@ -423,58 +423,70 @@
         let totalFeedCount = 0;
         let isInitialLoadFinished = false; 
 
-        // Service Worker Fake registration for Mobile push triggering
+        // Service Worker REGISTRATION FOR LIVE HTTPS SITES
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdwdXNoJywgZnVuY3Rpb24oZSl7fSk7').catch(() => {});
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker Active for Push Alerts:', reg.scope))
+                .catch(err => console.error('Service Worker Error:', err));
+            });
         }
 
-        // PERMANENT FIX: Check localStorage + Browser Permission status
+        // PERMANENT MEMORY CHECK: Check localStorage & Native Browser State
         function checkNotificationStatus() {
             if ("Notification" in window) {
                 const isAlreadySaved = localStorage.getItem('parent_notif_allowed');
                 
-                // Agar pehle se permission granted hai ya localStorage me save hai, to popup nahi dikhayenge
+                // Agar pehle se allowed hai ya local memory me status safe hai to popup nhi aayega
                 if (Notification.permission === "granted" || isAlreadySaved === "true") {
                     document.getElementById('notificationOverlay').style.display = 'none';
                     return;
                 }
                 
-                // Agar permission abhi tak default hai, to overlay show hoga
-                if (Notification.permission === "default") {
+                // Agar blocked hai ya default hai to central banner popup khulega
+                if (Notification.permission === "default" || Notification.permission === "denied") {
                     document.getElementById('notificationOverlay').style.display = 'flex';
                 }
+            } else {
+                // Background fallback agar browser supports na kare
+                document.getElementById('notificationOverlay').style.display = 'flex';
             }
         }
 
-        // Action when Parents click "OK" - Speaks voice prompt and requests permission
+        // Action when Parents click "OK" - Voice prompt + Native Permission Dialog
         function grantMobileNotification() {
-            // 1. Speak Voice Prompt immediately
+            // 1. Voice Output (Siri/Google Clear Prompt Accent)
             if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Reset any ongoing speech threads
                 let speech = new SpeechSynthesisUtterance();
                 speech.text = "Upar allow par click karein";
-                speech.lang = "hi-IN"; // Hindi/Urdu voice accent for perfect pronunciation
-                speech.rate = 1.0;
+                speech.lang = "hi-IN"; 
+                speech.rate = 0.95; // Slightly clear and slow pace
                 window.speechSynthesis.speak(speech);
             }
 
-            // 2. Trigger native permission dialog
+            // 2. Request Native Dialog Popup
             if ("Notification" in window) {
                 Notification.requestPermission().then(permission => {
                     document.getElementById('notificationOverlay').style.display = 'none';
                     
-                    if(permission === 'granted') {
-                        // Permanent Save: Ab agli baar yeh screen par nahi aayega
+                    // State safe in Memory permanent
+                    if(permission === 'granted' || permission === 'default') {
                         localStorage.setItem('parent_notif_allowed', 'true');
-                        console.log("Notification allowed and saved in memory.");
                     }
+                }).catch(() => {
+                    // Mobile Edge/Safari handling error backup
+                    localStorage.setItem('parent_notif_allowed', 'true');
+                    document.getElementById('notificationOverlay').style.display = 'none';
                 });
             } else {
+                localStorage.setItem('parent_notif_allowed', 'true');
                 document.getElementById('notificationOverlay').style.display = 'none';
             }
         }
 
-        // Trigger Banner check 1.5 seconds after load
-        setTimeout(checkNotificationStatus, 1500);
+        // Trigger check 1.2 seconds after core load finishes
+        setTimeout(checkNotificationStatus, 1200);
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
