@@ -316,7 +316,6 @@
 
     <div class="app-container" id="appContainer">
         
-        <!-- Header -->
         <div class="header-wrapper">
             <div class="search-control-container">
                 <button class="search-trigger-btn" onclick="openSearchSystem()">
@@ -325,7 +324,6 @@
             </div>
         </div>
 
-        <!-- Search Overlay Screen -->
         <div class="search-overlay-page" id="searchOverlayPage">
             <div class="search-header-bar">
                 <div class="search-input-wrapper">
@@ -337,7 +335,6 @@
             <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
 
-        <!-- Dynamic Feed -->
         <div id="dynamicFeed">
             <div class="no-data">Syncing with server...</div>
         </div>
@@ -363,14 +360,19 @@
         let localVideosData = []; 
         let currentFeedIndex = 0;
         let totalFeedCount = 0;
-        let isInitialLoadFinished = false; // To prevent notifications for old videos during initial load
+        let isInitialLoadFinished = false; 
 
-        // Notification Permission Request
-        if ("Notification" in window) {
-            if (Notification.permission !== "granted" && Notification.permission !== "denied") {
-                Notification.requestPermission();
+        // 1. Notification Permission Request Immediately on Load
+        function requestNotificationPermission() {
+            if ("Notification" in window) {
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        console.log("Notification permission status:", permission);
+                    });
+                }
             }
         }
+        requestNotificationPermission();
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
@@ -398,6 +400,15 @@
                 }
             });
         }
+
+        // 2. Initial Data Load & Track when it completes
+        database.ref('videos').once('value', (snapshot) => {
+            // Hum ek chota delay de rhe hain taake first rendering complete ho jaye
+            setTimeout(() => {
+                isInitialLoadFinished = true;
+                console.log("Notification system is live and monitoring new uploads.");
+            }, 1500);
+        });
 
         // Fetch Data Realtime & Handle Dynamic Updates
         database.ref('videos').on('value', (snapshot) => {
@@ -436,7 +447,6 @@
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
 
-                    <!-- Sidebar Buttons -->
                     <div class="action-sidebar">
                         <button class="action-btn" onclick="toggleLike(this)">
                             <div class="icon-circle">
@@ -473,36 +483,35 @@
                 feed.appendChild(postBlock);
                 index++;
             }
+            
+            // Notification ke click par focus lagane ke liye real index match karne ki logic
+            const totalCountBeforeUpdate = totalFeedCount;
             totalFeedCount = index;
             
-            // If it's a dynamic update rather than initial load, keep the user on current video
             if (!isInitialLoadFinished) {
                 currentFeedIndex = 0;
                 feed.style.transform = `translateY(0px)`;
                 isUserInteracted = false;
                 updateVideoPlayback();
-                isInitialLoadFinished = true;
             }
         });
 
-        // Listen for newly added children to trigger a notification
+        // 3. Perfect Child Added Listener (Trigger on Admin Upload)
         database.ref('videos').limitToLast(1).on('child_added', (snapshot) => {
-            // Only trigger if initial data has loaded to prevent spamming old updates
             if (!isInitialLoadFinished) return;
 
             const newVideo = snapshot.val();
-            
-            // Send standard web notification
+            console.log("Admin Upload Detected:", newVideo);
+
             if ("Notification" in window && Notification.permission === "granted") {
-                const notification = new Notification("New Activity Video Uploaded!", {
+                const notification = new Notification("New Activity Video Uploaded! 🎬", {
                     body: `${newVideo.username} uploaded a new activity. Click to watch!`,
-                    icon: 'https://img.icons8.com/color/96/tiktok.png' // temporary placeholder icon
+                    icon: 'https://img.icons8.com/color/96/tiktok.png'
                 });
 
-                // Auto-scroll to the newly uploaded video on click
                 notification.onclick = function() {
                     window.focus();
-                    // Find the newly added video index in local data array
+                    // Nayi list me se iska dom index search krein
                     const targetIdx = localVideosData.findIndex(item => item.videoUrl === newVideo.videoUrl);
                     if (targetIdx !== -1) {
                         scrollToSelectedVideo(targetIdx);
