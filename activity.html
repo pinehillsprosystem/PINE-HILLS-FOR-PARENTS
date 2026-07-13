@@ -60,60 +60,6 @@
         }
         .search-trigger-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         
-        /* SCREEN CENTER NOTIFICATION ALERT BANNER WITH BLUR OVERLAY */
-        .notif-overlay-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            display: none; /* Controlled by JS */
-            justify-content: center;
-            align-items: center;
-        }
-        .notif-banner {
-            width: 85%;
-            background: rgba(254, 44, 85, 0.98); /* TikTok Theme Red */
-            color: white;
-            padding: 24px;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-            text-align: center;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .notif-banner span {
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.4;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-        .notif-banner button {
-            background: white;
-            color: #fe2c55;
-            border: none;
-            padding: 10px 45px;
-            border-radius: 25px;
-            font-weight: 800;
-            font-size: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.1s ease;
-        }
-        .notif-banner button:active {
-            transform: scale(0.95);
-        }
-
         /* Search Overlay */
         .search-overlay-page {
             position: absolute;
@@ -370,13 +316,7 @@
 
     <div class="app-container" id="appContainer">
         
-        <div class="notif-overlay-bg" id="notificationOverlay">
-            <div class="notif-banner">
-                <span>Mazeed videos ke liye OK karein! 🔔</span>
-                <button onclick="grantMobileNotification()">OK</button>
-            </div>
-        </div>
-
+        <!-- Header -->
         <div class="header-wrapper">
             <div class="search-control-container">
                 <button class="search-trigger-btn" onclick="openSearchSystem()">
@@ -385,6 +325,7 @@
             </div>
         </div>
 
+        <!-- Search Overlay Screen -->
         <div class="search-overlay-page" id="searchOverlayPage">
             <div class="search-header-bar">
                 <div class="search-input-wrapper">
@@ -396,6 +337,7 @@
             <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
 
+        <!-- Dynamic Feed -->
         <div id="dynamicFeed">
             <div class="no-data">Syncing with server...</div>
         </div>
@@ -421,61 +363,6 @@
         let localVideosData = []; 
         let currentFeedIndex = 0;
         let totalFeedCount = 0;
-        let isInitialLoadFinished = false; 
-
-        // FIXED SERVICE WORKER PATH FOR GITHUB PAGES SUB-DIRECTORY
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('GitHub SW Registered Successfully:', reg.scope))
-                .catch(err => console.error('GitHub SW Registration Error:', err));
-            });
-        }
-
-        // TRIGGER CONTROL POPUP VIA MOBILE USER GESTURE (TOUCH)
-        function checkNotificationStatus() {
-            if ("Notification" in window) {
-                const isAlreadySaved = localStorage.getItem('parent_notif_allowed');
-                
-                // If allowed, exit instantly
-                if (Notification.permission === "granted" || isAlreadySaved === "true") {
-                    document.getElementById('notificationOverlay').style.display = 'none';
-                    return;
-                }
-                
-                // Show overlay explicitly on user interaction anchor
-                document.getElementById('notificationOverlay').style.display = 'flex';
-            } else {
-                document.getElementById('notificationOverlay').style.display = 'flex';
-            }
-        }
-
-        // Action when Parents click "OK"
-        function grantMobileNotification() {
-            // 1. Voice prompt for mobile optimization
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                let speech = new SpeechSynthesisUtterance();
-                speech.text = "Upar allow par click karein";
-                speech.lang = "hi-IN"; 
-                speech.rate = 0.9; 
-                window.speechSynthesis.speak(speech);
-            }
-
-            // 2. Fire Prompt
-            if ("Notification" in window) {
-                Notification.requestPermission().then(permission => {
-                    document.getElementById('notificationOverlay').style.display = 'none';
-                    localStorage.setItem('parent_notif_allowed', 'true');
-                }).catch(() => {
-                    localStorage.setItem('parent_notif_allowed', 'true');
-                    document.getElementById('notificationOverlay').style.display = 'none';
-                });
-            } else {
-                localStorage.setItem('parent_notif_allowed', 'true');
-                document.getElementById('notificationOverlay').style.display = 'none';
-            }
-        }
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
@@ -504,15 +391,8 @@
             });
         }
 
-        // Track initial video loading state
-        database.ref('videos').once('value', (snapshot) => {
-            setTimeout(() => {
-                isInitialLoadFinished = true;
-            }, 2000);
-        });
-
-        // Fetch Data Realtime & Handle Dynamic Updates
-        database.ref('videos').on('value', (snapshot) => {
+       // Fetch Data Realtime (Updated to show newest first)
+        database.ref('videos').orderByChild('timestamp').on('value', (snapshot) => {
             const data = snapshot.val();
             feed.innerHTML = '';
             localVideosData = []; 
@@ -523,10 +403,10 @@
                 return;
             }
 
-            let index = 0;
-            for(let id in data) {
-                const videoData = data[id];
-                
+            // Data ko array mein convert karke reverse kar rahe hain
+            const videoEntries = Object.entries(data).reverse(); 
+
+            videoEntries.forEach(([id, videoData], index) => {
                 localVideosData.push({
                     domIndex: index,
                     username: videoData.username,
@@ -565,7 +445,7 @@
 
                         <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
                             <div class="icon-circle" style="background: rgba(37, 211, 102, 0.25);">
-                                <svg viewBox="0 0 24 24" style="fill: #25D366;"><path d="M24 11.66c0 6.44-5.22 11.66-11.66 11.66-2.06 0-3.99-.54-5.68-1.48L0 24l2.21-6.5C1.16 15.8 0.53 13.8 0.53 11.66 0.53 5.22 5.75 0 12.19 0 18.72 0 24 5.22 24 11.66zM12.19 1.9c-5.38 0-9.76 4.38-9.76 9.76 0 2.24.76 4.32 2.03 6l-1.33 3.93 4.07-1.31c1.6.99 3.49 1.57 5.51 1.57 5.38 0 9.76-4.38 9.76-9.76 0-5.38-4.38-9.76-9.76-9.76z"/></svg>
+                                <svg viewBox="0 0 24 24" style="fill: #25D366;"><path d="M24 11.66c0 6.44-5.22 11.66-11.66 11.66-2.06 0-3.99-.54-5.68-1.48L0 24l2.21-6.5C1.16 15.8 0.53 13.8 0.53 11.66 0.53 5.22 5.75 0 12.19 0 18.72 0 24 11.66zM12.19 1.9c-5.38 0-9.76 4.38-9.76 9.76 0 2.24.76 4.32 2.03 6l-1.33 3.93 4.07-1.31c1.6.99 3.49 1.57 5.51 1.57 5.38 0 9.76-4.38 9.76-9.76 0-5.38-4.38-9.76-9.76-9.76z"/></svg>
                             </div>
                             <span>Share</span>
                         </button>
@@ -582,53 +462,16 @@
                     </div>
                 `;
                 feed.appendChild(postBlock);
-                index++;
-            }
-            totalFeedCount = index;
+            });
             
-            if (!isInitialLoadFinished) {
-                currentFeedIndex = 0;
-                feed.style.transform = `translateY(0px)`;
-                isUserInteracted = false;
-                updateVideoPlayback();
-            }
+            totalFeedCount = videoEntries.length;
+            currentFeedIndex = 0;
+            feed.style.transform = `translateY(0px)`;
+            isUserInteracted = false;
+            updateVideoPlayback();
         });
 
-        // Child Added Listener (Realtime Trigger from Admin Panel)
-        database.ref('videos').limitToLast(1).on('child_added', (snapshot) => {
-            if (!isInitialLoadFinished) return;
-
-            const newVideo = snapshot.val();
-
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    const notification = new Notification("New Activity Video Uploaded! 🎬", {
-                        body: `${newVideo.username} uploaded a new activity. Click to watch!`,
-                        icon: 'https://img.icons8.com/color/96/tiktok.png',
-                        tag: 'new-video-alert',
-                        renotify: true
-                    });
-
-                    notification.onclick = function() {
-                        window.focus();
-                        const targetIdx = localVideosData.findIndex(item => item.videoUrl === newVideo.videoUrl);
-                        if (targetIdx !== -1) {
-                            scrollToSelectedVideo(targetIdx);
-                        }
-                    };
-                } catch (mobileError) {
-                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                        navigator.serviceWorker.ready.then(registration => {
-                            registration.showNotification("New Activity Video Uploaded! 🎬", {
-                                body: `${newVideo.username} uploaded a new activity.`,
-                                icon: 'https://img.icons8.com/color/96/tiktok.png'
-                            });
-                        });
-                    }
-                }
-            }
-        });
-
+        // Window resize adjustment
         window.addEventListener('resize', () => {
             const containerHeight = container.clientHeight;
             document.querySelectorAll('.video-post').forEach(post => {
@@ -697,14 +540,8 @@
             btn.classList.toggle('liked');
         }
 
-        // CAPTURE FIRST USER INTERACTION CLICK TO TRIGGER MOBILE NOTIFICATIONS LAZILY
         container.addEventListener('click', (e) => {
-            // Mobile Optimization Check Trigger
-            if(!isUserInteracted) {
-                checkNotificationStatus();
-            }
-
-            if(e.target.closest('.action-sidebar') || e.target.closest('.search-control-container') || e.target.closest('.search-overlay-page') || e.target.closest('.notif-overlay-bg')) return;
+            if(e.target.closest('.action-sidebar') || e.target.closest('.search-control-container') || e.target.closest('.search-overlay-page')) return;
             
             const posts = document.querySelectorAll('.video-post');
             const currentPost = posts[currentFeedIndex];
@@ -759,11 +596,6 @@
             let diffY = touchStartY - touchEndY;
 
             if (Math.abs(diffY) > 60) {
-                // Mobile Gesture Anchor trigger
-                if(!isUserInteracted) {
-                    checkNotificationStatus();
-                }
-
                 let previousIndex = currentFeedIndex;
                 if (diffY > 0) {
                     if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
