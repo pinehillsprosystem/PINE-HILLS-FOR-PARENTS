@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notice Admin Panel - Pine Hills School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body { 
+            padding: 40px 20px; 
+            background: #f8fafc; 
+            color: #0f172a;
+        }
+        .admin-card { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08); 
+            border: 1px solid #e2e8f0;
+        }
+        h2 { 
+            color: #0f172a; 
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px; 
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+        h3 {
+            font-size: 18px;
+            color: #1e40af;
+            margin-bottom: 15px;
+        }
+        label { 
+            font-weight: 600; 
+            display: block; 
+            margin-top: 15px; 
+            color: #334155; 
+            font-size: 14px;
+        }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            margin-top: 8px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 10px; 
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        button { 
+            margin-top: 20px; 
+            width: 100%; 
+            padding: 14px; 
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+            color: white; 
+            font-size: 15px;
+            font-weight: 600; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.3s ease;
+        }
+        button:hover { 
+            background: linear-gradient(135deg, #1d4ed8, #1e40af); 
+            transform: translateY(-1px);
+        }
+        hr {
+            margin: 35px 0; 
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-card">
+    <h2>📢 Notice Update & Push Panel</h2>
+    
+    <!-- Top Announcement Bar Update -->
+    <h3>1. Top Announcement Bar</h3>
+    <label for="topNoticeInput">Top Bar Text:</label>
+    <input type="text" id="topNoticeInput" value="Notice : School has opened.">
+    <button type="button" onclick="updateTopBar()">Update Top Bar & Send Alert</button>
+
+    <hr>
+
+    <!-- Main Notice Board Update -->
+    <h3>2. Main Notice Board</h3>
+    <label for="noticeTagInput">Notice Tag Type:</label>
+    <select id="noticeTagInput">
+        <option value="Urgent">Urgent</option>
+        <option value="New">New</option>
+        <option value="Event">Event</option>
+    </select>
+
+    <label for="mainNoticeInput">Main Notice Text:</label>
+    <textarea id="mainNoticeInput" rows="4">Monthly Tests and Progress Reports are now uploaded. Please check your child's performance database.</textarea>
+
+    <button type="button" onclick="updateMainNotice()">Update Main Notice & Send Alert</button>
+</div>
+
+<script>
+    const ONESIGNAL_APP_ID = "eed2d7bf-486c-4706-90ef-8544286309b9";
+    const ONESIGNAL_REST_API_KEY = "dzab5gasyeran6supqpphonnv"; 
+
+    // Auto load saved data
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTop = localStorage.getItem('school_top_announcement');
+        if (savedTop) document.getElementById('topNoticeInput').value = savedTop;
+
+        const savedText = localStorage.getItem('school_notice_text');
+        if (savedText) document.getElementById('mainNoticeInput').value = savedText;
+
+        const savedTag = localStorage.getItem('school_notice_type');
+        if (savedTag) document.getElementById('noticeTagInput').value = savedTag;
+    });
+
+    // Core Push Notification Engine
+    async function sendPushNotification(title, message) {
+        const options = {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Authorization': 'Key ' + ONESIGNAL_REST_API_KEY,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                app_id: ONESIGNAL_APP_ID,
+                included_segments: ['Subscribed Users', 'Total Subscriptions'],
+                headings: { en: title },
+                contents: { en: message },
+                sound: "default"
+            })
+        };
+
+        try {
+            let res = await fetch('https://onesignal.com/api/v1/notifications', options);
+            let data = await res.json();
+            
+            if (data.id) {
+                alert("✅ Notice updated & Push Notification sent successfully!");
+            } else if (data.errors) {
+                alert("⚠️ Notice updated locally!\nOneSignal Note: " + JSON.stringify(data.errors));
+            } else {
+                alert("✅ Notice updated locally!");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("✅ Notice updated locally!\n(Note: Direct local file se notification request browser block karta hai, site publish hone par push notification live chala jayega).");
+        }
+    }
+
+    function updateTopBar() {
+        const text = document.getElementById('topNoticeInput').value;
+        if (!text.trim()) {
+            alert("Please enter top bar text!");
+            return;
+        }
+        localStorage.setItem('school_top_announcement', text);
+        sendPushNotification("Pine Hills School - Top Announcement", text);
+    }
+
+    function updateMainNotice() {
+        const tag = document.getElementById('noticeTagInput').value;
+        const text = document.getElementById('mainNoticeInput').value;
+        if (!text.trim()) {
+            alert("Please enter main notice text!");
+            return;
+        }
+        const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+        localStorage.setItem('school_notice_type', tag);
+        localStorage.setItem('school_notice_text', text);
+        localStorage.setItem('school_notice_date', dateStr);
+
+        sendPushNotification("Pine Hills School - " + tag + " Notice", text);
+    }
+</script>
+
+</body>
+</html>
