@@ -7,11 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- ONESIGNAL PUSH ENGINE -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <!-- 📲 ONESIGNAL AUTOMATIC MOBILE FORCE PROMPT ENGINE -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignal.public.js" defer></script>
     <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
+      window.OneSignal = window.OneSignal || [];
+      OneSignal.push(async function() {
         await OneSignal.init({
           appId: "eed2d7bf-486c-4706-90ef-8544286309b9",
           safari_web_id: "web.onesignal.auto.17b4fe2b-df5c-42cb-b166-4e5b721869b9",
@@ -23,10 +23,22 @@
           },
         });
 
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/PINE-HILLS-FOR-PARENTS/OneSignalSDKWorker.js', {
+                scope: '/PINE-HILLS-FOR-PARENTS/'
+            }).then(function(reg) {
+                console.log('Push Service Worker Registered Successfully!', reg);
+            }).catch(function(err) {
+                console.log('Worker Registration Failed:', err);
+            });
+        }
+        
         setTimeout(async () => {
             try {
                 if (OneSignal.Notifications && typeof OneSignal.Notifications.requestPermission === 'function') {
                     await OneSignal.Notifications.requestPermission();
+                } else {
+                    await OneSignal.Slidedown.showPushPrompt();
                 }
             } catch(e) {
                 console.log("Auto prompt triggered:", e);
@@ -69,7 +81,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- LIGHTING TOP ANNOUNCEMENT BAR --- */
+        /* --- 🚨 LIGHTING TOP ANNOUNCEMENT BAR --- */
         .top-announcement-bar {
             background: linear-gradient(90deg, #dc2626, #ef4444, #f97316, #dc2626);
             background-size: 300% 100%;
@@ -105,7 +117,7 @@
             50% { transform: scale(1.3); opacity: 0.7; }
         }
 
-        /* --- STICKY GLASSMORPHISM NAVIGATION --- */
+        /* --- 💎 STICKY GLASSMORPHISM NAVIGATION --- */
         header {
             width: 100%;
             background: rgba(255, 255, 255, 0.85);
@@ -213,7 +225,7 @@
             border: none;
         }
 
-        /* --- FUTURISTIC HERO BANNER --- */
+        /* --- 🌌 FUTURISTIC HERO BANNER --- */
         .hero-section {
             width: 100%;
             display: flex;
@@ -327,7 +339,7 @@
             mask-image: linear-gradient(to right, transparent, black 30%);
         }
 
-        /* --- LIGHTING NOTICE BOARD SECTION --- */
+        /* --- 📣 LIGHTING NOTICE BOARD SECTION --- */
         .notice-section {
             max-width: 1280px;
             margin: -45px auto 0 auto;
@@ -420,7 +432,7 @@
             font-weight: 500;
         }
 
-        /* --- CYBER-GLOW CARDS SECTION --- */
+        /* --- 💎 CYBER-GLOW CARDS SECTION --- */
         .services-section {
             max-width: 1280px;
             margin: 0 auto;
@@ -618,9 +630,9 @@
 </head>
 <body>
 
-<div class="top-announcement-bar" id="topBarText">
-    <i class="fa-solid fa-bell"></i> Notice : School has opened.
-</div>
+    <div class="top-announcement-bar">
+        <i class="fa-solid fa-bell"></i> Notice : School has opened.
+    </div>
 
     <header>
         <div class="nav-container">
@@ -713,36 +725,31 @@
     </section>
 
     <script>
-window.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const menuLinks = document.getElementById('menuLinks');
-    if(menuBtn && menuLinks) {
+        // --- Mobile Menu Toggle Logic ---
+        const menuBtn = document.getElementById('menuBtn');
+        const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => {
             menuLinks.classList.toggle('active');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
         });
-    }
 
-    // Top Announcement Bar Local Read
-    const savedTopAnnouncement = localStorage.getItem('school_top_announcement');
-    if(savedTopAnnouncement) {
-        document.getElementById('topBarText').innerHTML = `<i class="fa-solid fa-bell"></i> ${savedTopAnnouncement}`;
-    }
+        // --- Local Notice Board Data Engine ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedText = localStorage.getItem('school_notice_text');
+            const savedTag = localStorage.getItem('school_notice_type'); // urgent, new, event
+            const savedDate = localStorage.getItem('school_notice_date');
 
-    // Main Notice Board Local Read
-    const savedText = localStorage.getItem('school_notice_text');
-    const savedTag = localStorage.getItem('school_notice_type');
-    const savedDate = localStorage.getItem('school_notice_date');
-
-    if(savedText) {
-        document.getElementById('noticeText').innerHTML = savedText;
-        document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
-        
-        const tagEl = document.getElementById('noticeTag');
-        tagEl.innerText = savedTag + " Notice";
-        tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
-    }
-});
+            if(savedText) {
+                document.getElementById('noticeText').innerHTML = savedText;
+                document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
+                
+                const tagEl = document.getElementById('noticeTag');
+                tagEl.innerText = savedTag + " Notice";
+                tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
+            }
+        });
     </script>
 
 </body>
