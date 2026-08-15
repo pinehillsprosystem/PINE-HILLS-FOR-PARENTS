@@ -630,9 +630,9 @@
 </head>
 <body>
 
-    <div class="top-announcement-bar">
-        <i class="fa-solid fa-bell"></i> Notice : School has opened.
-    </div>
+<div class="top-announcement-bar" id="topBarText">
+    <i class="fa-solid fa-bell"></i> Notice : School has opened.
+</div>
 
     <header>
         <div class="nav-container">
@@ -725,31 +725,27 @@
     </section>
 
     <script>
-        // --- Mobile Menu Toggle Logic ---
-        const menuBtn = document.getElementById('menuBtn');
-        const menuLinks = document.getElementById('menuLinks');
-        menuBtn.addEventListener('click', () => {
-            menuLinks.classList.toggle('active');
-            const icon = menuBtn.querySelector('i');
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-xmark');
-        });
+window.addEventListener('DOMContentLoaded', () => {
+    // Top Announcement Bar Local Read
+    const savedTopAnnouncement = localStorage.getItem('school_top_announcement');
+    if(savedTopAnnouncement) {
+        document.getElementById('topBarText').innerHTML = `<i class="fa-solid fa-bell"></i> ${savedTopAnnouncement}`;
+    }
 
-        // --- Local Notice Board Data Engine ---
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedText = localStorage.getItem('school_notice_text');
-            const savedTag = localStorage.getItem('school_notice_type'); // urgent, new, event
-            const savedDate = localStorage.getItem('school_notice_date');
+    // Main Notice Board Local Read
+    const savedText = localStorage.getItem('school_notice_text');
+    const savedTag = localStorage.getItem('school_notice_type');
+    const savedDate = localStorage.getItem('school_notice_date');
 
-            if(savedText) {
-                document.getElementById('noticeText').innerHTML = savedText;
-                document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
-                
-                const tagEl = document.getElementById('noticeTag');
-                tagEl.innerText = savedTag + " Notice";
-                tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
-            }
-        });
+    if(savedText) {
+        document.getElementById('noticeText').innerHTML = savedText;
+        document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
+        
+        const tagEl = document.getElementById('noticeTag');
+        tagEl.innerText = savedTag + " Notice";
+        tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
+    }
+});
     </script>
 
 </body>
