@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pine Hills School - Parent Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- ONESIGNAL AUTOMATIC MOBILE FORCE PROMPT ENGINE -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignal.public.js" defer></script>
+    <script>
+      window.OneSignal = window.OneSignal || [];
+      OneSignal.push(async function() {
+        await OneSignal.init({
+          appId: "eed2d7bf-486c-4706-90ef-8544286309b9",
+          safari_web_id: "web.onesignal.auto.17b4fe2b-df5c-42cb-b166-4e5b721869b9",
+          notifyButton: {
+            enable: true,
+            position: 'bottom-right',
+            size: 'medium',
+            theme: 'default'
+          },
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/PINE-HILLS-FOR-PARENTS/OneSignalSDKWorker.js', {
+                scope: '/PINE-HILLS-FOR-PARENTS/'
+            }).then(function(reg) {
+                console.log('Push Service Worker Registered Successfully!', reg);
+            }).catch(function(err) {
+                console.log('Worker Registration Failed:', err);
+            });
+        }
+        
+        setTimeout(async () => {
+            try {
+                if (OneSignal.Notifications && typeof OneSignal.Notifications.requestPermission === 'function') {
+                    await OneSignal.Notifications.requestPermission();
+                } else {
+                    await OneSignal.Slidedown.showPushPrompt();
+                }
+            } catch(e) {
+                console.log("Auto prompt triggered:", e);
+            }
+        }, 1500);
+      });
+    </script>
+
+    <style>
+        /* --- ULTRA-NEXT DESIGN SYSTEM & LIGHTING ENGINE --- */
+        :root {
+            --primary-dark: #030712;
+            --accent-blue: #2563eb;
+            --neon-cyan: #38bdf8;
+            --neon-purple: #818cf8;
+            --neon-pink: #f43f5e;
+            --light-bg: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --shadow-glow: 0 0 35px rgba(56, 189, 248, 0.35);
+            --shadow-card: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --danger-red: #ef4444;
+            --warning-gold: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- LIGHTING TOP ANNOUNCEMENT BAR --- */
+        .top-announcement-bar {
+            background: linear-gradient(90deg, #dc2626, #ef4444, #f97316, #dc2626);
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            color: var(--white);
+            text-align: center;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+            position: relative;
+            z-index: 1001;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .top-announcement-bar i {
+            font-size: 16px;
+            animation: pulseGlow 1.2s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.7; }
+        }
+
+        /* --- STICKY GLASSMORPHISM NAVIGATION --- */
+        header#siteHeader {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo-area:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+            border: 2px solid var(--neon-cyan);
+        }
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--neon-purple);
+            letter-spacing: 5px;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 15px;
+            position: relative;
+            padding: 8px 0;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            color: var(--primary-dark);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* --- FUTURISTIC HERO BANNER --- */
+        .hero-section {
+            width: 100%;
+            display: flex;
+            min-height: 560px;
+            background: var(--primary-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before, .hero-section::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            z-index: 1;
+            animation: floatGlow 10s infinite alternate ease-in-out;
+        }
+
+        .hero-section::before {
+            background: var(--neon-cyan);
+            top: -100px;
+            left: -100px;
+        }
+
+        .hero-section::after {
+            background: var(--neon-purple);
+            bottom: -100px;
+            right: 20%;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.3); }
+        }
+
+        .hero-left {
+            flex: 1 1 50%;
+            color: var(--white);
+            padding: 90px 60px 90px 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .parent-portal-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 22px;
+            color: var(--neon-cyan);
+            font-weight: 700;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            width: fit-content;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .hero-left h2 {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-left h2 span {
+            font-weight: 400;
+            background: linear-gradient(90deg, #ffffff, #93c5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .hero-left hr {
+            width: 70px;
+            border: none;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            margin-bottom: 30px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .hero-left p {
+            font-size: 16.5px;
+            line-height: 1.7;
+            max-width: 480px;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .hero-right {
+            flex: 1 1 50%;
+            position: relative;
+            background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmuaCyJ_1BBiscDaU6hRMKA5ZWz2TqQDkG3w&s');
+            background-size: cover;
+            background-position: center;
+            z-index: 5;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 30%);
+            mask-image: linear-gradient(to right, transparent, black 30%);
+        }
+
+        /* --- LIGHTING NOTICE BOARD SECTION --- */
+        .notice-section {
+            max-width: 1280px;
+            margin: -45px auto 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .notice-container {
+            background: rgba(255, 255, 255, 0.92);
+            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-left: 6px solid var(--neon-cyan);
+            border-radius: 24px;
+            padding: 30px 35px;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: var(--transition);
+        }
+
+        .notice-container:hover {
+            transform: translateY(-4px);
+        }
+
+        .notice-main {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            flex-grow: 1;
+        }
+
+        .notice-icon {
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            animation: pulseIcon 2s infinite;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .notice-content {
+            flex-grow: 1;
+        }
+
+        .notice-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .tag-urgent { background: #fee2e2; color: var(--danger-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tag-new { background: #e0f2fe; color: var(--accent-blue); border: 1px solid rgba(30, 64, 175, 0.3); }
+        .tag-event { background: #fef3c7; color: var(--warning-gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .notice-text {
+            font-size: 15px;
+            color: var(--text-dark);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .notice-text b {
+            color: var(--danger-red);
+        }
+
+        .notice-date {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: block;
+            font-weight: 500;
+        }
+
+        /* --- CYBER-GLOW CARDS SECTION --- */
+        .services-section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 24px 100px 24px;
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .services-header h2 {
+            font-size: 40px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #030712, #1e40af);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .services-header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 28px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 38px 24px 30px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 70%);
+            opacity: 0;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-wrapper {
+            width: 78px;
+            height: 78px;
+            background: #f0f9ff;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            border: 1px solid #e0f2fe;
+        }
+
+        .card:hover .icon-wrapper {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--accent-blue));
+            transform: scale(1.1) rotate(6deg);
+            box-shadow: var(--shadow-glow);
+            border-color: transparent;
+        }
+
+        .icon-wrapper i {
+            font-size: 32px;
+            color: var(--accent-blue);
+            transition: var(--transition);
+        }
+
+        .card:hover .icon-wrapper i {
+            color: var(--white);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 28px;
+            flex-grow: 1;
+        }
+
+        .explore-btn {
+            background: linear-gradient(90deg, #0f172a, #1e40af);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 13px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .explore-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.6s;
+        }
+
+        .card:hover .explore-btn::before {
+            left: 100%;
+        }
+
+        .card:hover .explore-btn {
+            background: linear-gradient(90deg, var(--neon-cyan), var(--accent-blue));
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* --- WINNER RECOGNITION PORTAL STYLES --- */
+        @keyframes goldGlow {
+            0%, 100% { box-shadow: 0 0 35px rgba(234, 179, 8, 0.7), 0 0 70px rgba(234, 179, 8, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(234, 179, 8, 1), 0 0 100px rgba(234, 179, 8, 0.7); }
+        }
+
+        @keyframes floatTrophy {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-12px) rotate(8deg) scale(1.1); }
+        }
+
+        @keyframes countPop {
+            0% { transform: scale(0.2); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        @keyframes revealCard {
+            0% { transform: translateY(50px) scale(0.8); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .gold-glow {
+            animation: goldGlow 2s infinite ease-in-out;
+            border: 4px solid #facc15;
+        }
+
+        .trophy-anim {
+            animation: floatTrophy 2s infinite ease-in-out;
+        }
+
+        .animate-count {
+            animation: countPop 1s ease-in-out infinite;
+        }
+
+        .card-enter {
+            animation: revealCard 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* --- RESPONSIVE BREAKPOINTS --- */
+        @media (max-width: 912px) {
+            .hero-section { flex-direction: column; }
+            .hero-left { padding: 60px 30px; text-align: center; align-items: center; }
+            .hero-right { min-height: 300px; -webkit-mask-image: none; mask-image: none; }
+            .notice-container { flex-direction: column; text-align: center; padding: 24px; }
+            .notice-main { flex-direction: column; gap: 14px; }
+            .notice-section { margin-top: -20px; }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(255, 255, 255, 0.96);
+                -webkit-backdrop-filter: blur(20px);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 40px;
+                gap: 30px;
+                transition: var(--transition);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            }
+            .nav-links.active { left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="sndFanfare" src="https://cdn.freesound.org/previews/270/270402_5123851-lq.mp3" preload="auto"></audio>
+    <audio id="sndCheer" src="https://cdn.freesound.org/previews/337/337049_3232293-lq.mp3" preload="auto"></audio>
+
+    <div class="top-announcement-bar" id="announcementBar">
+        <i class="fa-solid fa-bell"></i> Notice : School has opened.
+    </div>
+
+    <header id="siteHeader">
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="real logo copy.jpg" alt="Pine Hills Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>PINE HILLS</h1>
+                    <span>SCHOOL</span>
+                </div>
+            </a>
+            <nav>
+                <ul class="nav-links" id="menuLinks">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a onclick="showRecognitionPortal()">Student Recognition 🏆</a></li>
+                    <li><a href="activity.html">Activities</a></li>
+                    <li><a href="#">Academics</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+                <button class="menu-toggle" id="menuBtn" aria-label="Toggle Menu"><i class="fa-solid fa-bars"></i></button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN HOME WEBSITE CONTENT -->
+    <div id="mainWebsiteWrapper">
+        <section class="hero-section">
+            <div class="hero-left">
+                <div class="parent-portal-tag"><i class="fa-solid fa-shield-halved"></i> Parent Portal</div>
+                <h2>Together in Education,<br><span>Focused on Excellence.</span></h2>
+                <hr>
+                <p>Stay connected with your child's learning journey. Access important information, track progress, and engage with school activities.</p>
+            </div>
+            <div class="hero-right"></div>
+        </section>
+
+        <section class="notice-section">
+            <div class="notice-container">
+                <div class="notice-main">
+                    <div class="notice-icon">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div class="notice-content">
+                        <span class="notice-tag tag-urgent" id="noticeTag">Urgent Notice</span>
+                        <p class="notice-text" id="noticeText">Monthly Tests and Progress Reports are now uploaded. Please check your child's performance database. <br><b>Tafseel:</b> School ki chuttiyan khatam hone ke baad school dobara <b>3 August 2026</b> ko khulega.</p>
+                        <span class="notice-date" id="noticeDate">Updated: June 20, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="services-section">
+            <div class="services-header">
+                <h2>Explore Parent Services</h2>
+                <p>Select an option below to access the information and services you need for your child.</p>
+            </div>
+
+            <div class="cards-grid">
+                <!-- RECOGNITION PORTAL INTEGRATED CARD -->
+                <div class="card" onclick="showRecognitionPortal()">
+                    <div class="icon-wrapper"><i class="fa-solid fa-trophy text-amber-500"></i></div>
+                    <h3>Student Recognition</h3>
+                    <p>View top performers, Student of the Month, and honor winners.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="card" onclick="location.href='activity.html'">
+                    <div class="icon-wrapper"><i class="fa-solid fa-user-group"></i></div>
+                    <h3>Videos</h3>
+                    <p>View your child's participation in school activities and events.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="card" onclick="location.href='monthly-test.html'">
+                    <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <h3>Monthly Tests</h3>
+                    <p>Check monthly test schedules and performance reports.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="card" onclick="location.href='exam-result.html'">
+                    <div class="icon-wrapper"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <h3>Result</h3>
+                    <p>Access your child's academic results and track their progress.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="card" onclick="location.href='admission.html'">
+                    <div class="icon-wrapper"><i class="fa-regular fa-file-lines"></i></div>
+                    <h3>Online Admission</h3>
+                    <p>Apply for new admission online quickly and securely.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <div class="card">
+                    <div class="icon-wrapper"><i class="fa-regular fa-id-card"></i></div>
+                    <h3>Admit Card</h3>
+                    <p>Download and view your child's admit card for exams.</p>
+                    <button class="explore-btn">Explore <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- STUDENT RECOGNITION PORTAL CONTAINER -->
+    <div id="recognitionPortalWrapper" class="hidden bg-slate-950 text-slate-100 min-h-screen py-6 px-3 md:px-6">
+        
+        <!-- RESPONSIVE HEADER FOR MOBILE & DESKTOP -->
+        <header id="mainHeader" class="hidden bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-2xl sticky top-2 z-50 shadow-2xl mb-6 p-4">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3 text-center sm:text-left">
+                    <div class="p-2.5 bg-gradient-to-br from-amber-500 to-yellow-600 text-slate-950 rounded-xl shadow-lg shadow-amber-500/20 shrink-0">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg md:text-xl font-extrabold text-white tracking-wide">Pine Hills School</h1>
+                        <p class="text-xs text-amber-400 font-medium">Student of the Month Ceremony 🏆</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap sm:flex-nowrap justify-center gap-2 w-full sm:w-auto">
+                    <button onclick="resetToHome()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-arrow-left"></i> Change Class
+                    </button>
+                    <button onclick="hideRecognitionPortal()" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i> Back to Main Site
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto flex-grow flex flex-col justify-center items-center w-full">
+
+            <section id="pageClassSelection" class="w-full flex flex-col items-center justify-center min-h-[70vh] text-center">
+                <div class="mb-4">
+                    <button onclick="hideRecognitionPortal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-5 py-2 rounded-full border border-slate-700 mb-4 cursor-pointer">
+                        ← Back to School Website
+                    </button>
+                </div>
+                <div class="mb-8 max-w-xl mx-auto">
+                    <span class="text-xs md:text-sm font-extrabold text-amber-400 uppercase tracking-widest bg-amber-500/10 border border-amber-500/20 px-5 py-1.5 rounded-full inline-block mb-3">
+                        Welcome Parents
+                    </span>
+                    <h1 class="text-2xl md:text-5xl font-black text-white mb-3 leading-tight">
+                        Apne Bachay Ki Class Select Karein
+                    </h1>
+                    <p class="text-amber-300/90 text-sm md:text-lg font-medium">
+                        👇 Neeche Diye Gaye Class Button Par Touch / Click Karein
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3.5 w-full max-w-4xl px-2">
+                    <script>
+                        for(let i=1; i<=10; i++) {
+                            document.write(`
+                                <button onclick="selectClassAndStart('Class ${i}')" class="bg-gradient-to-br from-slate-900 to-slate-950 hover:from-amber-500 hover:to-yellow-600 border-2 border-amber-500/40 hover:border-amber-300 p-5 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-amber-500/40 text-center flex flex-col items-center justify-center gap-1.5 cursor-pointer group">
+                                    <i class="fa-solid fa-users text-xl text-amber-400 group-hover:text-slate-950"></i>
+                                    <span class="text-lg font-black text-white group-hover:text-slate-950">CLASS ${i}</span>
+                                    <span class="text-[10px] font-bold text-slate-400 group-hover:text-slate-900 uppercase tracking-wider">Tap Here →</span>
+                                </button>
+                            `);
+                        }
+                    </script>
+                </div>
+            </section>
+
+            <section id="countdownScreen" class="hidden text-center py-16">
+                <p id="countdownClassTitle" class="text-amber-400 text-base md:text-lg font-bold uppercase tracking-widest mb-4">Announcing Winners In...</p>
+                <div id="countNum" class="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-200 via-amber-400 to-yellow-600 animate-count filter drop-shadow-[0_10px_30px_rgba(234,179,8,0.6)]">
+                    3
+                </div>
+            </section>
+
+            <section id="revealScreen" class="hidden w-full max-w-3xl mx-auto py-4">
+                <div id="revealCardContainer"></div>
+            </section>
+
+            <section id="marksheetScreen" class="hidden w-full space-y-8 py-4">
+                <div>
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-500/10 border border-amber-500/20 px-4 py-1.5 rounded-full">Hall of Fame</span>
+                        <h2 id="finalClassTitle" class="text-2xl md:text-3xl font-extrabold text-white mt-3">Monthly Top Achievers</h2>
+                        <p class="text-slate-400 text-xs md:text-sm mt-1">Huge congratulations to all position holders!</p>
+                    </div>
+
+                    <div id="podiumCards" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+                </div>
+
+                <div class="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+                    <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex justify-between items-center flex-wrap gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
+                                <i class="fa-solid fa-file-invoice text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-base md:text-lg text-white">Student Marksheet Report</h3>
+                                <p class="text-xs text-slate-400">Complete performance breakdown</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[500px]">
+                            <thead>
+                                <tr class="bg-slate-950/80 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                                    <th class="p-4 text-center">Rank</th>
+                                    <th class="p-4">Student Name</th>
+                                    <th class="p-4 text-center">Marks</th>
+                                    <th class="p-4 text-center">Percentage</th>
+                                    <th class="p-4 text-center">Grade</th>
+                                    <th class="p-4 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="marksheetTableBody" class="divide-y divide-slate-800/60 text-sm"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Mobile Menu Toggle Logic ---
+        const menuBtn = document.getElementById('menuBtn');
+        const menuLinks = document.getElementById('menuLinks');
+        menuBtn.addEventListener('click', () => {
+            menuLinks.classList.toggle('active');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+
+        // --- Local Notice Board Data Engine ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedText = localStorage.getItem('school_notice_text');
+            const savedTag = localStorage.getItem('school_notice_type');
+            const savedDate = localStorage.getItem('school_notice_date');
+
+            if(savedText) {
+                document.getElementById('noticeText').innerHTML = savedText;
+                document.getElementById('noticeDate').innerText = "Updated: " + savedDate;
+                
+                const tagEl = document.getElementById('noticeTag');
+                tagEl.innerText = savedTag + " Notice";
+                tagEl.className = "notice-tag tag-" + savedTag.toLowerCase();
+            }
+        });
+
+        // --- Portal Switcher Logic ---
+        function showRecognitionPortal() {
+            document.getElementById('siteHeader').classList.add('hidden');
+            document.getElementById('announcementBar').classList.add('hidden');
+            document.getElementById('mainWebsiteWrapper').classList.add('hidden');
+            document.getElementById('recognitionPortalWrapper').classList.remove('hidden');
+            window.resetToHome();
+            window.scrollTo(0,0);
+        }
+
+        function hideRecognitionPortal() {
+            document.getElementById('recognitionPortalWrapper').classList.add('hidden');
+            document.getElementById('mainWebsiteWrapper').classList.remove('hidden');
+            document.getElementById('siteHeader').classList.remove('hidden');
+            document.getElementById('announcementBar').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+    </script>
+
+    <!-- FIREBASE & WINNER RECOGNITION LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyD8pe1_IzhWzKJNoo1HcSyHpauzt4c1rQQ",
+          authDomain: "student-winner.firebaseapp.com",
+          projectId: "student-winner",
+          storageBucket: "student-winner.firebasestorage.app",
+          messagingSenderId: "297237646499",
+          appId: "1:297237646499:web:c92fdf71470f066c8e8316",
+          measurementId: "G-WNWTC1M0G7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let schoolData = {};
+        let activeTimers = [];
+        let audioCtx = null;
+        let selectedClass = "Class 1";
+
+        function optimizeImgUrl(url) {
+            if(!url) return "";
+            if(url.includes("cloudinary.com") && !url.includes("f_auto")) {
+                return url.replace('/upload/', '/upload/f_auto,q_auto,w_500,c_limit/');
+            }
+            return url;
+        }
+
+        const studentsRef = ref(db, 'students');
+        onValue(studentsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                schoolData = data;
+                console.log("Live Firebase Data Updated:", schoolData);
+            }
+        });
+
+        function playCountdownBeep(frequency = 750, type = 'sine') {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } catch(e) {
+                console.log("Audio Error:", e);
+            }
+        }
+
+        function playMediaAudio(elementId) {
+            const audio = document.getElementById(elementId);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('Audio Error:', e));
+            }
+        }
+
+        function clearAllTimers() {
+            activeTimers.forEach(t => clearTimeout(t));
+            activeTimers = [];
+        }
+
+        window.resetToHome = function() {
+            clearAllTimers();
+            document.getElementById('pageClassSelection').classList.remove('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('countdownScreen').classList.add('hidden');
+            document.getElementById('revealScreen').classList.add('hidden');
+            document.getElementById('marksheetScreen').classList.add('hidden');
+        };
+
+        window.selectClassAndStart = function(className) {
+            if (!schoolData[className] || schoolData[className].length === 0) {
+                alert(`Iss ${className} ka data abhi tak Admin panel se add nahi hua! Pehle Admin Panel se is class ka data save karein.`);
+                return;
+            }
+
+            selectedClass = className;
+            clearAllTimers();
+
+            ['sndFanfare', 'sndCheer'].forEach(id => {
+                const a = document.getElementById(id);
+                if (a) {
+                    a.play().then(() => { a.pause(); a.currentTime = 0; }).catch(() => {});
+                }
+            });
+
+            document.getElementById('pageClassSelection').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('countdownScreen').classList.remove('hidden');
+            
+            document.getElementById('countdownClassTitle').innerText = `${selectedClass} - Winner Announcement In...`;
+
+            let count = 3;
+            const countElem = document.getElementById('countNum');
+            
+            countElem.innerText = count;
+            playCountdownBeep(700);
+
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countElem.innerText = count;
+                    playCountdownBeep(700);
+                } else {
+                    clearInterval(interval);
+                    playCountdownBeep(1100, 'triangle');
+                    document.getElementById('countdownScreen').classList.add('hidden');
+                    startWinnerReveals();
+                }
+            }, 1000);
+        };
+
+        function startWinnerReveals() {
+            const students = (schoolData[selectedClass] || []).filter(Boolean);
+            const revealScreen = document.getElementById('revealScreen');
+            const revealContainer = document.getElementById('revealCardContainer');
+            
+            revealScreen.classList.remove('hidden');
+
+            if (students[0]) showSingleWinnerCard(students[0], revealContainer);
+            playMediaAudio('sndFanfare');
+            triggerGrandConfetti();
+
+            let t1 = setTimeout(() => {
+                if (students[1]) showSingleWinnerCard(students[1], revealContainer);
+                playMediaAudio('sndCheer');
+                
+                let t2 = setTimeout(() => {
+                    if (students[2]) showSingleWinnerCard(students[2], revealContainer);
+                    playMediaAudio('sndCheer');
+
+                    let t3 = setTimeout(() => {
+                        revealScreen.classList.add('hidden');
+                        showFinalMarksheet(selectedClass);
+                    }, 4500);
+
+                    activeTimers.push(t3);
+                }, 4500);
+
+                activeTimers.push(t2);
+            }, 4500);
+
+            activeTimers.push(t1);
+        }
+
+        function showSingleWinnerCard(student, container) {
+            const isFirst = student.rank === 1;
+            const isSecond = student.rank === 2;
+            const imgUrl = optimizeImgUrl(student.photo);
+            
+            let rankColor = isFirst ? 'from-amber-400 via-yellow-500 to-amber-600' : (isSecond ? 'from-slate-300 to-slate-400' : 'from-amber-700 to-amber-800');
+            let borderStyle = isFirst ? 'gold-glow bg-slate-900' : 'bg-slate-900 border-2 border-slate-800';
+
+            container.innerHTML = `
+                <div class="${borderStyle} rounded-3xl p-6 md:p-8 text-center relative shadow-2xl overflow-hidden card-enter">
+                    <div class="inline-block bg-gradient-to-r ${rankColor} text-slate-950 font-black text-xs md:text-sm uppercase tracking-widest px-6 py-2 rounded-full mb-5 shadow-xl">
+                        ${isFirst ? '🏆 STUDENT OF THE MONTH - 1ST POSITION' : (isSecond ? '🥈 2ND RUNNER UP' : '🥉 3RD POSITION')}
+                    </div>
+
+                    <div class="relative w-36 h-36 md:w-40 md:h-40 mx-auto mb-5">
+                        <img src="${imgUrl}" alt="${student.name}" loading="eager" decoding="async" class="w-full h-full rounded-full object-cover border-4 ${isFirst ? 'border-yellow-400' : 'border-slate-700'} shadow-2xl bg-slate-800">
+                        ${isFirst ? `
+                            <div class="absolute -top-3 -right-1 text-yellow-400 text-3xl md:text-4xl trophy-anim filter drop-shadow">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <h3 class="text-2xl md:text-4xl font-extrabold text-white mb-1">${student.name}</h3>
+                    <p class="text-xs md:text-sm text-slate-400 mb-5 font-medium">S/O ${student.fatherName}</p>
+
+                    <div class="bg-slate-950/80 rounded-2xl p-3.5 border border-slate-800/80 max-w-sm mx-auto flex justify-around items-center">
+                        <div>
+                            <p class="text-[10px] md:text-xs text-slate-400 uppercase font-semibold">Total Marks</p>
+                            <p class="text-xl md:text-2xl font-black text-white mt-0.5">${student.marks}</p>
+                        </div>
+                        <div class="h-8 w-px bg-slate-800"></div>
+                        <div>
+                            <p class="text-[10px] md:text-xs text-slate-400 uppercase font-semibold">Percentage</p>
+                            <p class="text-xl md:text-2xl font-black text-amber-400 mt-0.5">${student.percentage}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showFinalMarksheet(className) {
+            const students = (schoolData[className] || []).filter(Boolean);
+            const marksheetScreen = document.getElementById('marksheetScreen');
+            const podiumContainer = document.getElementById('podiumCards');
+            const tableBody = document.getElementById('marksheetTableBody');
+
+            document.getElementById('finalClassTitle').innerText = `${className} - Final Results`;
+
+            podiumContainer.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            students.forEach((student) => {
+                const isFirst = student.rank === 1;
+                const imgUrl = optimizeImgUrl(student.photo);
+
+                podiumContainer.innerHTML += `
+                    <div class="${isFirst ? 'gold-glow bg-slate-900' : 'bg-slate-900 border border-slate-800'} rounded-3xl p-5 text-center flex flex-col justify-between relative transition hover:-translate-y-1">
+                        <div>
+                            <span class="inline-block ${isFirst ? 'bg-amber-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'} text-[11px] px-3.5 py-1 rounded-full mb-3">
+                                ${student.badge}
+                            </span>
+                            <img src="${imgUrl}" loading="eager" decoding="async" class="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 ${isFirst ? 'border-amber-400' : 'border-slate-700'} bg-slate-800">
+                            <h4 class="text-lg font-bold text-white">${student.name}</h4>
+                            <p class="text-xs text-slate-400 mb-3">S/O ${student.fatherName}</p>
+                        </div>
+                        
+                        <div class="bg-slate-950/60 rounded-xl p-2.5 border border-slate-800/80 flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Marks: <strong class="text-slate-200">${student.marks}</strong></span>
+                            <span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded">${student.percentage}</span>
+                        </div>
+                    </div>
+                `;
+
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="p-4 text-center font-bold ${isFirst ? 'text-amber-400 text-base' : 'text-slate-400'}">#${student.rank}</td>
+                        <td class="p-4 flex items-center gap-3">
+                            <img src="${imgUrl}" loading="eager" decoding="async" class="w-10 h-10 rounded-full object-cover border border-slate-700 shadow bg-slate-800">
+                            <div>
+                                <p class="font-bold text-white text-sm">${student.name}</p>
+                                <p class="text-[11px] text-slate-400">S/O ${student.fatherName}</p>
+                            </div>
+                        </td>
+                        <td class="p-4 text-center font-semibold text-slate-200 text-xs">${student.marks}</td>
+                        <td class="p-4 text-center font-extrabold text-amber-400 text-xs">${student.percentage}</td>
+                        <td class="p-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[11px] px-2.5 py-0.5 rounded-lg">${student.grade}</span></td>
+                        <td class="p-4 text-right font-medium text-slate-300 text-xs">${student.badge}</td>
+                    </tr>
+                `;
+            });
+
+            marksheetScreen.classList.remove('hidden');
+            playMediaAudio('sndFanfare');
+            triggerGrandConfetti();
+        }
+
+        function triggerGrandConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+            }
+        }
+    </script>
+</body>
+</html>
