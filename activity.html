@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TikTok Premium Portal</title>
+    <title>TikTok Mobile Portal</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body {
             background-color: #000;
             color: #fff;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            user-select: none;
         }
         body {
             display: flex;
@@ -26,41 +27,80 @@
             position: relative;
             overflow: hidden; 
             background-color: #000;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
 
-        /* Fixed Top Header */
+        /* --- TOP NAVIGATION BAR --- */
         .header-wrapper {
             position: absolute; 
             top: 0;
             left: 0;
             width: 100%;
-            padding: 20px 20px 40px 20px;
-            z-index: 1000; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%);
+            padding: 16px 16px 30px 16px;
+            z-index: 100; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            pointer-events: none; 
+            pointer-events: auto;
         }
 
-        .search-control-container {
-            pointer-events: auto;
-            z-index: 45;
+        .header-logo-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            outline: none;
         }
-        .search-trigger-btn { 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            color: #fff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8)); 
-        }
-        .search-trigger-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
         
-        /* Search Overlay */
+        .header-logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #fff;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+        }
+
+        .header-icon-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+        }
+        .header-icon-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+
+        .top-tab-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        .top-tab { cursor: pointer; transition: color 0.2s; position: relative; }
+        .top-tab.active { color: #ffffff; }
+        .top-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        /* --- SEARCH OVERLAY SCREEN --- */
         .search-overlay-page {
             position: absolute;
             top: 0;
@@ -71,13 +111,13 @@
             z-index: 1050;
             display: none; 
             flex-direction: column;
-            padding: 15px;
+            padding: 14px;
         }
         .search-header-bar {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .search-input-wrapper {
             flex: 1;
@@ -85,18 +125,17 @@
         }
         .search-page-input {
             width: 100%;
-            padding: 12px 16px;
-            padding-left: 40px;
-            border-radius: 25px;
+            padding: 10px 16px 10px 38px;
+            border-radius: 8px;
             border: none;
             background: #262626;
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
         }
         .search-icon-inside {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             width: 16px;
@@ -114,23 +153,22 @@
             cursor: pointer;
         }
 
-        /* Grid System */
         .search-results-grid {
             flex: 1;
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 6px;
             padding-bottom: 20px;
         }
         .search-results-grid::-webkit-scrollbar { display: none; }
         
         .grid-video-tile {
             background: #1e1e1e;
-            border-radius: 8px;
+            border-radius: 6px;
             overflow: hidden;
             position: relative;
-            aspect-ratio: 9 / 14;
+            aspect-ratio: 9 / 15;
             cursor: pointer;
         }
         .grid-video-tile video {
@@ -144,8 +182,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 20px 10px 10px 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px 8px 8px 8px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
         }
         .grid-tile-user {
             font-size: 12px;
@@ -156,15 +194,14 @@
             text-overflow: ellipsis;
         }
 
-        /* Dynamic Feed Container */
+        /* --- DYNAMIC FEED --- */
         #dynamicFeed {
             width: 100%;
             height: 100%;
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.35, 1.2);
         }
 
-        /* Main Video Post Layout */
         .video-post { 
             position: relative; 
             width: 100%; 
@@ -173,7 +210,6 @@
             overflow: hidden;
         }
         
-        /* Video Element - STRICT FULL SCREEN FILL */
         video { 
             position: absolute;
             top: 0;
@@ -184,16 +220,16 @@
             z-index: 1;
         }
 
-        /* Center Play Button */
+        /* Play/Pause Overlay */
         .play-overlay-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(1);
-            width: 70px;
-            height: 70px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            width: 65px;
+            height: 65px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -203,20 +239,79 @@
             opacity: 1;
             transition: opacity 0.2s, transform 0.2s;
         }
-        .play-overlay-btn svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
-        .video-post.is-playing .play-overlay-btn { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+        .play-overlay-btn svg { width: 30px; height: 30px; fill: #fff; margin-left: 4px; }
+        .video-post.is-playing .play-overlay-btn { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
 
-        /* Sidebar Actions - Standard Floating TikTok Layout */
+        /* Double-Tap Floating Heart */
+        .double-tap-heart {
+            position: absolute;
+            z-index: 20;
+            width: 80px;
+            height: 80px;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            animation: heartPop 0.8s ease-out forwards;
+        }
+        .double-tap-heart svg { width: 100%; height: 100%; fill: #fe2c55; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+
+        @keyframes heartPop {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.3) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.6) rotate(15deg); opacity: 0; }
+        }
+
+        /* --- RIGHT ACTION SIDEBAR --- */
         .action-sidebar { 
             position: absolute; 
             right: 12px; 
-            bottom: 30px; 
+            bottom: 75px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            gap: 16px; 
-            z-index: 10; 
+            gap: 18px; 
+            z-index: 20; 
         }
+
+        /* Profile Avatar with Plus Badge */
+        .profile-avatar-box {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 6px;
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: #222;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fe2c55;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .avatar-plus-btn {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 18px;
+            background: #fe2c55;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 900;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
         .action-btn { 
             background: none; 
             border: none; 
@@ -225,88 +320,174 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            font-size: 12px; 
+            font-size: 11px; 
             font-weight: 600; 
         }
-        
-        .icon-circle {
-            width: 45px;
-            height: 45px;
-            background: rgba(30, 30, 30, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 50%;
+        .action-icon {
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
+            transition: transform 0.15s ease;
         }
-        .action-btn svg { width: 24px; height: 24px; fill: #fff; }
-        .action-btn.liked .icon-circle svg { fill: #fe2c55; }
+        .action-btn:active .action-icon { transform: scale(1.2); }
+        .action-icon svg { width: 34px; height: 34px; fill: #ffffff; }
+        .action-btn.liked .action-icon svg { fill: #fe2c55; }
         .action-btn span {
+            margin-top: 2px;
             font-size: 11px;
             color: #ffffff;
-            text-shadow: 0px 1px 3px rgba(0, 0, 0, 1);
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.9);
             font-weight: 600;
         }
 
-        /* Rotating Music Disk */
+        /* Vinyl Record Player */
         .music-disk {
-            width: 36px;
-            height: 36px;
-            background: radial-gradient(circle, #333 20%, #111 21%, #111 100%);
-            border: 3px solid #222;
+            width: 44px;
+            height: 44px;
+            background: radial-gradient(circle, #2b2b2b 25%, #111 26%, #111 100%);
+            border: 8px solid #181818;
             border-radius: 50%;
-            margin-top: 5px;
+            margin-top: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            animation: rotateDisk 4s linear infinite;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            animation: rotateDisk 3.5s linear infinite;
             animation-play-state: paused;
         }
         .video-post.is-playing .music-disk { animation-play-state: running; }
-        .music-disk::after { content: ''; width: 10px; height: 10px; background: #fe2c55; border-radius: 50%; }
+        .music-disk::after { content: ''; width: 8px; height: 8px; background: #fe2c55; border-radius: 50%; }
 
         @keyframes rotateDisk {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* FIXED OVERLAY TEXT POSITIONING WITH REAL SAFE PADDING */
+        /* --- LEFT OVERLAY CONTENT --- */
         .video-info-overlay { 
             position: absolute; 
             left: 0; 
-            bottom: 0;
+            bottom: 60px;
             width: 100%;
-            padding: 60px 90px 24px 14px; /* Proper padding keeps it perfectly placed */
-            z-index: 9; 
-            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            padding: 40px 90px 20px 14px; 
+            z-index: 15; 
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
             pointer-events: none;
         }
         .user-block {
             display: flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             pointer-events: auto;
         }
         .username { 
-            font-size: 15px; 
+            font-size: 16px; 
             font-weight: 700; 
             color: #fff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
         }
-        .verified-badge { width: 14px; height: 14px; fill: #20d5ec; }
+        .verified-badge { width: 15px; height: 15px; fill: #20d5ec; }
         .description { 
-            font-size: 13.5px; 
+            font-size: 14px; 
             line-height: 1.4; 
-            color: #eff1f3;
+            color: #f1f1f1;
             pointer-events: auto;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            margin-bottom: 10px;
         }
         
-        .no-data { text-align: center; padding-top: 50%; color: #888; font-size: 16px; }
+        .music-track-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #fff;
+            pointer-events: auto;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        }
+        .music-track-bar svg { width: 14px; height: 14px; fill: #fff; }
+        .track-ticker {
+            width: 140px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .track-ticker span {
+            display: inline-block;
+            animation: ticker 8s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- BOTTOM TAB BAR --- */
+        .bottom-nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 54px;
+            background: rgba(0, 0, 0, 0.95);
+            border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 6px;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: #888;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-item.active { color: #fff; }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+        
+        /* Center + Upload Button */
+        .create-btn-wrapper {
+            position: relative;
+            width: 42px;
+            height: 28px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .create-btn-wrapper::before {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            background: #69C9D0;
+            border-radius: 8px 0 0 8px;
+            z-index: -1;
+        }
+        .create-btn-wrapper::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            background: #EE1D52;
+            border-radius: 0 8px 8px 0;
+            z-index: -1;
+        }
+        .create-btn-wrapper svg { width: 16px; height: 16px; fill: #000; }
+
+        .no-data { text-align: center; padding-top: 50%; color: #888; font-size: 15px; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -316,21 +497,26 @@
 
     <div class="app-container" id="appContainer">
         
-        <!-- Header -->
+        <!-- Top Bar with School Logo -->
         <div class="header-wrapper">
-            <div class="search-control-container">
-                <button class="search-trigger-btn" onclick="openSearchSystem()">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
+            <button class="header-logo-btn" title="Pine Hills Children Academy">
+                <img src="real logo copy.jpg" alt="School Logo" class="header-logo-img">
+            </button>
+            <div class="top-tab-wrapper">
+                <span class="top-tab">Following</span>
+                <span class="top-tab active">For You</span>
             </div>
+            <button class="header-icon-btn" onclick="openSearchSystem()">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
         </div>
 
-        <!-- Search Overlay Screen -->
+        <!-- Search Overlay Page -->
         <div class="search-overlay-page" id="searchOverlayPage">
             <div class="search-header-bar">
                 <div class="search-input-wrapper">
                     <svg class="search-icon-inside" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchPageInput" class="search-page-input" placeholder="Search creators or tags..." onkeyup="performGridSearch()">
+                    <input type="text" id="searchPageInput" class="search-page-input" placeholder="Search creators, topics..." onkeyup="performGridSearch()">
                 </div>
                 <button class="close-search-btn" onclick="closeSearchSystem()">Cancel</button>
             </div>
@@ -339,22 +525,48 @@
 
         <!-- Dynamic Feed -->
         <div id="dynamicFeed">
-            <div class="no-data">Syncing with server...</div>
+            <div class="no-data">Loading Feed...</div>
+        </div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-nav-bar">
+            <div class="nav-item active">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Home</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                <span>Friends</span>
+            </div>
+            <div class="create-btn-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                <span>Inbox</span>
+            </div>
+            <div class="nav-item">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>Profile</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // FIREBASE CONFIGURATION
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
             authDomain: "pine-hills-school.firebaseapp.com",
+            databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com",
             projectId: "pine-hills-school",
             storageBucket: "pine-hills-school.firebasestorage.app",
             messagingSenderId: "310029732655",
             appId: "1:310029732655:web:37edd331495239524cefda"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const database = firebase.database();
         const container = document.getElementById('appContainer');
         const feed = document.getElementById('dynamicFeed');
@@ -363,6 +575,7 @@
         let localVideosData = []; 
         let currentFeedIndex = 0;
         let totalFeedCount = 0;
+        let lastClickTime = 0;
 
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
@@ -391,30 +604,30 @@
             });
         }
 
-       // Fetch Data Realtime (Updated to show newest first)
+        // Fetch Data Realtime
         database.ref('videos').orderByChild('timestamp').on('value', (snapshot) => {
             const data = snapshot.val();
             feed.innerHTML = '';
             localVideosData = []; 
 
             if(!data) {
-                feed.innerHTML = '<div class="no-data">No content available right now.</div>';
+                feed.innerHTML = '<div class="no-data">No content available.</div>';
                 totalFeedCount = 0;
                 return;
             }
 
-            // Data ko array mein convert karke reverse kar rahe hain
             const videoEntries = Object.entries(data).reverse(); 
 
             videoEntries.forEach(([id, videoData], index) => {
                 localVideosData.push({
                     domIndex: index,
-                    username: videoData.username,
-                    description: videoData.description,
+                    username: videoData.username || '@user',
+                    description: videoData.description || '',
                     videoUrl: videoData.videoUrl
                 });
 
                 let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
+                let firstLetter = (videoData.username || 'U').replace('@','').charAt(0);
 
                 const postBlock = document.createElement('div');
                 postBlock.className = 'video-post';
@@ -429,23 +642,28 @@
                     </div>
 
                     <div class="action-sidebar">
+                        <div class="profile-avatar-box">
+                            <div class="avatar-img">${firstLetter}</div>
+                            <div class="avatar-plus-btn">+</div>
+                        </div>
+
                         <button class="action-btn" onclick="toggleLike(this)">
-                            <div class="icon-circle">
+                            <div class="action-icon">
                                 <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                             </div>
                             <span>${videoData.likes || '0'}</span>
                         </button>
                         
-                        <button class="action-btn" style="cursor: default;">
-                            <div class="icon-circle">
+                        <button class="action-btn">
+                            <div class="action-icon">
                                 <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
                             </div>
                             <span>${totalCommentsCount}</span>
                         </button>
 
                         <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
-                            <div class="icon-circle" style="background: rgba(37, 211, 102, 0.25);">
-                                <svg viewBox="0 0 24 24" style="fill: #25D366;"><path d="M24 11.66c0 6.44-5.22 11.66-11.66 11.66-2.06 0-3.99-.54-5.68-1.48L0 24l2.21-6.5C1.16 15.8 0.53 13.8 0.53 11.66 0.53 5.22 5.75 0 12.19 0 18.72 0 24 11.66zM12.19 1.9c-5.38 0-9.76 4.38-9.76 9.76 0 2.24.76 4.32 2.03 6l-1.33 3.93 4.07-1.31c1.6.99 3.49 1.57 5.51 1.57 5.38 0 9.76-4.38 9.76-9.76 0-5.38-4.38-9.76-9.76-9.76z"/></svg>
+                            <div class="action-icon">
+                                <svg viewBox="0 0 24 24"><path d="M10 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                             </div>
                             <span>Share</span>
                         </button>
@@ -455,10 +673,16 @@
 
                     <div class="video-info-overlay">
                         <div class="user-block">
-                            <span class="username">${videoData.username}</span>
+                            <span class="username">${videoData.username || '@user'}</span>
                             <svg class="verified-badge" viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM375 201L239 337c-4.7 4.7-11 7-17 7s-12.3-2.3-17-7l-69-69c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l52.1 52.1L341.1 167c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/></svg>
                         </div>
-                        <div class="description">${videoData.description}</div>
+                        <div class="description">${videoData.description || ''}</div>
+                        <div class="music-track-bar">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                            <div class="track-ticker">
+                                <span>Original Sound - ${videoData.username || 'Pine Hills Portal'} • Original Sound - ${videoData.username || 'Pine Hills Portal'}</span>
+                            </div>
+                        </div>
                     </div>
                 `;
                 feed.appendChild(postBlock);
@@ -471,7 +695,7 @@
             updateVideoPlayback();
         });
 
-        // Window resize adjustment
+        // Window resize
         window.addEventListener('resize', () => {
             const containerHeight = container.clientHeight;
             document.querySelectorAll('.video-post').forEach(post => {
@@ -482,9 +706,8 @@
 
         function triggerWebsiteShare(username) {
             const currentWebsiteUrl = window.location.href; 
-            const messageText = encodeURIComponent(`🔥 Check out amazing activity video of ${username} on Pine Hills Portal:\n\n👉 ${currentWebsiteUrl}`);
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${messageText}`;
-            window.open(whatsappUrl, '_blank');
+            const messageText = encodeURIComponent(`🔥 Watch amazing videos of ${username} on Portal:\n\n👉 ${currentWebsiteUrl}`);
+            window.open(`https://api.whatsapp.com/send?text=${messageText}`, '_blank');
         }
 
         function openSearchSystem() {
@@ -540,27 +763,54 @@
             btn.classList.toggle('liked');
         }
 
+        // Tap and Double-Tap Heart Gesture
         container.addEventListener('click', (e) => {
-            if(e.target.closest('.action-sidebar') || e.target.closest('.search-control-container') || e.target.closest('.search-overlay-page')) return;
+            if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page')) return;
             
+            const now = Date.now();
             const posts = document.querySelectorAll('.video-post');
             const currentPost = posts[currentFeedIndex];
-            if(currentPost) {
-                const video = currentPost.querySelector('video');
-                if(video) {
-                    isUserInteracted = true;
-                    video.muted = false;
-                    if(video.paused) {
-                        video.play();
-                        currentPost.classList.add('is-playing');
-                    } else {
-                        video.pause();
-                        currentPost.classList.remove('is-playing');
-                    }
+
+            // Double Tap Detection
+            if (now - lastClickTime < 300) {
+                createDoubleTapHeart(e.clientX, e.clientY, currentPost);
+                const likeBtn = currentPost.querySelector('.action-btn');
+                if(likeBtn && !likeBtn.classList.contains('liked')) {
+                    toggleLike(likeBtn);
                 }
+            } else {
+                // Single Tap Toggle
+                setTimeout(() => {
+                    if (Date.now() - lastClickTime >= 300 && currentPost) {
+                        const video = currentPost.querySelector('video');
+                        if(video) {
+                            isUserInteracted = true;
+                            video.muted = false;
+                            if(video.paused) {
+                                video.play();
+                                currentPost.classList.add('is-playing');
+                            } else {
+                                video.pause();
+                                currentPost.classList.remove('is-playing');
+                            }
+                        }
+                    }
+                }, 300);
             }
+            lastClickTime = now;
         });
 
+        function createDoubleTapHeart(x, y, parent) {
+            const heart = document.createElement('div');
+            heart.className = 'double-tap-heart';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            heart.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+            parent.appendChild(heart);
+            setTimeout(() => heart.remove(), 800);
+        }
+
+        // Scroll & Touch Events
         let isScrollThrottled = false;
         container.addEventListener('wheel', (e) => {
             if (e.target.closest('.search-overlay-page')) return;
@@ -580,7 +830,7 @@
                     isUserInteracted = true;
                     feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
                     updateVideoPlayback();
-                    setTimeout(() => { isScrollThrottled = false; }, 700); 
+                    setTimeout(() => { isScrollThrottled = false; }, 500); 
                 }
             }
         }, { passive: false });
@@ -595,7 +845,7 @@
             let touchEndY = e.changedTouches[0].clientY;
             let diffY = touchStartY - touchEndY;
 
-            if (Math.abs(diffY) > 60) {
+            if (Math.abs(diffY) > 50) {
                 let previousIndex = currentFeedIndex;
                 if (diffY > 0) {
                     if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
