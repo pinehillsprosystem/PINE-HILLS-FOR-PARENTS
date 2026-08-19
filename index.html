@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pine Hills School - Parent Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -63,7 +63,7 @@
             --white: #ffffff;
             --shadow-glow: 0 0 35px rgba(56, 189, 248, 0.35);
             --shadow-card: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: all 0.3s ease;
             --danger-red: #ef4444;
             --warning-gold: #f59e0b;
         }
@@ -86,8 +86,7 @@
         /* --- LIGHTING TOP ANNOUNCEMENT BAR --- */
         .top-announcement-bar {
             background: linear-gradient(90deg, #dc2626, #ef4444, #f97316, #dc2626);
-            background-size: 300% 100%;
-            animation: gradientShift 6s ease infinite;
+            background-size: 200% 100%;
             color: var(--white);
             text-align: center;
             padding: 12px 24px;
@@ -101,22 +100,6 @@
             box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
             position: relative;
             z-index: 1001;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .top-announcement-bar i {
-            font-size: 16px;
-            animation: pulseGlow 1.2s infinite ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.7; }
         }
 
         /* --- STICKY GLASSMORPHISM NAVIGATION --- */
@@ -236,35 +219,6 @@
             background: var(--primary-dark);
             position: relative;
             overflow: hidden;
-        }
-
-        .hero-section::before, .hero-section::after {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.6;
-            z-index: 1;
-            animation: floatGlow 10s infinite alternate ease-in-out;
-        }
-
-        .hero-section::before {
-            background: var(--neon-cyan);
-            top: -100px;
-            left: -100px;
-        }
-
-        .hero-section::after {
-            background: var(--neon-purple);
-            bottom: -100px;
-            right: 20%;
-        }
-
-        @keyframes floatGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, 40px) scale(1.3); }
         }
 
         .hero-left {
@@ -389,12 +343,6 @@
             color: var(--accent-blue);
             font-size: 24px;
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-            animation: pulseIcon 2s infinite;
-        }
-
-        @keyframes pulseIcon {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
         }
 
         .notice-content {
@@ -489,27 +437,10 @@
             border: 1px solid rgba(226, 232, 240, 0.9);
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 70%);
-            opacity: 0;
-            transition: var(--transition);
-            pointer-events: none;
-        }
-
         .card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.2);
             border-color: rgba(56, 189, 248, 0.5);
-        }
-
-        .card:hover::before {
-            opacity: 1;
         }
 
         .icon-wrapper {
@@ -527,8 +458,6 @@
 
         .card:hover .icon-wrapper {
             background: linear-gradient(135deg, var(--neon-cyan), var(--accent-blue));
-            transform: scale(1.1) rotate(6deg);
-            box-shadow: var(--shadow-glow);
             border-color: transparent;
         }
 
@@ -573,67 +502,31 @@
             gap: 10px;
             transition: var(--transition);
             box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .explore-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: 0.6s;
-        }
-
-        .card:hover .explore-btn::before {
-            left: 100%;
         }
 
         .card:hover .explore-btn {
             background: linear-gradient(90deg, var(--neon-cyan), var(--accent-blue));
-            box-shadow: var(--shadow-glow);
         }
 
-        /* --- WINNER RECOGNITION PORTAL STYLES --- */
-        @keyframes goldGlow {
-            0%, 100% { box-shadow: 0 0 35px rgba(234, 179, 8, 0.7), 0 0 70px rgba(234, 179, 8, 0.4); }
-            50% { box-shadow: 0 0 60px rgba(234, 179, 8, 1), 0 0 100px rgba(234, 179, 8, 0.7); }
+        /* --- PREMIUM ULTRA 3D WINNER CARD STYLES --- */
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
         }
 
-        @keyframes floatTrophy {
-            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
-            50% { transform: translateY(-12px) rotate(8deg) scale(1.1); }
+        .winner-card-fast {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 36px;
+            position: relative;
+            overflow: hidden;
+            will-change: transform, opacity;
+            animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        @keyframes countPop {
-            0% { transform: scale(0.2); opacity: 0; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(1); opacity: 0; }
-        }
-
-        @keyframes revealCard {
-            0% { transform: translateY(50px) scale(0.8); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        .gold-glow {
-            animation: goldGlow 2s infinite ease-in-out;
-            border: 4px solid #facc15;
-        }
-
-        .trophy-anim {
-            animation: floatTrophy 2s infinite ease-in-out;
-        }
-
-        .animate-count {
-            animation: countPop 1s ease-in-out infinite;
-        }
-
-        .card-enter {
-            animation: revealCard 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         /* --- RESPONSIVE BREAKPOINTS --- */
@@ -780,7 +673,7 @@
     </div>
 
     <!-- STUDENT RECOGNITION PORTAL CONTAINER -->
-    <div id="recognitionPortalWrapper" class="hidden bg-slate-950 text-slate-100 min-h-screen py-6 px-3 md:px-6">
+    <div id="recognitionPortalWrapper" class="hidden bg-slate-950 text-slate-100 min-h-screen py-4 px-2 md:px-6 flex flex-col justify-between">
         
         <!-- RESPONSIVE HEADER FOR MOBILE & DESKTOP -->
         <header id="mainHeader" class="hidden bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-2xl sticky top-2 z-50 shadow-2xl mb-6 p-4">
@@ -843,13 +736,14 @@
 
             <section id="countdownScreen" class="hidden text-center py-16">
                 <p id="countdownClassTitle" class="text-amber-400 text-base md:text-lg font-bold uppercase tracking-widest mb-4">Announcing Winners In...</p>
-                <div id="countNum" class="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-200 via-amber-400 to-yellow-600 animate-count filter drop-shadow-[0_10px_30px_rgba(234,179,8,0.6)]">
+                <div id="countNum" class="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-200 via-amber-400 to-yellow-600 filter drop-shadow-[0_10px_30px_rgba(234,179,8,0.6)]">
                     3
                 </div>
             </section>
 
-            <section id="revealScreen" class="hidden w-full max-w-3xl mx-auto py-4">
-                <div id="revealCardContainer"></div>
+            <!-- FULL-SCREEN EXPANDED REVEAL CONTAINER FOR MOBILE & DESKTOP -->
+            <section id="revealScreen" class="hidden w-full max-w-2xl mx-auto min-h-[90vh] flex flex-col justify-center items-center py-2 px-1">
+                <div id="revealCardContainer" class="w-full"></div>
             </section>
 
             <section id="marksheetScreen" class="hidden w-full space-y-8 py-4">
@@ -969,7 +863,7 @@
         function optimizeImgUrl(url) {
             if(!url) return "";
             if(url.includes("cloudinary.com") && !url.includes("f_auto")) {
-                return url.replace('/upload/', '/upload/f_auto,q_auto,w_500,c_limit/');
+                return url.replace('/upload/', '/upload/f_auto,q_auto,w_600,c_limit/');
             }
             return url;
         }
@@ -1045,7 +939,7 @@
             });
 
             document.getElementById('pageClassSelection').classList.add('hidden');
-            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
             document.getElementById('countdownScreen').classList.remove('hidden');
             
             document.getElementById('countdownClassTitle').innerText = `${selectedClass} - Winner Announcement In...`;
@@ -1075,19 +969,26 @@
             const revealScreen = document.getElementById('revealScreen');
             const revealContainer = document.getElementById('revealCardContainer');
             
+            document.getElementById('mainHeader').classList.add('hidden');
             revealScreen.classList.remove('hidden');
 
-            if (students[0]) showSingleWinnerCard(students[0], revealContainer);
-            playMediaAudio('sndFanfare');
-            triggerGrandConfetti();
+            if (students[0]) {
+                showSingleWinnerCard(students[0], revealContainer);
+                playMediaAudio('sndFanfare');
+                triggerGrandConfetti();
+            }
 
             let t1 = setTimeout(() => {
-                if (students[1]) showSingleWinnerCard(students[1], revealContainer);
-                playMediaAudio('sndCheer');
+                if (students[1]) {
+                    showSingleWinnerCard(students[1], revealContainer);
+                    playMediaAudio('sndCheer');
+                }
                 
                 let t2 = setTimeout(() => {
-                    if (students[2]) showSingleWinnerCard(students[2], revealContainer);
-                    playMediaAudio('sndCheer');
+                    if (students[2]) {
+                        showSingleWinnerCard(students[2], revealContainer);
+                        playMediaAudio('sndCheer');
+                    }
 
                     let t3 = setTimeout(() => {
                         revealScreen.classList.add('hidden');
@@ -1103,45 +1004,103 @@
             activeTimers.push(t1);
         }
 
+        /* --- FULL SCREEN EXPANDED WINNER CARD RENDER ENGINE WITH AUTO-SCROLL --- */
         function showSingleWinnerCard(student, container) {
             const isFirst = student.rank === 1;
             const isSecond = student.rank === 2;
             const imgUrl = optimizeImgUrl(student.photo);
             
-            let rankColor = isFirst ? 'from-amber-400 via-yellow-500 to-amber-600' : (isSecond ? 'from-slate-300 to-slate-400' : 'from-amber-700 to-amber-800');
-            let borderStyle = isFirst ? 'gold-glow bg-slate-900' : 'bg-slate-900 border-2 border-slate-800';
+            let badgeTitle = "";
+            let badgeGradient = "";
+            let avatarGlow = "";
+            let crownIcon = "";
+            let outerBorder = "";
+            let appreciationMsg = "";
+            let stars = "";
+
+            if (isFirst) {
+                badgeTitle = "1ST POSITION • GRAND WINNER";
+                badgeGradient = "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black shadow-xl shadow-amber-500/50";
+                avatarGlow = "ring-8 ring-yellow-400/90 shadow-[0_0_50px_rgba(250,204,21,0.7)]";
+                crownIcon = `<div class="absolute -top-10 left-1/2 -translate-x-1/2 text-yellow-300 text-5xl md:text-6xl filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.9)] animate-bounce"><i class="fa-solid fa-crown"></i></div>`;
+                outerBorder = "border-4 border-yellow-400/70 shadow-[0_0_70px_rgba(234,179,8,0.35)]";
+                appreciationMsg = "Outstanding Performance! Setting a grand benchmark of academic excellence!";
+                stars = `<i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i>`;
+            } else if (isSecond) {
+                badgeTitle = "2ND POSITION • RUNNER UP";
+                badgeGradient = "bg-gradient-to-r from-slate-200 via-slate-300 to-slate-400 text-slate-950 font-black shadow-xl shadow-slate-300/40";
+                avatarGlow = "ring-8 ring-slate-300 shadow-[0_0_40px_rgba(203,213,225,0.5)]";
+                crownIcon = `<div class="absolute -top-9 left-1/2 -translate-x-1/2 text-slate-300 text-4xl md:text-5xl filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.9)]"><i class="fa-solid fa-medal"></i></div>`;
+                outerBorder = "border-4 border-slate-400/60 shadow-[0_0_50px_rgba(148,163,184,0.25)]";
+                appreciationMsg = "Brilliant Job! Hard work and dedication paid off wonderfully!";
+                stars = `<i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i>`;
+            } else {
+                badgeTitle = "3RD POSITION • ACHIEVER";
+                badgeGradient = "bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 text-amber-50 font-black shadow-xl shadow-amber-600/40";
+                avatarGlow = "ring-8 ring-amber-600 shadow-[0_0_40px_rgba(217,119,6,0.5)]";
+                crownIcon = `<div class="absolute -top-9 left-1/2 -translate-x-1/2 text-amber-500 text-4xl md:text-5xl filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.9)]"><i class="fa-solid fa-award"></i></div>`;
+                outerBorder = "border-4 border-amber-600/60 shadow-[0_0_50px_rgba(217,119,6,0.25)]";
+                appreciationMsg = "Great Effort! Keep climbing higher, immense potential to shine!";
+                stars = `<i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i><i class="fa-solid fa-star text-yellow-400 text-lg"></i>`;
+            }
 
             container.innerHTML = `
-                <div class="${borderStyle} rounded-3xl p-6 md:p-8 text-center relative shadow-2xl overflow-hidden card-enter">
-                    <div class="inline-block bg-gradient-to-r ${rankColor} text-slate-950 font-black text-xs md:text-sm uppercase tracking-widest px-6 py-2 rounded-full mb-5 shadow-xl">
-                        ${isFirst ? '🏆 STUDENT OF THE MONTH - 1ST POSITION' : (isSecond ? '🥈 2ND RUNNER UP' : '🥉 3RD POSITION')}
+                <div id="activeWinnerCard" class="winner-card-fast ${outerBorder} p-6 md:p-10 text-center relative backdrop-blur-3xl bg-gradient-to-b from-slate-900/95 via-slate-950 to-slate-950 rounded-[40px] shadow-2xl overflow-hidden w-full min-h-[80vh] flex flex-col justify-between items-center">
+                    
+                    <!-- BACKGROUND HIGH INTENSITY NEON GLOWS -->
+                    <div class="absolute -top-20 -left-20 w-64 h-64 ${isFirst ? 'bg-amber-500/30' : 'bg-slate-500/20'} rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-20 -right-20 w-64 h-64 ${isFirst ? 'bg-yellow-500/30' : 'bg-blue-500/20'} rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- FLOATING EXPANDED BADGE -->
+                    <div class="inline-flex items-center gap-2 ${badgeGradient} text-xs md:text-sm uppercase tracking-widest px-6 py-2.5 rounded-full mt-2">
+                        ${badgeTitle}
                     </div>
 
-                    <div class="relative w-36 h-36 md:w-40 md:h-40 mx-auto mb-5">
-                        <img src="${imgUrl}" alt="${student.name}" loading="eager" decoding="async" class="w-full h-full rounded-full object-cover border-4 ${isFirst ? 'border-yellow-400' : 'border-slate-700'} shadow-2xl bg-slate-800">
-                        ${isFirst ? `
-                            <div class="absolute -top-3 -right-1 text-yellow-400 text-3xl md:text-4xl trophy-anim filter drop-shadow">
-                                <i class="fa-solid fa-crown"></i>
-                            </div>
-                        ` : ''}
+                    <!-- LARGE AVATAR WITH NEON RING & CROWN -->
+                    <div class="relative w-44 h-44 md:w-52 md:h-52 my-4">
+                        ${crownIcon}
+                        <img src="${imgUrl}" alt="${student.name}" loading="eager" decoding="async" class="w-full h-full rounded-full object-cover ${avatarGlow} bg-slate-900">
                     </div>
 
-                    <h3 class="text-2xl md:text-4xl font-extrabold text-white mb-1">${student.name}</h3>
-                    <p class="text-xs md:text-sm text-slate-400 mb-5 font-medium">S/O ${student.fatherName}</p>
+                    <!-- BIG IMPACTFUL NAME & DETAILS -->
+                    <div class="w-full">
+                        <h3 class="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight font-cinzel drop-shadow-md">${student.name}</h3>
+                        <p class="text-sm md:text-base text-amber-300 font-bold uppercase tracking-widest mb-4">S/O ${student.fatherName}</p>
 
-                    <div class="bg-slate-950/80 rounded-2xl p-3.5 border border-slate-800/80 max-w-sm mx-auto flex justify-around items-center">
-                        <div>
-                            <p class="text-[10px] md:text-xs text-slate-400 uppercase font-semibold">Total Marks</p>
-                            <p class="text-xl md:text-2xl font-black text-white mt-0.5">${student.marks}</p>
+                        <!-- APPRECIATION BANNER -->
+                        <div class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3.5 max-w-md mx-auto shadow-inner mb-6">
+                            <p class="text-xs md:text-sm text-slate-200 font-medium italic">
+                                "${appreciationMsg}"
+                            </p>
                         </div>
-                        <div class="h-8 w-px bg-slate-800"></div>
-                        <div>
-                            <p class="text-[10px] md:text-xs text-slate-400 uppercase font-semibold">Percentage</p>
-                            <p class="text-xl md:text-2xl font-black text-amber-400 mt-0.5">${student.percentage}</p>
+                    </div>
+
+                    <!-- FULL-WIDTH STATS HUD -->
+                    <div class="grid grid-cols-2 gap-4 w-full max-w-md mb-2">
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center shadow-lg">
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Total Marks</span>
+                            <span class="text-2xl md:text-3xl font-black text-white">${student.marks}</span>
                         </div>
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center shadow-lg">
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Percentage</span>
+                            <span class="text-2xl md:text-3xl font-black text-amber-400">${student.percentage}</span>
+                        </div>
+                    </div>
+
+                    <!-- STARS FOOTER -->
+                    <div class="flex justify-center gap-1.5 mb-1">
+                        ${stars}
                     </div>
                 </div>
             `;
+
+            // Auto Scroll Fix to align card in screen center
+            setTimeout(() => {
+                const cardEl = document.getElementById('activeWinnerCard');
+                if (cardEl) {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 50);
         }
 
         function showFinalMarksheet(className) {
@@ -1149,6 +1108,8 @@
             const marksheetScreen = document.getElementById('marksheetScreen');
             const podiumContainer = document.getElementById('podiumCards');
             const tableBody = document.getElementById('marksheetTableBody');
+
+            document.getElementById('mainHeader').classList.remove('hidden');
 
             document.getElementById('finalClassTitle').innerText = `${className} - Final Results`;
 
@@ -1160,7 +1121,7 @@
                 const imgUrl = optimizeImgUrl(student.photo);
 
                 podiumContainer.innerHTML += `
-                    <div class="${isFirst ? 'gold-glow bg-slate-900' : 'bg-slate-900 border border-slate-800'} rounded-3xl p-5 text-center flex flex-col justify-between relative transition hover:-translate-y-1">
+                    <div class="${isFirst ? 'bg-slate-900 border-2 border-amber-400' : 'bg-slate-900 border border-slate-800'} rounded-3xl p-5 text-center flex flex-col justify-between relative transition hover:-translate-y-1">
                         <div>
                             <span class="inline-block ${isFirst ? 'bg-amber-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'} text-[11px] px-3.5 py-1 rounded-full mb-3">
                                 ${student.badge}
@@ -1198,6 +1159,8 @@
             marksheetScreen.classList.remove('hidden');
             playMediaAudio('sndFanfare');
             triggerGrandConfetti();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function triggerGrandConfetti() {
