@@ -8,9 +8,10 @@
     <link href="https://fonts.getfonts.net/style/jameel-noori-nastaleeq" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Core Firebase SDKs (v9 Compatible Compatibility Layer) -->
+    <!-- Core Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
@@ -43,7 +44,9 @@
         .menu-toggle { display: none; font-size: 20px; color: var(--primary-blue); background: none; border: none; cursor: pointer; }
 
         .wrapper { max-width: 800px; margin: 25px auto; padding: 0 15px; }
-        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--primary-blue); text-decoration: none; font-weight: 600; margin-bottom: 20px; font-size: 14px; }
+        .top-bar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--primary-blue); text-decoration: none; font-weight: 600; font-size: 14px; }
+
         .page-header { text-align: center; margin-bottom: 25px; }
         .page-header h2 { font-size: 24px; color: var(--primary-blue); font-weight: 700; }
         .page-header p { color: var(--text-muted); font-size: 13px; }
@@ -113,6 +116,16 @@
         .error-message { text-align: center; background: var(--white); border-radius: 12px; padding: 25px; box-shadow: var(--shadow-md); color: var(--text-muted); display: none; }
         .error-message i { font-size: 35px; color: var(--danger-red); margin-bottom: 8px; }
 
+        /* Hidden Admin Panel Modal */
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: #fff; border-radius: 12px; width: 90%; max-width: 650px; padding: 20px; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+        .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--danger-red); }
+        .stats-badge { background: var(--light-blue); color: var(--primary-blue); padding: 10px; border-radius: 8px; text-align: center; font-weight: 700; margin-bottom: 15px; font-size: 16px; border: 1px solid var(--primary-blue); }
+        .view-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .view-table th, .view-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        .view-table th { background: #f8fafc; color: var(--primary-blue); }
+
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
             .nav-links { position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); background-color: var(--white); flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; transition: var(--transition); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
@@ -135,7 +148,7 @@
         }
 
         @media print {
-            header, .back-btn, .page-header, .search-box-card, .print-control-bar { display: none !important; }
+            header, .top-bar-controls, .page-header, .search-box-card, .print-control-bar, .modal-overlay { display: none !important; }
             .wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
             .marksheet-container { display: block !important; box-shadow: none !important; border: 1px solid #000 !important; padding: 15mm !important; background: #fff !important; page-break-after: always !important; }
             .marks-table th { background-color: var(--white) !important; color: var(--primary-blue) !important; border-bottom: 2px solid #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -166,7 +179,9 @@
     </header>
 
     <div class="wrapper">
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="top-bar-controls">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
 
         <div class="page-header">
             <h2>Monthly Test Result Portal</h2>
@@ -196,12 +211,37 @@
         </div>
     </div>
 
+    <!-- Hidden Admin Panel Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Result Views Logs (Secret Panel)</h3>
+                <button class="close-btn" onclick="closeAdminPanel()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="stats-badge" id="totalViewsBadge">Total Views: Loading...</div>
+            <div style="overflow-x:auto;">
+                <table class="view-table">
+                    <thead>
+                        <tr>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="viewsTableBody">
+                        <tr><td colspan="3" style="text-align: center;">Loading data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
         
-        // 1. YOUR FIREBASE CONFIGURATION
+        // 1. FIREBASE CONFIGURATION
         const firebaseConfig = {
           apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
           authDomain: "pine-hills-school.firebaseapp.com",
@@ -209,21 +249,84 @@
           storageBucket: "pine-hills-school.firebasestorage.app",
           messagingSenderId: "310029732655",
           appId: "1:310029732655:web:37edd331495239524cefda",
-          databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com" // Realtime Database URL
+          databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com"
         };
 
-        // Initialize Firebase with Compatibility Libraries
-        // Note: Make sure to include the Realtime Database compat script in your <head> if needed, 
-        // but the core app package handles it via firebase.database()
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
-        
-        // Dynamic loading wrapper for database script if not already present
-        if (!firebase.database) {
-            const script = document.createElement('script');
-            script.src = "https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js";
-            document.head.appendChild(script);
+
+        // Secret Shortcut Key Trigger (Ctrl + Shift + A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                e.preventDefault();
+                openAdminPanel();
+            }
+        });
+
+        // Tracking Function
+        function trackResultView(rollNum, studentData) {
+            try {
+                const viewLogRef = firebase.database().ref('resultViews');
+                viewLogRef.push({
+                    rollNumber: rollNum,
+                    studentName: studentData.name || 'Unknown',
+                    timestamp: new Date().toLocaleString()
+                });
+            } catch (err) {
+                console.error("View log trace failed:", err);
+            }
+        }
+
+        // Hidden Admin Panel Functions
+        async function openAdminPanel() {
+            const password = prompt("Admin Secret Password Enter Karein:");
+            if (password !== "Ali 123") {
+                alert("Incorrect Password!");
+                return;
+            }
+
+            const modal = document.getElementById('adminModal');
+            const totalBadge = document.getElementById('totalViewsBadge');
+            const tableBody = document.getElementById('viewsTableBody');
+
+            modal.style.display = 'flex';
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Loading logs...</td></tr>';
+
+            try {
+                const snapshot = await firebase.database().ref('resultViews').once('value');
+                if (!snapshot.exists()) {
+                    totalBadge.innerText = 'Total Views: 0';
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Filhal koi view record nahi mila.</td></tr>';
+                    return;
+                }
+
+                let totalCount = 0;
+                let rowsHTML = '';
+
+                snapshot.forEach(child => {
+                    totalCount++;
+                    const val = child.val();
+                    rowsHTML = `
+                        <tr>
+                            <td><strong>${val.rollNumber.toUpperCase()}</strong></td>
+                            <td>${val.studentName.toUpperCase()}</td>
+                            <td>${val.timestamp}</td>
+                        </tr>
+                    ` + rowsHTML;
+                });
+
+                totalBadge.innerText = `Total Result Views: ${totalCount}`;
+                tableBody.innerHTML = rowsHTML;
+
+            } catch (err) {
+                console.error("Admin view error:", err);
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Data load karne mein masla hua.</td></tr>';
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').style.display = 'none';
         }
 
         function calculateFallbackGrade(pct) {
@@ -356,7 +459,6 @@
             `;
         }
 
-        // 3. Real-time Firebase Realtime Database query execution
         async function generateReport() {
             const inputVal = document.getElementById('rollNumberInput').value.trim().toLowerCase();
             const printArea = document.getElementById('printArea');
@@ -365,7 +467,6 @@
             const errorTitle = document.getElementById('errorTitle');
             const errorDesc = document.getElementById('errorDesc');
 
-            // Reset States
             printArea.innerHTML = '';
             printBar.style.display = 'none';
             errorBlock.style.display = 'none';
@@ -377,7 +478,6 @@
                 return;
             }
 
-            // Ensure database script is completely loaded
             if (typeof firebase.database !== 'function') {
                 setTimeout(generateReport, 200);
                 return;
@@ -385,7 +485,6 @@
 
             const dbRef = firebase.database().ref('reportDatabase');
 
-            // Print All Logic
             if(inputVal === "print-all") {
                 try {
                     const snapshot = await dbRef.once('value');
@@ -414,13 +513,16 @@
                 return;
             }
 
-            // Fetch single document dynamically from node
             try {
                 const snapshot = await dbRef.child(inputVal).once('value');
 
                 if (snapshot.exists()) {
-                    printArea.innerHTML = createMarksheetHTML(inputVal, snapshot.val());
+                    const studentData = snapshot.val();
+                    printArea.innerHTML = createMarksheetHTML(inputVal, studentData);
                     printBar.style.display = 'flex';
+                    
+                    // Track Result Check
+                    trackResultView(inputVal, studentData);
                 } else {
                     errorTitle.innerText = "Roll Number Nahi Mila";
                     errorDesc.innerText = "Database mein ye roll number register nahi hai.";
