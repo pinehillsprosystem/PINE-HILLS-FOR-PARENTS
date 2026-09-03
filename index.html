@@ -143,6 +143,7 @@
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
             border: 2px solid var(--neon-cyan);
+            user-select: none;
         }
 
         .logo-text h1 {
@@ -572,7 +573,7 @@
 
     <header id="siteHeader">
         <div class="nav-container">
-            <a href="index.html" class="logo-area">
+            <a href="index.html" class="logo-area" id="secretLogoTrigger">
                 <img src="real logo copy.jpg" alt="Pine Hills Logo" class="logo-img">
                 <div class="logo-text">
                     <h1>PINE HILLS</h1>
@@ -791,6 +792,72 @@
         </main>
     </div>
 
+    <!-- SECRET ADMIN PANEL MODAL -->
+    <div id="secretAdminModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[9999] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-4xl w-full p-6 text-slate-100 shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-600/20 text-cyan-400 rounded-xl border border-cyan-500/30">
+                        <i class="fa-solid fa-user-shield text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Secret Visitor Tracking Panel</h2>
+                        <p class="text-xs text-slate-400">Live Website Visitors Log</p>
+                    </div>
+                </div>
+                <button id="closeAdminModal" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-xl text-sm transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- LOGIN VIEW -->
+            <div id="adminLoginSection" class="py-12 flex flex-col items-center justify-center text-center">
+                <div class="p-4 bg-slate-800/60 rounded-full mb-4 border border-slate-700">
+                    <i class="fa-solid fa-lock text-3xl text-amber-400"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2">Admin Authentication Required</h3>
+                <p class="text-xs text-slate-400 mb-6">Please enter the secret password to view visitor records.</p>
+                <div class="flex gap-2 max-w-xs w-full">
+                    <input type="password" id="adminPasswordInput" placeholder="Enter Password" class="bg-slate-950 border border-slate-700 text-white rounded-xl px-4 py-2.5 text-sm w-full outline-none focus:border-cyan-400">
+                    <button id="adminLoginBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-lg shadow-blue-600/30 shrink-0">Login</button>
+                </div>
+                <p id="adminLoginErr" class="text-red-400 text-xs mt-3 hidden font-semibold"></p>
+            </div>
+
+            <!-- DATA VIEW -->
+            <div id="adminDataSection" class="hidden flex-col flex-grow overflow-hidden pt-4">
+                <div class="flex justify-between items-center mb-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 flex-wrap gap-2">
+                    <div>
+                        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Unique Visitors</span>
+                        <h3 id="totalVisitorsCount" class="text-2xl font-black text-cyan-400">0</h3>
+                    </div>
+                    <button id="clearVisitorsBtn" class="bg-red-600/20 hover:bg-red-600 border border-red-500/30 text-red-300 hover:text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-trash"></i> Clear Visitor Logs
+                    </button>
+                </div>
+
+                <div class="overflow-y-auto overflow-x-auto flex-grow rounded-2xl border border-slate-800 bg-slate-950/50">
+                    <table class="w-full text-left border-collapse min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 text-xs uppercase border-b border-slate-800 sticky top-0 z-10">
+                                <th class="p-3">#</th>
+                                <th class="p-3">Time & Date</th>
+                                <th class="p-3">IP Address</th>
+                                <th class="p-3">Location</th>
+                                <th class="p-3">Device / Browser</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitorLogsTable" class="divide-y divide-slate-800 text-xs">
+                            <tr><td colspan="5" class="p-4 text-center text-slate-500">Loading logs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <script>
         // --- Mobile Menu Toggle Logic ---
         const menuBtn = document.getElementById('menuBtn');
@@ -837,10 +904,10 @@
         }
     </script>
 
-    <!-- FIREBASE & WINNER RECOGNITION LOGIC -->
+    <!-- FIREBASE, WINNER RECOGNITION & VISITOR TRACKING LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, push, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyD8pe1_IzhWzKJNoo1HcSyHpauzt4c1rQQ",
@@ -860,6 +927,151 @@
         let audioCtx = null;
         let selectedClass = "Class 1";
 
+        // --- AUTOMATIC VISITOR TRACKER ---
+        async function trackVisitor() {
+            try {
+                // Avoid logging rapid reloads in same session
+                if (sessionStorage.getItem('visited_session')) return;
+
+                let ipData = { ip: 'Unknown', city: '', country_name: '' };
+                try {
+                    const res = await fetch('https://ipapi.co/json/');
+                    if (res.ok) {
+                        ipData = await res.json();
+                    }
+                } catch(err) {
+                    console.log("IP API Fetch error", err);
+                }
+
+                const visitorRecord = {
+                    timestamp: new Date().toLocaleString(),
+                    ip: ipData.ip || 'Unknown',
+                    location: (ipData.city && ipData.country_name) ? `${ipData.city}, ${ipData.country_name}` : 'Unknown',
+                    userAgent: navigator.userAgent || 'Unknown Device',
+                    page: window.location.pathname
+                };
+
+                const visitorsRef = ref(db, 'visitors');
+                const newVisitorRef = push(visitorsRef);
+                await set(newVisitorRef, visitorRecord);
+                sessionStorage.setItem('visited_session', 'true');
+            } catch(e) {
+                console.log("Tracking Error:", e);
+            }
+        }
+        trackVisitor();
+
+        // --- SECRET ADMIN PANEL CONTROLS ---
+        const modal = document.getElementById('secretAdminModal');
+        const loginSection = document.getElementById('adminLoginSection');
+        const dataSection = document.getElementById('adminDataSection');
+        const passwordInput = document.getElementById('adminPasswordInput');
+        const loginBtn = document.getElementById('adminLoginBtn');
+        const loginErr = document.getElementById('adminLoginErr');
+        const closeBtn = document.getElementById('closeAdminModal');
+        const visitorLogsTable = document.getElementById('visitorLogsTable');
+        const totalVisitorsCount = document.getElementById('totalVisitorsCount');
+        const clearVisitorsBtn = document.getElementById('clearVisitorsBtn');
+
+        function openAdminModal() {
+            modal.classList.remove('hidden');
+        }
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Secret Shortcut: Ctrl + Shift + A
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                e.preventDefault();
+                openAdminModal();
+            }
+        });
+
+        // Secret Long-Press / Multi-Tap on School Logo (For Mobile Users)
+        const logoTrigger = document.getElementById('secretLogoTrigger');
+        let pressTimer;
+        let tapCount = 0;
+        let tapTimer;
+
+        logoTrigger.addEventListener('touchstart', () => {
+            pressTimer = setTimeout(openAdminModal, 2500);
+        });
+        logoTrigger.addEventListener('touchend', () => {
+            clearTimeout(pressTimer);
+        });
+
+        logoTrigger.addEventListener('click', (e) => {
+            tapCount++;
+            clearTimeout(tapTimer);
+            if (tapCount >= 3) {
+                e.preventDefault();
+                openAdminModal();
+                tapCount = 0;
+            } else {
+                tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+            }
+        });
+
+        // Login Logic
+        loginBtn.addEventListener('click', verifyAdminPassword);
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyAdminPassword();
+        });
+
+        function verifyAdminPassword() {
+            if (passwordInput.value === "Ali 123") {
+                loginSection.classList.add('hidden');
+                dataSection.classList.remove('hidden');
+                dataSection.classList.add('flex');
+                loginErr.classList.add('hidden');
+                passwordInput.value = "";
+                loadVisitorsData();
+            } else {
+                loginErr.innerText = "Ghalt Password! Dobara koshish karein.";
+                loginErr.classList.remove('hidden');
+            }
+        }
+
+        function loadVisitorsData() {
+            const visitorsRef = ref(db, 'visitors');
+            onValue(visitorsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    totalVisitorsCount.innerText = "0";
+                    visitorLogsTable.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Koi visitor record majood nahi hai.</td></tr>`;
+                    return;
+                }
+
+                const keys = Object.keys(data).reverse();
+                totalVisitorsCount.innerText = keys.length;
+
+                let html = "";
+                keys.forEach((key, idx) => {
+                    const item = data[key];
+                    html += `
+                        <tr class="hover:bg-slate-900/60 transition">
+                            <td class="p-3 text-slate-500">${keys.length - idx}</td>
+                            <td class="p-3 font-medium text-slate-200">${item.timestamp || '-'}</td>
+                            <td class="p-3 text-cyan-400 font-mono">${item.ip || '-'}</td>
+                            <td class="p-3 text-amber-300">${item.location || 'Unknown'}</td>
+                            <td class="p-3 text-slate-400 truncate max-w-[200px]" title="${item.userAgent}">${item.userAgent || '-'}</td>
+                        </tr>
+                    `;
+                });
+                visitorLogsTable.innerHTML = html;
+            });
+        }
+
+        clearVisitorsBtn.addEventListener('click', async () => {
+            if (confirm("Kya aap waqai saare visitor logs delete karna chahte hain?")) {
+                await remove(ref(db, 'visitors'));
+                alert("Visitor logs clear kar diye gaye hain!");
+            }
+        });
+
+        // --- EXISTING WINNER LOGIC ---
         function optimizeImgUrl(url) {
             if(!url) return "";
             if(url.includes("cloudinary.com") && !url.includes("f_auto")) {
@@ -1094,7 +1306,6 @@
                 </div>
             `;
 
-            // Auto Scroll Fix to align card in screen center
             setTimeout(() => {
                 const cardEl = document.getElementById('activeWinnerCard');
                 if (cardEl) {
