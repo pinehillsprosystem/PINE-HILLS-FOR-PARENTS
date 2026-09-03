@@ -198,28 +198,22 @@
             text-overflow: ellipsis;
         }
 
-        /* --- NATIVE SNAPPY SHORTS SCROLL CONTAINER --- */
+        /* --- DYNAMIC FEED CONTAINER --- */
         .feed-wrapper-area {
             width: 100%;
             height: calc(100% - var(--nav-height));
             position: absolute;
             top: 0;
             left: 0;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
             background-color: var(--ph-bg);
-            overscroll-behavior-y: contain; /* Prevents bounce resetting */
-        }
-        .feed-wrapper-area::-webkit-scrollbar {
-            display: none;
         }
 
         #dynamicFeed {
             width: 100%;
-            height: auto;
+            height: 100%;
             position: relative;
+            transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.35, 1.2);
         }
 
         .video-post { 
@@ -228,8 +222,6 @@
             height: 100%; 
             background-color: #000; 
             overflow: hidden;
-            scroll-snap-align: start;
-            scroll-snap-stop: always; /* Force rigid snapping */
         }
         
         video { 
@@ -447,7 +439,7 @@
             left: 0;
             width: 100%;
             height: var(--nav-height);
-            background: #0b0f19;
+            background: #0b0f19; /* Solid Dark Theme Background */
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 100;
             display: flex;
@@ -729,9 +721,9 @@
         
         let isUserInteracted = false;
         let localVideosData = []; 
+        let currentFeedIndex = 0;
+        let totalFeedCount = 0;
         let lastClickTime = 0;
-        let videoObserver = null;
-        let isInitialLoaded = false;
 
         function getPersistedViewedVideos() {
             try {
@@ -754,149 +746,127 @@
             });
         }
 
-        // IntersectionObserver for auto play/pause & view tracking
-        function initVideoObserver() {
-            if (videoObserver) videoObserver.disconnect();
+        function updateVideoPlayback() {
+            const posts = document.querySelectorAll('.video-post');
+            posts.forEach((post, index) => {
+                const video = post.querySelector('video');
+                const videoId = post.getAttribute('data-id');
+                if (!video) return;
 
-            const options = {
-                root: feedWrapper,
-                threshold: 0.65 
-            };
-
-            videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    const post = entry.target;
-                    const video = post.querySelector('video');
-                    const videoId = post.getAttribute('data-id');
-
-                    if (!video) return;
-
-                    if (entry.isIntersecting) {
-                        if (videoId) incrementViewCount(videoId);
-
-                        if (!isUserInteracted) {
-                            video.muted = true;
-                            video.play().then(() => post.classList.add('is-playing')).catch(() => {});
-                        } else {
-                            video.muted = false;
-                            video.play().then(() => {
-                                post.classList.add('is-playing');
-                            }).catch(() => {
-                                video.muted = true;
-                                video.play().then(() => post.classList.add('is-playing'));
-                            });
-                        }
-                    } else {
+                if (index === currentFeedIndex) {
+                    if (videoId) incrementViewCount(videoId);
+                    
+                    if (!isUserInteracted && index === 0) {
                         video.pause();
-                        video.currentTime = 0;
                         post.classList.remove('is-playing');
+                    } else {
+                        video.muted = false;
+                        video.play().then(() => {
+                            post.classList.add('is-playing');
+                        }).catch(() => {
+                            video.muted = true;
+                            video.play();
+                        });
                     }
-                });
-            }, options);
-
-            document.querySelectorAll('.video-post').forEach((post) => {
-                videoObserver.observe(post);
+                } else {
+                    video.pause();
+                    video.currentTime = 0;
+                    post.classList.remove('is-playing');
+                }
             });
         }
 
-        // Fetch Data Realtime without full DOM reset to prevent scroll-jump
+        // Fetch Data Realtime
         database.ref('videos').orderByChild('timestamp').on('value', (snapshot) => {
             const data = snapshot.val();
+            feed.innerHTML = '';
+            localVideosData = []; 
 
             if(!data) {
                 feed.innerHTML = '<div class="no-data">No school activities posted yet.</div>';
+                totalFeedCount = 0;
                 return;
             }
 
             const videoEntries = Object.entries(data).reverse(); 
 
-            // Update internal state
-            localVideosData = videoEntries.map(([id, videoData], index) => ({
-                id: id,
-                domIndex: index,
-                username: videoData.username || '@pinehills',
-                description: videoData.description || '',
-                videoUrl: videoData.videoUrl,
-                views: videoData.views || 0,
-                likes: videoData.likes || 0,
-                commentsCount: videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0)
-            }));
+            videoEntries.forEach(([id, videoData], index) => {
+                localVideosData.push({
+                    id: id,
+                    domIndex: index,
+                    username: videoData.username || '@pinehills',
+                    description: videoData.description || '',
+                    videoUrl: videoData.videoUrl,
+                    views: videoData.views || 0,
+                    likes: videoData.likes || 0,
+                    commentsCount: videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0)
+                });
 
-            // If first time loading, construct DOM
-            if(!isInitialLoaded) {
-                feed.innerHTML = '';
-                videoEntries.forEach(([id, videoData], index) => {
-                    let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
-                    let firstLetter = (videoData.username || 'P').replace('@','').charAt(0);
+                let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
+                let firstLetter = (videoData.username || 'P').replace('@','').charAt(0);
 
-                    const postBlock = document.createElement('div');
-                    postBlock.className = 'video-post';
-                    postBlock.style.height = feedWrapper.clientHeight + 'px';
-                    postBlock.setAttribute('data-index', index);
-                    postBlock.setAttribute('data-id', id);
+                const postBlock = document.createElement('div');
+                postBlock.className = 'video-post';
+                postBlock.style.height = feedWrapper.clientHeight + 'px';
+                postBlock.setAttribute('data-index', index);
+                postBlock.setAttribute('data-id', id);
 
-                    postBlock.innerHTML = `
-                        <video loop playsinline src="${videoData.videoUrl}"></video>
+                postBlock.innerHTML = `
+                    <video loop muted playsinline src="${videoData.videoUrl}"></video>
+                    
+                    <div class="play-overlay-btn">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+
+                    <div class="action-sidebar">
+                        <div class="profile-avatar-box">
+                            <div class="avatar-img">${firstLetter}</div>
+                            <div class="avatar-plus-btn">✓</div>
+                        </div>
+
+                        <div class="action-wrapper">
+                            <button class="action-btn" onclick="toggleLike(this)">
+                                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </button>
+                            <span class="action-count">${videoData.likes || '0'}</span>
+                        </div>
                         
-                        <div class="play-overlay-btn">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        <div class="action-wrapper">
+                            <button class="action-btn">
+                                <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                            </button>
+                            <span class="action-count">${totalCommentsCount}</span>
                         </div>
 
-                        <div class="action-sidebar">
-                            <div class="profile-avatar-box">
-                                <div class="avatar-img">${firstLetter}</div>
-                                <div class="avatar-plus-btn">✓</div>
-                            </div>
-
-                            <div class="action-wrapper">
-                                <button class="action-btn" onclick="toggleLike(this)">
-                                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                                </button>
-                                <span class="action-count count-likes">${videoData.likes || '0'}</span>
-                            </div>
-                            
-                            <div class="action-wrapper">
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                                </button>
-                                <span class="action-count">${totalCommentsCount}</span>
-                            </div>
-
-                            <div class="action-wrapper">
-                                <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
-                                    <svg viewBox="0 0 24 24"><path d="M10 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                                </button>
-                                <span class="action-count">Share</span>
-                            </div>
-
-                            <div class="crest-disk"></div>
+                        <div class="action-wrapper">
+                            <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
+                                <svg viewBox="0 0 24 24"><path d="M10 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                            </button>
+                            <span class="action-count">Share</span>
                         </div>
 
-                        <div class="video-info-overlay">
-                            <div class="user-block">
-                                <span class="username">${videoData.username || '@pinehills'}</span>
-                                <svg class="verified-badge" viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM375 201L239 337c-4.7 4.7-11 7-17 7s-12.3-2.3-17-7l-69-69c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l52.1 52.1L341.1 167c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/></svg>
-                            </div>
-                            <div class="description">${videoData.description || ''}</div>
-                            <div class="activity-tag">
-                                <span>🎓 Pine Hills Official Activity</span>
-                            </div>
+                        <div class="crest-disk"></div>
+                    </div>
+
+                    <div class="video-info-overlay">
+                        <div class="user-block">
+                            <span class="username">${videoData.username || '@pinehills'}</span>
+                            <svg class="verified-badge" viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM375 201L239 337c-4.7 4.7-11 7-17 7s-12.3-2.3-17-7l-69-69c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l52.1 52.1L341.1 167c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/></svg>
                         </div>
-                    `;
-                    feed.appendChild(postBlock);
-                });
-                isInitialLoaded = true;
-                initVideoObserver();
-            } else {
-                // Soft Update views/likes without recreating elements
-                videoEntries.forEach(([id, videoData]) => {
-                    const postElem = document.querySelector(`.video-post[data-id="${id}"]`);
-                    if(postElem) {
-                        const likeCountElem = postElem.querySelector('.count-likes');
-                        if(likeCountElem) likeCountElem.innerText = videoData.likes || '0';
-                    }
-                });
-            }
+                        <div class="description">${videoData.description || ''}</div>
+                        <div class="activity-tag">
+                            <span>🎓 Pine Hills Official Activity</span>
+                        </div>
+                    </div>
+                `;
+                feed.appendChild(postBlock);
+            });
+            
+            totalFeedCount = videoEntries.length;
+            currentFeedIndex = 0;
+            feed.style.transform = `translateY(0px)`;
+            isUserInteracted = false;
+            updateVideoPlayback();
         });
 
         // Window resize adjustment
@@ -905,6 +875,7 @@
             document.querySelectorAll('.video-post').forEach(post => {
                 post.style.height = feedHeight + 'px';
             });
+            feed.style.transform = `translateY(-${currentFeedIndex * feedHeight}px)`;
         });
 
         function triggerWebsiteShare(username) {
@@ -923,6 +894,7 @@
 
         function closeSearchSystem() {
             document.getElementById('searchOverlayPage').style.display = 'none';
+            updateVideoPlayback();
         }
 
         function performGridSearch() {
@@ -953,10 +925,11 @@
 
         function scrollToSelectedVideo(targetIndex) {
             document.getElementById('searchOverlayPage').style.display = 'none';
-            const posts = document.querySelectorAll('.video-post');
-            if (posts[targetIndex]) {
+            if (targetIndex >= 0 && targetIndex < totalFeedCount) {
                 isUserInteracted = true;
-                posts[targetIndex].scrollIntoView({ behavior: 'smooth' });
+                currentFeedIndex = targetIndex;
+                feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                setTimeout(updateVideoPlayback, 100);
             }
         }
 
@@ -964,14 +937,13 @@
             btn.classList.toggle('liked');
         }
 
-        // Tap to Pause/Play & Double Tap to Like
-        feedWrapper.addEventListener('click', (e) => {
+        // Touch & Tap Handling
+        container.addEventListener('click', (e) => {
             if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
             
             const now = Date.now();
-            const currentPost = e.target.closest('.video-post');
-
-            if (!currentPost) return;
+            const posts = document.querySelectorAll('.video-post');
+            const currentPost = posts[currentFeedIndex];
 
             if (now - lastClickTime < 300) {
                 createDoubleTapHeart(e.clientX, e.clientY, currentPost);
@@ -1010,6 +982,57 @@
             setTimeout(() => heart.remove(), 800);
         }
 
+        // Scroll & Gesture
+        let isScrollThrottled = false;
+        container.addEventListener('wheel', (e) => {
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
+            e.preventDefault(); 
+            if (isScrollThrottled || totalFeedCount <= 0) return;
+
+            if (Math.abs(e.deltaY) > 20) { 
+                let previousIndex = currentFeedIndex;
+                if (e.deltaY > 0) {
+                    if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
+                } else {
+                    if (currentFeedIndex > 0) currentFeedIndex--;
+                }
+
+                if (currentFeedIndex !== previousIndex) {
+                    isScrollThrottled = true;
+                    isUserInteracted = true;
+                    feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                    updateVideoPlayback();
+                    setTimeout(() => { isScrollThrottled = false; }, 500); 
+                }
+            }
+        }, { passive: false });
+
+        let touchStartY = 0;
+        container.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        container.addEventListener('touchend', (e) => {
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
+            let touchEndY = e.changedTouches[0].clientY;
+            let diffY = touchStartY - touchEndY;
+
+            if (Math.abs(diffY) > 50) {
+                let previousIndex = currentFeedIndex;
+                if (diffY > 0) {
+                    if (currentFeedIndex < totalFeedCount - 1) currentFeedIndex++;
+                } else {
+                    if (currentFeedIndex > 0) currentFeedIndex--;
+                }
+
+                if (currentFeedIndex !== previousIndex) {
+                    isUserInteracted = true;
+                    feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                    updateVideoPlayback();
+                }
+            }
+        }, { passive: true });
+
         // Admin Panel Logic
         function openAdminPanel() {
             const password = prompt("🔑 Enter Admin Password:");
@@ -1024,6 +1047,7 @@
 
         function closeAdminPanel() {
             document.getElementById('adminPanelModal').style.display = 'none';
+            updateVideoPlayback();
         }
 
         function renderAdminStats() {
