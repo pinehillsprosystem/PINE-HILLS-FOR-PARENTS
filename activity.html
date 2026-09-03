@@ -488,6 +488,128 @@
         .create-btn-wrapper svg { width: 16px; height: 16px; fill: #000; }
 
         .no-data { text-align: center; padding-top: 50%; color: #888; font-size: 15px; }
+
+        /* --- SECRET ADMIN PANEL MODAL --- */
+        .admin-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 20px 16px;
+            overflow-y: auto;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        .admin-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fe2c55;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-close-btn {
+            background: #222;
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #1e1e1e;
+            padding: 12px 8px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-card-title {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .stat-card-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #20d5ec;
+        }
+        .video-list-container {
+            flex: 1;
+        }
+        .video-list-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+        .video-stat-item {
+            background: #181818;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .video-stat-thumb {
+            width: 40px;
+            height: 50px;
+            background: #222;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .video-stat-details {
+            flex: 1;
+            overflow: hidden;
+        }
+        .video-stat-user {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .video-stat-desc {
+            font-size: 11px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .video-stat-metrics {
+            display: flex;
+            gap: 10px;
+            font-size: 11px;
+            color: #fe2c55;
+            margin-top: 4px;
+            font-weight: 600;
+        }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -511,7 +633,7 @@
             </button>
         </div>
 
-        <!-- Search Overlay Page -->
+        <!-- Search Overlay Screen -->
         <div class="search-overlay-page" id="searchOverlayPage">
             <div class="search-header-bar">
                 <div class="search-input-wrapper">
@@ -528,6 +650,39 @@
             <div class="no-data">Loading Feed...</div>
         </div>
 
+        <!-- Secret Admin Panel Modal -->
+        <div class="admin-modal-overlay" id="adminPanelModal">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    Secret Admin Panel
+                </div>
+                <button class="admin-close-btn" onclick="closeAdminPanel()">✕</button>
+            </div>
+
+            <div class="admin-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-title">Total Views</div>
+                    <div class="stat-card-value" id="adminTotalViews">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Total Likes</div>
+                    <div class="stat-card-value" id="adminTotalLikes">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Videos</div>
+                    <div class="stat-card-value" id="adminTotalVideos">0</div>
+                </div>
+            </div>
+
+            <div class="video-list-container">
+                <div class="video-list-title">Video Wise Analytics</div>
+                <div id="adminVideoList">
+                    <!-- Video Stats dynamically added here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Navigation Bar -->
         <div class="bottom-nav-bar">
             <div class="nav-item active">
@@ -535,7 +690,7 @@
                 <span>Home</span>
             </div>
             <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                 <span>Friends</span>
             </div>
             <div class="create-btn-wrapper">
@@ -545,7 +700,7 @@
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                 <span>Inbox</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" onclick="openAdminPanel()">
                 <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 <span>Profile</span>
             </div>
@@ -577,13 +732,38 @@
         let totalFeedCount = 0;
         let lastClickTime = 0;
 
+        // Persist viewed videos in localStorage to prevent multi-view on refresh
+        function getPersistedViewedVideos() {
+            try {
+                return new Set(JSON.parse(localStorage.getItem('viewedVideosList') || '[]'));
+            } catch(e) {
+                return new Set();
+            }
+        }
+
+        let viewedVideos = getPersistedViewedVideos();
+
+        function incrementViewCount(videoId) {
+            if (!videoId || viewedVideos.has(videoId)) return;
+            
+            viewedVideos.add(videoId);
+            localStorage.setItem('viewedVideosList', JSON.stringify(Array.from(viewedVideos)));
+
+            database.ref('videos/' + videoId + '/views').transaction((currentViews) => {
+                return (currentViews || 0) + 1;
+            });
+        }
+
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
             posts.forEach((post, index) => {
                 const video = post.querySelector('video');
+                const videoId = post.getAttribute('data-id');
                 if (!video) return;
 
                 if (index === currentFeedIndex) {
+                    if (videoId) incrementViewCount(videoId);
+                    
                     if (!isUserInteracted && index === 0) {
                         video.pause();
                         post.classList.remove('is-playing');
@@ -620,10 +800,14 @@
 
             videoEntries.forEach(([id, videoData], index) => {
                 localVideosData.push({
+                    id: id,
                     domIndex: index,
                     username: videoData.username || '@user',
                     description: videoData.description || '',
-                    videoUrl: videoData.videoUrl
+                    videoUrl: videoData.videoUrl,
+                    views: videoData.views || 0,
+                    likes: videoData.likes || 0,
+                    commentsCount: videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0)
                 });
 
                 let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
@@ -633,6 +817,7 @@
                 postBlock.className = 'video-post';
                 postBlock.style.height = container.clientHeight + 'px';
                 postBlock.setAttribute('data-index', index);
+                postBlock.setAttribute('data-id', id);
 
                 postBlock.innerHTML = `
                     <video loop muted playsinline src="${videoData.videoUrl}"></video>
@@ -765,7 +950,7 @@
 
         // Tap and Double-Tap Heart Gesture
         container.addEventListener('click', (e) => {
-            if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page')) return;
+            if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
             
             const now = Date.now();
             const posts = document.querySelectorAll('.video-post');
@@ -813,7 +998,7 @@
         // Scroll & Touch Events
         let isScrollThrottled = false;
         container.addEventListener('wheel', (e) => {
-            if (e.target.closest('.search-overlay-page')) return;
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
             e.preventDefault(); 
             if (isScrollThrottled || totalFeedCount <= 0) return;
 
@@ -841,7 +1026,7 @@
         }, { passive: true });
 
         container.addEventListener('touchend', (e) => {
-            if (e.target.closest('.search-overlay-page')) return;
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
             let touchEndY = e.changedTouches[0].clientY;
             let diffY = touchStartY - touchEndY;
 
@@ -860,6 +1045,55 @@
                 }
             }
         }, { passive: true });
+
+        // --- SECRET ADMIN PANEL LOGIC ---
+        function openAdminPanel() {
+            const password = prompt("🔑 Enter Secret Admin Password:");
+            if (password === "Ali 123") {
+                document.querySelectorAll('video').forEach(v => v.pause());
+                renderAdminStats();
+                document.getElementById('adminPanelModal').style.display = 'flex';
+            } else if (password !== null) {
+                alert("❌ Incorrect Password!");
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+            updateVideoPlayback();
+        }
+
+        function renderAdminStats() {
+            let totalViews = 0;
+            let totalLikes = 0;
+            const videoListElem = document.getElementById('adminVideoList');
+            videoListElem.innerHTML = '';
+
+            localVideosData.forEach(item => {
+                totalViews += parseInt(item.views || 0);
+                totalLikes += parseInt(item.likes || 0);
+
+                const itemRow = document.createElement('div');
+                itemRow.className = 'video-stat-item';
+                itemRow.innerHTML = `
+                    <video src="${item.videoUrl}" class="video-stat-thumb" muted></video>
+                    <div class="video-stat-details">
+                        <div class="video-stat-user">${item.username}</div>
+                        <div class="video-stat-desc">${item.description || 'No description'}</div>
+                        <div class="video-stat-metrics">
+                            <span>👀 ${item.views || 0} Views</span>
+                            <span>❤️ ${item.likes || 0} Likes</span>
+                            <span>💬 ${item.commentsCount || 0} Comments</span>
+                        </div>
+                    </div>
+                `;
+                videoListElem.appendChild(itemRow);
+            });
+
+            document.getElementById('adminTotalViews').innerText = totalViews;
+            document.getElementById('adminTotalLikes').innerText = totalLikes;
+            document.getElementById('adminTotalVideos').innerText = localVideosData.length;
+        }
     </script>
 </body>
 </html>
