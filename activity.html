@@ -3,19 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Pine Hills Children Academy - Activity Portal</title>
+    <title>Pine Hills Children Academy - Official Campus Portal</title>
     <style>
-        :root {
-            --ph-primary: #1e3a8a; /* Premium Navy Blue */
-            --ph-accent: #f59e0b;  /* Regal Gold */
-            --ph-bg: #0b0f19;      /* Deep Dark Blue */
-            --ph-card: rgba(30, 41, 59, 0.7);
-            --nav-height: 60px;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body {
-            background-color: var(--ph-bg);
+            background-color: #0d0d12;
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             width: 100%;
@@ -34,83 +26,130 @@
             height: 100%;
             position: relative;
             overflow: hidden; 
-            background-color: var(--ph-bg);
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            background-color: #000;
+            box-shadow: 0 0 60px rgba(0,0,0,0.9);
         }
 
-        /* --- PREMIUM HEADER --- */
+        /* --- HEADER NAVBAR --- */
         .header-wrapper {
             position: absolute; 
             top: 0;
             left: 0;
             width: 100%;
-            padding: 16px 16px 24px 16px;
+            padding: 14px 16px;
             z-index: 100; 
-            background: linear-gradient(to bottom, rgba(11, 15, 25, 0.95) 0%, rgba(11, 15, 25, 0) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(8px);
+            width: 100%;
         }
 
-        .header-branding {
+        .header-brand {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .header-logo-img {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--ph-accent);
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
         }
 
-        .school-title-box {
+        .school-title-wrap {
             display: flex;
             flex-direction: column;
         }
         .school-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 800;
-            color: #fff;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            color: #ffffff;
+            letter-spacing: 0.3px;
         }
         .school-tagline {
             font-size: 10px;
-            color: var(--ph-accent);
+            color: #ffd700;
             font-weight: 600;
-            letter-spacing: 0.3px;
+        }
+
+        /* Admission CTA Button */
+        .admission-btn {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+            transition: transform 0.2s;
+            text-transform: uppercase;
+        }
+        .admission-btn:active { transform: scale(0.95); }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .header-icon-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: none;
+            border: none;
             color: #fff;
             cursor: pointer;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
         }
-        .header-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+        .header-icon-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; }
 
-        /* --- SEARCH OVERLAY SCREEN --- */
+        /* Filter Chips Bar */
+        .filter-pills-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+        .filter-pills-bar::-webkit-scrollbar { display: none; }
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .pill.active {
+            background: #ffd700;
+            color: #000;
+            font-weight: 800;
+        }
+
+        /* --- SEARCH OVERLAY --- */
         .search-overlay-page {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--ph-bg);
+            background: #0f1015;
             z-index: 1050;
             display: none; 
             flex-direction: column;
@@ -130,8 +169,8 @@
             width: 100%;
             padding: 12px 16px 12px 40px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #1c1d24;
             color: #fff;
             font-size: 14px;
             outline: none;
@@ -143,16 +182,16 @@
             transform: translateY(-50%);
             width: 16px;
             height: 16px;
-            stroke: var(--ph-accent);
+            stroke: #8a8a8a;
             stroke-width: 2.5;
             fill: none;
         }
         .close-search-btn {
             background: none;
             border: none;
-            color: var(--ph-accent);
-            font-size: 14px;
-            font-weight: 700;
+            color: #ffd700;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
         }
 
@@ -161,14 +200,12 @@
             overflow-y: auto;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding-bottom: 20px;
+            gap: 8px;
         }
-        .search-results-grid::-webkit-scrollbar { display: none; }
         
         .grid-video-tile {
-            background: #1e293b;
-            border-radius: 12px;
+            background: #1a1b22;
+            border-radius: 10px;
             overflow: hidden;
             position: relative;
             aspect-ratio: 9 / 15;
@@ -187,28 +224,60 @@
             left: 0;
             width: 100%;
             padding: 20px 8px 8px 8px;
-            background: linear-gradient(to top, rgba(11,15,25,0.9), transparent);
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
         }
         .grid-tile-user {
             font-size: 12px;
             font-weight: 700;
             color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        /* --- DYNAMIC FEED CONTAINER --- */
-        .feed-wrapper-area {
-            width: 100%;
-            height: calc(100% - var(--nav-height));
+        /* --- NOTICE BOARD POPUP OVERLAY --- */
+        .modal-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            overflow: hidden;
-            background-color: var(--ph-bg);
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            padding: 24px 20px;
         }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding-bottom: 12px;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffd700;
+        }
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .notice-card {
+            background: #181920;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ffd700;
+        }
+        .notice-card h4 { font-size: 14px; color: #fff; margin-bottom: 4px; }
+        .notice-card p { font-size: 12px; color: #aaa; line-height: 1.4; }
+        .notice-date { font-size: 10px; color: #ffd700; margin-top: 6px; font-weight: 600; }
 
+        /* --- FEED CONTAINERS --- */
         #dynamicFeed {
             width: 100%;
             height: 100%;
@@ -234,17 +303,15 @@
             z-index: 1;
         }
 
-        /* Play Overlay */
         .play-overlay-btn {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(1);
-            width: 65px;
-            height: 65px;
-            background: rgba(30, 58, 138, 0.5);
+            width: 70px;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -252,12 +319,12 @@
             z-index: 5;
             pointer-events: none;
             opacity: 1;
-            transition: opacity 0.2s, transform 0.2s;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .play-overlay-btn svg { width: 30px; height: 30px; fill: #fff; margin-left: 4px; }
+        .play-overlay-btn svg { width: 32px; height: 32px; fill: #fff; margin-left: 4px; }
         .video-post.is-playing .play-overlay-btn { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
 
-        /* Double-Tap Heart */
         .double-tap-heart {
             position: absolute;
             z-index: 20;
@@ -267,7 +334,7 @@
             transform: translate(-50%, -50%) scale(0);
             animation: heartPop 0.8s ease-out forwards;
         }
-        .double-tap-heart svg { width: 100%; height: 100%; fill: var(--ph-accent); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
+        .double-tap-heart svg { width: 100%; height: 100%; fill: #fe2c55; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
 
         @keyframes heartPop {
             0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); opacity: 1; }
@@ -275,335 +342,225 @@
             100% { transform: translate(-50%, -50%) scale(1.6) rotate(15deg); opacity: 0; }
         }
 
-        /* --- RIGHT ACTION SIDEBAR --- */
+        /* --- SIDEBAR ACTIONS --- */
         .action-sidebar { 
             position: absolute; 
             right: 14px; 
-            bottom: 25px; 
+            bottom: 70px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            gap: 16px; 
+            gap: 18px; 
             z-index: 20; 
         }
 
         .profile-avatar-box {
             position: relative;
-            width: 46px;
-            height: 46px;
-            margin-bottom: 4px;
+            width: 48px;
+            height: 48px;
         }
         .avatar-img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px solid var(--ph-accent);
-            background: var(--ph-primary);
-            object-fit: cover;
+            border: 2px solid #ffd700;
+            background: #1e1e24;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            color: #fff;
+            font-weight: 700;
+            color: #ffd700;
             font-size: 18px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .avatar-plus-btn {
             position: absolute;
-            bottom: -4px;
+            bottom: -5px;
             left: 50%;
             transform: translateX(-50%);
-            width: 16px;
-            height: 16px;
-            background: var(--ph-accent);
+            width: 18px;
+            height: 18px;
+            background: #fe2c55;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000;
-            font-size: 11px;
+            color: #fff;
+            font-size: 12px;
             font-weight: 900;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .action-btn { 
-            background: rgba(11, 15, 25, 0.4);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+            background: none; 
+            border: none; 
             color: white; 
             cursor: pointer; 
             display: flex; 
-            justify-content: center;
+            flex-direction: column; 
             align-items: center; 
-            position: relative;
-            transition: transform 0.15s ease;
+            font-size: 11px; 
+            font-weight: 600; 
         }
-        .action-wrapper {
+        .action-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-        .action-btn:active { transform: scale(1.15); }
-        .action-btn svg { width: 22px; height: 22px; fill: #ffffff; }
-        .action-btn.liked { background: rgba(245, 158, 11, 0.2); border-color: var(--ph-accent); }
-        .action-btn.liked svg { fill: var(--ph-accent); }
-        
-        .action-count {
+        .action-btn:active .action-icon { transform: scale(1.15); }
+        .action-icon svg { width: 22px; height: 22px; fill: #ffffff; }
+        .action-btn.liked .action-icon svg { fill: #fe2c55; }
+        .action-btn span {
             margin-top: 4px;
             font-size: 11px;
             color: #ffffff;
-            text-shadow: 0px 1px 3px rgba(0,0,0,0.9);
-            font-weight: 700;
+            font-weight: 600;
         }
 
-        /* Pine Badge / Crest Disk */
-        .crest-disk {
+        .music-disk {
             width: 42px;
             height: 42px;
-            background: radial-gradient(circle, var(--ph-primary) 30%, #0d1527 100%);
-            border: 2px solid var(--ph-accent);
+            background: radial-gradient(circle, #2b2b2b 25%, #111 26%, #111 100%);
+            border: 6px solid #181818;
             border-radius: 50%;
-            margin-top: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-            animation: rotateDisk 4s linear infinite;
+            animation: rotateDisk 3.5s linear infinite;
             animation-play-state: paused;
         }
-        .video-post.is-playing .crest-disk { animation-play-state: running; }
-        .crest-disk::after { content: '🌲'; font-size: 14px; }
+        .video-post.is-playing .music-disk { animation-play-state: running; }
+        .music-disk::after { content: ''; width: 8px; height: 8px; background: #ffd700; border-radius: 50%; }
 
         @keyframes rotateDisk {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* --- LEFT OVERLAY CONTENT --- */
+        /* --- CONTENT OVERLAY --- */
         .video-info-overlay { 
             position: absolute; 
             left: 0; 
-            bottom: 0px;
+            bottom: 56px;
             width: 100%;
-            padding: 40px 90px 20px 16px; 
+            padding: 30px 90px 20px 16px; 
             z-index: 15; 
-            background: linear-gradient(to top, rgba(11,15,25,0.95) 0%, rgba(11,15,25,0.4) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
             pointer-events: none;
         }
         .user-block {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 8px;
             pointer-events: auto;
         }
         .username { 
             font-size: 15px; 
-            font-weight: 800; 
+            font-weight: 700; 
             color: #fff;
-            letter-spacing: 0.3px;
         }
-        .verified-badge { width: 16px; height: 16px; fill: var(--ph-accent); }
+        .verified-badge { width: 16px; height: 16px; fill: #20d5ec; }
         .description { 
             font-size: 13.5px; 
             line-height: 1.4; 
-            color: #e2e8f0;
+            color: #f1f1f1;
             pointer-events: auto;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
             margin-bottom: 10px;
-            font-weight: 400;
         }
         
-        .activity-tag {
-            display: inline-flex;
+        .music-track-bar {
+            display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(30, 58, 138, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: 11px;
-            font-weight: 600;
-            color: #dbeafe;
-            backdrop-filter: blur(4px);
+            gap: 8px;
+            font-size: 12px;
+            color: #ffd700;
+            pointer-events: auto;
+        }
+        .music-track-bar svg { width: 14px; height: 14px; fill: #ffd700; }
+        .track-ticker {
+            width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .track-ticker span {
+            display: inline-block;
+            animation: ticker 8s linear infinite;
+        }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
         }
 
-        /* --- SOLID FIXED BOTTOM TAB BAR --- */
-/* Purani line hata kar smooth transition dene ke liye isy replacement karo */
-.bottom-nav-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 56px;
-    background: rgba(13, 13, 18, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: none; /* Line hatane ke liye border remove kar diya */
-    z-index: 100;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0 6px;
-}
+        /* --- NAVIGATION BOTTOM (WITHOUT TOP BORDER LINE) --- */
+        .bottom-nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: rgba(13, 13, 18, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: none; /* Line hatane ke liye border remove kar diya */
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 6px;
+        }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #64748b;
+            gap: 3px;
+            color: #8a8a9e;
             font-size: 10px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: color 0.2s;
         }
-        .nav-item.active { color: var(--ph-accent); }
-        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .nav-item.active { color: #ffd700; }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
         
         .create-btn-wrapper {
+            position: relative;
             width: 44px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--ph-primary), var(--ph-accent));
-            border-radius: 10px;
+            height: 28px;
+            background: #fff;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
-            cursor: pointer;
         }
-        .create-btn-wrapper svg { width: 18px; height: 18px; fill: #fff; }
-
-        .no-data { text-align: center; padding-top: 50%; color: #64748b; font-size: 15px; font-weight: 600; }
-
-        /* --- SECRET ADMIN PANEL MODAL --- */
-        .admin-modal-overlay {
+        .create-btn-wrapper::before {
+            content: '';
             position: absolute;
+            left: -3px;
             top: 0;
-            left: 0;
-            width: 100%;
+            width: 12px;
             height: 100%;
-            background: rgba(11, 15, 25, 0.95);
-            backdrop-filter: blur(12px);
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-            padding: 20px 16px;
-            overflow-y: auto;
+            background: #ffd700;
+            border-radius: 8px 0 0 8px;
+            z-index: -1;
         }
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 12px;
+        .create-btn-wrapper::after {
+            content: '';
+            position: absolute;
+            right: -3px;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            background: #fe2c55;
+            border-radius: 0 8px 8px 0;
+            z-index: -1;
         }
-        .admin-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--ph-accent);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .admin-close-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .admin-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .stat-card {
-            background: rgba(30, 41, 59, 0.6);
-            padding: 14px 8px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .stat-card-title {
-            font-size: 10px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-            font-weight: 700;
-        }
-        .stat-card-value {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--ph-accent);
-        }
-        .video-list-container {
-            flex: 1;
-        }
-        .video-list-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #94a3b8;
-            text-transform: uppercase;
-        }
-        .video-stat-item {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .video-stat-thumb {
-            width: 40px;
-            height: 50px;
-            background: #0f172a;
-            border-radius: 6px;
-            object-fit: cover;
-        }
-        .video-stat-details {
-            flex: 1;
-            overflow: hidden;
-        }
-        .video-stat-user {
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .video-stat-desc {
-            font-size: 11px;
-            color: #94a3b8;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .video-stat-metrics {
-            display: flex;
-            gap: 10px;
-            font-size: 11px;
-            color: var(--ph-accent);
-            margin-top: 4px;
-            font-weight: 700;
-        }
+        .create-btn-wrapper svg { width: 16px; height: 16px; fill: #000; }
+
+        .no-data { text-align: center; padding-top: 50%; color: #888; font-size: 15px; }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -613,96 +570,96 @@
 
     <div class="app-container" id="appContainer">
         
-        <!-- School Branded Header -->
+        <!-- Header Section -->
         <div class="header-wrapper">
-            <div class="header-branding">
-                <img src="real logo copy.jpg" alt="Pine Hills Logo" class="header-logo-img">
-                <div class="school-title-box">
-                    <span class="school-name">Pine Hills School</span>
-                    <span class="school-tagline">Activity Showcase</span>
+            <div class="header-top-row">
+                <div class="header-brand">
+                    <img src="real logo copy.jpg" alt="Logo" class="header-logo-img">
+                    <div class="school-title-wrap">
+                        <span class="school-name">PINE HILLS</span>
+                        <span class="school-tagline">Children Academy</span>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="admission-btn" onclick="openAdmissionInquiry()">Admissions Open</button>
+                    <button class="header-icon-btn" onclick="openSearchSystem()">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
                 </div>
             </div>
-            <button class="header-icon-btn" onclick="openSearchSystem()" title="Search">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </button>
+
+            <!-- Filter Pills Bar -->
+            <div class="filter-pills-bar">
+                <div class="pill active">All Updates</div>
+                <div class="pill">Activities</div>
+                <div class="pill">Sports Day</div>
+                <div class="pill">Announcements</div>
+            </div>
         </div>
 
-        <!-- Search Overlay Screen -->
+        <!-- Search Page Overlay -->
         <div class="search-overlay-page" id="searchOverlayPage">
             <div class="search-header-bar">
                 <div class="search-input-wrapper">
                     <svg class="search-icon-inside" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchPageInput" class="search-page-input" placeholder="Search activities, students..." onkeyup="performGridSearch()">
+                    <input type="text" id="searchPageInput" class="search-page-input" placeholder="Search campus videos & events..." onkeyup="performGridSearch()">
                 </div>
                 <button class="close-search-btn" onclick="closeSearchSystem()">Cancel</button>
             </div>
             <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
 
-        <!-- Feed Wrapper Area -->
-        <div class="feed-wrapper-area" id="feedWrapperArea">
-            <div id="dynamicFeed">
-                <div class="no-data">Loading Portal...</div>
+        <!-- Digital Notice Board Modal Popup -->
+        <div class="modal-overlay" id="noticeBoardModal">
+            <div class="modal-header">
+                <span class="modal-title">📌 Campus Notice Board</span>
+                <button class="close-modal-btn" onclick="closeNoticeBoard()">&times;</button>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="notice-card">
+                    <h4>🎓 Admissions Session 2026-27</h4>
+                    <p>Admissions are open for Playgroup to Matric. Visit the school office for prospectus and registration forms.</p>
+                    <span class="notice-date">Posted: August 2026</span>
+                </div>
+                <div class="notice-card">
+                    <h4>🏆 Friday Activity Showcase</h4>
+                    <p>Students from Class 5th demonstrated outstanding performance in the recent class rules competition.</p>
+                    <span class="notice-date">Posted: Recent</span>
+                </div>
             </div>
         </div>
 
-        <!-- Secret Admin Panel Modal -->
-        <div class="admin-modal-overlay" id="adminPanelModal">
-            <div class="admin-header">
-                <div class="admin-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    Portal Dashboard
-                </div>
-                <button class="admin-close-btn" onclick="closeAdminPanel()">✕</button>
-            </div>
-
-            <div class="admin-stats-grid">
-                <div class="stat-card">
-                    <div class="stat-card-title">Views</div>
-                    <div class="stat-card-value" id="adminTotalViews">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-title">Applaud</div>
-                    <div class="stat-card-value" id="adminTotalLikes">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-title">Videos</div>
-                    <div class="stat-card-value" id="adminTotalVideos">0</div>
-                </div>
-            </div>
-
-            <div class="video-list-container">
-                <div class="video-list-title">Activity Analytics</div>
-                <div id="adminVideoList"></div>
-            </div>
+        <!-- Dynamic Content Stream -->
+        <div id="dynamicFeed">
+            <div class="no-data">Loading Campus Feed...</div>
         </div>
 
-        <!-- Bottom Navigation Bar -->
+        <!-- Navigation Bar -->
         <div class="bottom-nav-bar">
-            <div class="nav-item active">
+            <div class="nav-item active" onclick="closeNoticeBoard()">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span>Feed</span>
+                <span>Home</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" onclick="openAdmissionInquiry()">
                 <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6l9-4.91V17h2V9L12 3z M5 13.18v4L12 21l7-3.82v-4L12 17L5 13.18z"/></svg>
-                <span>Events</span>
+                <span>Admissions</span>
             </div>
-            <div class="create-btn-wrapper">
+            <div class="create-btn-wrapper" onclick="openAdmissionInquiry()">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             </div>
-            <div class="nav-item">
-                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <span>Notice</span>
+            <div class="nav-item" onclick="openNoticeBoard()">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                <span>Notices</span>
             </div>
-            <div class="nav-item" onclick="openAdminPanel()">
+            <div class="nav-item" onclick="alert('Student Portal Login Coming Soon!')">
                 <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span>Admin</span>
+                <span>Portal</span>
             </div>
         </div>
     </div>
 
     <script>
-        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
             authDomain: "pine-hills-school.firebaseapp.com",
@@ -718,7 +675,6 @@
         }
         const database = firebase.database();
         const container = document.getElementById('appContainer');
-        const feedWrapper = document.getElementById('feedWrapperArea');
         const feed = document.getElementById('dynamicFeed');
         
         let isUserInteracted = false;
@@ -727,37 +683,13 @@
         let totalFeedCount = 0;
         let lastClickTime = 0;
 
-        function getPersistedViewedVideos() {
-            try {
-                return new Set(JSON.parse(localStorage.getItem('viewedVideosList') || '[]'));
-            } catch(e) {
-                return new Set();
-            }
-        }
-
-        let viewedVideos = getPersistedViewedVideos();
-
-        function incrementViewCount(videoId) {
-            if (!videoId || viewedVideos.has(videoId)) return;
-            
-            viewedVideos.add(videoId);
-            localStorage.setItem('viewedVideosList', JSON.stringify(Array.from(viewedVideos)));
-
-            database.ref('videos/' + videoId + '/views').transaction((currentViews) => {
-                return (currentViews || 0) + 1;
-            });
-        }
-
         function updateVideoPlayback() {
             const posts = document.querySelectorAll('.video-post');
             posts.forEach((post, index) => {
                 const video = post.querySelector('video');
-                const videoId = post.getAttribute('data-id');
                 if (!video) return;
 
                 if (index === currentFeedIndex) {
-                    if (videoId) incrementViewCount(videoId);
-                    
                     if (!isUserInteracted && index === 0) {
                         video.pause();
                         post.classList.remove('is-playing');
@@ -778,14 +710,13 @@
             });
         }
 
-        // Fetch Data Realtime
         database.ref('videos').orderByChild('timestamp').on('value', (snapshot) => {
             const data = snapshot.val();
             feed.innerHTML = '';
             localVideosData = []; 
 
             if(!data) {
-                feed.innerHTML = '<div class="no-data">No school activities posted yet.</div>';
+                feed.innerHTML = '<div class="no-data">No content available.</div>';
                 totalFeedCount = 0;
                 return;
             }
@@ -794,14 +725,10 @@
 
             videoEntries.forEach(([id, videoData], index) => {
                 localVideosData.push({
-                    id: id,
                     domIndex: index,
-                    username: videoData.username || '@pinehills',
+                    username: videoData.username || '@pinehillsschool',
                     description: videoData.description || '',
-                    videoUrl: videoData.videoUrl,
-                    views: videoData.views || 0,
-                    likes: videoData.likes || 0,
-                    commentsCount: videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0)
+                    videoUrl: videoData.videoUrl
                 });
 
                 let totalCommentsCount = videoData.realComments ? Object.keys(videoData.realComments).length : (videoData.comments || 0);
@@ -809,9 +736,8 @@
 
                 const postBlock = document.createElement('div');
                 postBlock.className = 'video-post';
-                postBlock.style.height = feedWrapper.clientHeight + 'px';
+                postBlock.style.height = container.clientHeight + 'px';
                 postBlock.setAttribute('data-index', index);
-                postBlock.setAttribute('data-id', id);
 
                 postBlock.innerHTML = `
                     <video loop muted playsinline src="${videoData.videoUrl}"></video>
@@ -823,41 +749,44 @@
                     <div class="action-sidebar">
                         <div class="profile-avatar-box">
                             <div class="avatar-img">${firstLetter}</div>
-                            <div class="avatar-plus-btn">✓</div>
+                            <div class="avatar-plus-btn">+</div>
                         </div>
 
-                        <div class="action-wrapper">
-                            <button class="action-btn" onclick="toggleLike(this)">
+                        <button class="action-btn" onclick="toggleLike(this)">
+                            <div class="action-icon">
                                 <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            </button>
-                            <span class="action-count">${videoData.likes || '0'}</span>
-                        </div>
+                            </div>
+                            <span>${videoData.likes || '0'}</span>
+                        </button>
                         
-                        <div class="action-wrapper">
-                            <button class="action-btn">
+                        <button class="action-btn">
+                            <div class="action-icon">
                                 <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-                            </button>
-                            <span class="action-count">${totalCommentsCount}</span>
-                        </div>
+                            </div>
+                            <span>${totalCommentsCount}</span>
+                        </button>
 
-                        <div class="action-wrapper">
-                            <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
+                        <button class="action-btn" onclick="triggerWebsiteShare('${videoData.username}')">
+                            <div class="action-icon">
                                 <svg viewBox="0 0 24 24"><path d="M10 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                            </button>
-                            <span class="action-count">Share</span>
-                        </div>
+                            </div>
+                            <span>Share</span>
+                        </button>
 
-                        <div class="crest-disk"></div>
+                        <div class="music-disk"></div>
                     </div>
 
                     <div class="video-info-overlay">
                         <div class="user-block">
-                            <span class="username">${videoData.username || '@pinehills'}</span>
+                            <span class="username">${videoData.username || '@pinehillsschool'}</span>
                             <svg class="verified-badge" viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM375 201L239 337c-4.7 4.7-11 7-17 7s-12.3-2.3-17-7l-69-69c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l52.1 52.1L341.1 167c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 34z"/></svg>
                         </div>
                         <div class="description">${videoData.description || ''}</div>
-                        <div class="activity-tag">
-                            <span>🎓 Pine Hills Official Activity</span>
+                        <div class="music-track-bar">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                            <div class="track-ticker">
+                                <span>Official Audio - Pine Hills Children Academy • Official Campus Feed</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -871,18 +800,30 @@
             updateVideoPlayback();
         });
 
-        // Window resize adjustment
         window.addEventListener('resize', () => {
-            const feedHeight = feedWrapper.clientHeight;
+            const containerHeight = container.clientHeight;
             document.querySelectorAll('.video-post').forEach(post => {
-                post.style.height = feedHeight + 'px';
+                post.style.height = containerHeight + 'px';
             });
-            feed.style.transform = `translateY(-${currentFeedIndex * feedHeight}px)`;
+            feed.style.transform = `translateY(-${currentFeedIndex * containerHeight}px)`;
         });
+
+        function openAdmissionInquiry() {
+            const msg = encodeURIComponent("Hello Pine Hills Children Academy! I am interested in seeking admission for my child. Please share details.");
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+        }
+
+        function openNoticeBoard() {
+            document.getElementById('noticeBoardModal').style.display = 'flex';
+        }
+
+        function closeNoticeBoard() {
+            document.getElementById('noticeBoardModal').style.display = 'none';
+        }
 
         function triggerWebsiteShare(username) {
             const currentWebsiteUrl = window.location.href; 
-            const messageText = encodeURIComponent(`🎓 Watch amazing school activities of Pine Hills Children Academy:\n\n👉 ${currentWebsiteUrl}`);
+            const messageText = encodeURIComponent(`🎓 Check out amazing activities at Pine Hills Children Academy:\n\n👉 ${currentWebsiteUrl}`);
             window.open(`https://api.whatsapp.com/send?text=${messageText}`, '_blank');
         }
 
@@ -930,7 +871,7 @@
             if (targetIndex >= 0 && targetIndex < totalFeedCount) {
                 isUserInteracted = true;
                 currentFeedIndex = targetIndex;
-                feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
                 setTimeout(updateVideoPlayback, 100);
             }
         }
@@ -939,9 +880,8 @@
             btn.classList.toggle('liked');
         }
 
-        // Touch & Tap Handling
         container.addEventListener('click', (e) => {
-            if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
+            if(e.target.closest('.action-sidebar') || e.target.closest('.header-wrapper') || e.target.closest('.bottom-nav-bar') || e.target.closest('.search-overlay-page') || e.target.closest('.modal-overlay')) return;
             
             const now = Date.now();
             const posts = document.querySelectorAll('.video-post');
@@ -984,10 +924,9 @@
             setTimeout(() => heart.remove(), 800);
         }
 
-        // Scroll & Gesture
         let isScrollThrottled = false;
         container.addEventListener('wheel', (e) => {
-            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.modal-overlay')) return;
             e.preventDefault(); 
             if (isScrollThrottled || totalFeedCount <= 0) return;
 
@@ -1002,7 +941,7 @@
                 if (currentFeedIndex !== previousIndex) {
                     isScrollThrottled = true;
                     isUserInteracted = true;
-                    feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                    feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
                     updateVideoPlayback();
                     setTimeout(() => { isScrollThrottled = false; }, 500); 
                 }
@@ -1015,7 +954,7 @@
         }, { passive: true });
 
         container.addEventListener('touchend', (e) => {
-            if (e.target.closest('.search-overlay-page') || e.target.closest('.admin-modal-overlay')) return;
+            if (e.target.closest('.search-overlay-page') || e.target.closest('.modal-overlay')) return;
             let touchEndY = e.changedTouches[0].clientY;
             let diffY = touchStartY - touchEndY;
 
@@ -1029,60 +968,11 @@
 
                 if (currentFeedIndex !== previousIndex) {
                     isUserInteracted = true;
-                    feed.style.transform = `translateY(-${currentFeedIndex * feedWrapper.clientHeight}px)`;
+                    feed.style.transform = `translateY(-${currentFeedIndex * container.clientHeight}px)`;
                     updateVideoPlayback();
                 }
             }
         }, { passive: true });
-
-        // Admin Panel Logic
-        function openAdminPanel() {
-            const password = prompt("🔑 Enter Admin Password:");
-            if (password === "Ali 123") {
-                document.querySelectorAll('video').forEach(v => v.pause());
-                renderAdminStats();
-                document.getElementById('adminPanelModal').style.display = 'flex';
-            } else if (password !== null) {
-                alert("❌ Incorrect Password!");
-            }
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('adminPanelModal').style.display = 'none';
-            updateVideoPlayback();
-        }
-
-        function renderAdminStats() {
-            let totalViews = 0;
-            let totalLikes = 0;
-            const videoListElem = document.getElementById('adminVideoList');
-            videoListElem.innerHTML = '';
-
-            localVideosData.forEach(item => {
-                totalViews += parseInt(item.views || 0);
-                totalLikes += parseInt(item.likes || 0);
-
-                const itemRow = document.createElement('div');
-                itemRow.className = 'video-stat-item';
-                itemRow.innerHTML = `
-                    <video src="${item.videoUrl}" class="video-stat-thumb" muted></video>
-                    <div class="video-stat-details">
-                        <div class="video-stat-user">${item.username}</div>
-                        <div class="video-stat-desc">${item.description || 'No description'}</div>
-                        <div class="video-stat-metrics">
-                            <span>👀 ${item.views || 0} Views</span>
-                            <span>❤️ ${item.likes || 0} Likes</span>
-                            <span>💬 ${item.commentsCount || 0} Comments</span>
-                        </div>
-                    </div>
-                `;
-                videoListElem.appendChild(itemRow);
-            });
-
-            document.getElementById('adminTotalViews').innerText = totalViews;
-            document.getElementById('adminTotalLikes').innerText = totalLikes;
-            document.getElementById('adminTotalVideos').innerText = localVideosData.length;
-        }
     </script>
 </body>
 </html>
