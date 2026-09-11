@@ -530,6 +530,71 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
+        /* --- AI ASSISTANT ROBOT WIDGET STYLES --- */
+        .ai-robot-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 99999;
+            background: linear-gradient(135deg, #2563eb, #38bdf8);
+            color: #ffffff;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            animation: robotPulse 2s infinite;
+        }
+        .ai-robot-float:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+        @keyframes robotPulse {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+            70% { box-shadow: 0 0 0 18px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        .ai-chat-modal {
+            position: fixed;
+            bottom: 105px;
+            right: 25px;
+            width: 360px;
+            max-width: calc(100vw - 40px);
+            height: 520px;
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 28px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: bottom right;
+        }
+        .ai-chat-modal.hidden-modal {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            pointer-events: none;
+        }
+
+        @keyframes micListening {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .listening-active {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+            animation: micListening 1.5s infinite;
+        }
+
         /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 912px) {
             .hero-section { flex-direction: column; }
@@ -627,7 +692,6 @@
             </div>
 
             <div class="cards-grid">
-                <!-- RECOGNITION PORTAL INTEGRATED CARD -->
                 <div class="card" onclick="showRecognitionPortal()">
                     <div class="icon-wrapper"><i class="fa-solid fa-trophy text-amber-500"></i></div>
                     <h3>Student Recognition</h3>
@@ -676,7 +740,6 @@
     <!-- STUDENT RECOGNITION PORTAL CONTAINER -->
     <div id="recognitionPortalWrapper" class="hidden bg-slate-950 text-slate-100 min-h-screen py-4 px-2 md:px-6 flex flex-col justify-between">
         
-        <!-- RESPONSIVE HEADER FOR MOBILE & DESKTOP -->
         <header id="mainHeader" class="hidden bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-2xl sticky top-2 z-50 shadow-2xl mb-6 p-4">
             <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-3 text-center sm:text-left">
@@ -742,7 +805,6 @@
                 </div>
             </section>
 
-            <!-- FULL-SCREEN EXPANDED REVEAL CONTAINER FOR MOBILE & DESKTOP -->
             <section id="revealScreen" class="hidden w-full max-w-2xl mx-auto min-h-[90vh] flex flex-col justify-center items-center py-2 px-1">
                 <div id="revealCardContainer" class="w-full"></div>
             </section>
@@ -790,6 +852,49 @@
             </section>
 
         </main>
+    </div>
+
+    <!-- PINE HILLS AI ASSISTANT ROBOT WIDGET WITH VOICE SUPPORT -->
+    <div class="ai-robot-float" id="aiRobotToggle" title="Chat with Pine Hills AI Robot">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div class="ai-chat-modal hidden-modal" id="aiChatModal">
+        <div class="bg-slate-900 p-4 border-b border-slate-800 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 flex items-center justify-center text-white text-base shadow-md">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white text-sm">Pine Hills AI Assistant</h4>
+                    <span class="text-[10px] text-emerald-400 flex items-center gap-1 font-semibold">● Voice & Chat Ready</span>
+                </div>
+            </div>
+            <button id="aiCloseBtn" class="text-slate-400 hover:text-white p-1.5 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-xs transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <div class="p-3.5 flex-grow overflow-y-auto space-y-3 text-xs" id="aiChatMessages">
+            <div class="flex gap-2 items-start">
+                <div class="w-7 h-7 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0 text-xs">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-slate-800/80 text-slate-200 p-3 rounded-2xl rounded-tl-sm max-w-[80%] leading-relaxed border border-slate-700/50">
+                    Assalam-o-Alaikum! 👋 Main Pine Hills School ka AI Robot hoon. Aap mic button dabakar bol kar bhi baat kar sakti hain!
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 bg-slate-900 border-t border-slate-800 flex gap-2 items-center">
+            <button id="aiMicBtn" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 p-2.5 rounded-xl text-xs transition shrink-0 cursor-pointer" title="Bol kar baat karein (Voice Input)">
+                <i class="fa-solid fa-microphone text-sm"></i>
+            </button>
+            <input type="text" id="aiUserInput" placeholder="Yahan likhein ya mic dabayein..." class="bg-slate-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs w-full outline-none focus:border-cyan-400 transition">
+            <button id="aiSendBtn" class="bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition shadow-md shadow-blue-500/20 shrink-0 cursor-pointer">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
 
     <!-- SECRET ADMIN PANEL MODAL -->
@@ -901,7 +1006,6 @@
             window.resetToHome();
             window.scrollTo(0,0);
             
-            // Trigger Recognition Visit Counter (Counts EVERY TIME user opens)
             if (window.trackRecognitionVisit) {
                 window.trackRecognitionVisit();
             }
@@ -913,6 +1017,157 @@
             document.getElementById('siteHeader').classList.remove('hidden');
             document.getElementById('announcementBar').classList.remove('hidden');
             window.scrollTo(0,0);
+        }
+
+        // --- PINE HILLS AI ASSISTANT ROBOT LOGIC WITH VOICE (SPEECH) ---
+        const aiRobotToggle = document.getElementById('aiRobotToggle');
+        const aiChatModal = document.getElementById('aiChatModal');
+        const aiCloseBtn = document.getElementById('aiCloseBtn');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiMicBtn = document.getElementById('aiMicBtn');
+        const aiUserInput = document.getElementById('aiUserInput');
+        const aiChatMessages = document.getElementById('aiChatMessages');
+
+        aiRobotToggle.addEventListener('click', () => {
+            aiChatModal.classList.toggle('hidden-modal');
+        });
+
+        aiCloseBtn.addEventListener('click', () => {
+            aiChatModal.classList.add('hidden-modal');
+        });
+
+        aiSendBtn.addEventListener('click', () => handleUserMessage());
+        aiUserInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleUserMessage();
+        });
+
+        // Speech-to-Text (Mic Voice Input Integration)
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US'; // Aap urdu ke liye 'ur-PK' bhi kar sakti hain
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                aiMicBtn.classList.add('listening-active');
+                aiUserInput.placeholder = "Sun rahe hain... boliye!";
+            };
+
+            recognition.onresult = (event) => {
+                const speechToText = event.results[0][0].transcript;
+                aiUserInput.value = speechToText;
+                handleUserMessage(speechToText);
+            };
+
+            recognition.onerror = () => {
+                aiMicBtn.classList.remove('listening-active');
+                aiUserInput.placeholder = "Yahan likhein ya mic dabayein...";
+            };
+
+            recognition.onend = () => {
+                aiMicBtn.classList.remove('listening-active');
+                aiUserInput.placeholder = "Yahan likhein ya mic dabayein...";
+            };
+        }
+
+        aiMicBtn.addEventListener('click', () => {
+            if (!recognition) {
+                alert("Aapka browser voice recognition support nahi karta. Chrome browser use karein.");
+                return;
+            }
+            try {
+                recognition.start();
+            } catch(err) {
+                recognition.stop();
+            }
+        });
+
+        // Text-to-Speech (Robot Speaking Output)
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop previous speech
+                const cleanText = text.replace(/<[^>]*>?/gm, ''); // Remove HTML tags
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function handleUserMessage(customText = null) {
+            const text = customText || aiUserInput.value.trim();
+            if (!text) return;
+
+            // Append User Bubble
+            aiChatMessages.innerHTML += `
+                <div class="flex gap-2 items-start justify-end">
+                    <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[80%] leading-relaxed shadow-md">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `;
+            aiUserInput.value = "";
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+            // Typing Indicator
+            const typingId = 'typing-' + Date.now();
+            aiChatMessages.innerHTML += `
+                <div id="${typingId}" class="flex gap-2 items-start">
+                    <div class="w-7 h-7 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0 text-xs">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-800/80 text-slate-400 p-3 rounded-2xl rounded-tl-sm text-xs italic">
+                        AI Robot is typing & speaking...
+                    </div>
+                </div>
+            `;
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+            // Generate Smart Bot Response
+            setTimeout(() => {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                const botReply = getSmartAiResponse(text);
+                aiChatMessages.innerHTML += `
+                    <div class="flex gap-2 items-start">
+                        <div class="w-7 h-7 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-cyan-400 shrink-0 text-xs">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-slate-800/80 text-slate-200 p-3 rounded-2xl rounded-tl-sm max-w-[80%] leading-relaxed border border-slate-700/50">
+                            ${botReply}
+                        </div>
+                    </div>
+                `;
+                aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+
+                // Speak out the reply automatically
+                speakText(botReply);
+            }, 1000);
+        }
+
+        function getSmartAiResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('result') || q.includes('number') || q.includes('marks')) {
+                return "Aap apne bachay ka result dekhne ke liye home page par diye gaye 'Result' ya 'Monthly Tests' card par click kar sakte hain!";
+            } else if (q.includes('test') || q.includes('august') || q.includes('report')) {
+                return "Monthly Test August 2026 ki reports Class 1st se 8th tak website par upload kar di gayi hain.";
+            } else if (q.includes('admission') || q.includes('new student') || q.includes('dakhla')) {
+                return "New admissions ke liye aap website par 'Online Admission' ke option par click kar ke form fill kar sakte hain.";
+            } else if (q.includes('time') || q.includes('timing') || q.includes('school open')) {
+                return "School khul chuka hai! Regular timings subah 8 baje se dopehar 1:30 baje tak hain.";
+            } else if (q.includes('hello') || q.includes('salam') || q.includes('hi')) {
+                return "Walaikum Assalam! Main Pine Hills AI Assistant hoon. Bataiye main aapki kya madad kar sakta hoon?";
+            } else {
+                return "Aapke is sawaal ke liye shukriya! Mazeed tafseel ke liye aap school office se rabta kar sakte hain.";
+            }
+        }
+
+        function escapeHtml(string) {
+            return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 
@@ -939,7 +1194,6 @@
         let audioCtx = null;
         let selectedClass = "Class 1";
 
-        // --- DEVICE NAME PARSER FUNCTION ---
         function getDeviceName() {
             const ua = navigator.userAgent;
             let device = "Unknown Device";
@@ -961,7 +1215,6 @@
             return device;
         }
 
-        // --- AUTOMATIC GENERAL VISITOR TRACKER ---
         async function trackVisitor() {
             try {
                 if (sessionStorage.getItem('visited_session')) return;
@@ -995,7 +1248,6 @@
         }
         trackVisitor();
 
-        // --- STUDENT RECOGNITION VIEW TRACKER (COUNTS EVERY VISIT + DEVICE NAME) ---
         window.trackRecognitionVisit = async function() {
             try {
                 let ipData = { ip: 'Unknown', city: '', country_name: '' };
@@ -1016,12 +1268,10 @@
                     userAgent: navigator.userAgent || 'Unknown Device'
                 };
 
-                // Push every visit to recognition_logs
                 const logsRef = ref(db, 'recognition_logs');
                 const newLogRef = push(logsRef);
                 await set(newLogRef, visitRecord);
 
-                // Increment total visits count atomically on Firebase
                 const countRef = ref(db, 'recognition_views');
                 await runTransaction(countRef, (currentCount) => {
                     return (currentCount || 0) + 1;
@@ -1032,7 +1282,6 @@
             }
         };
 
-        // --- SECRET ADMIN PANEL CONTROLS ---
         const modal = document.getElementById('secretAdminModal');
         const loginSection = document.getElementById('adminLoginSection');
         const dataSection = document.getElementById('adminDataSection');
@@ -1053,7 +1302,6 @@
             modal.classList.add('hidden');
         });
 
-        // Secret Shortcut: Ctrl + Shift + A
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
                 e.preventDefault();
@@ -1061,7 +1309,6 @@
             }
         });
 
-        // Secret Long-Press / Multi-Tap on School Logo (For Mobile Users)
         const logoTrigger = document.getElementById('secretLogoTrigger');
         let pressTimer;
         let tapCount = 0;
@@ -1086,7 +1333,6 @@
             }
         });
 
-        // Login Logic
         loginBtn.addEventListener('click', verifyAdminPassword);
         passwordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') verifyAdminPassword();
@@ -1107,7 +1353,6 @@
         }
 
         function loadVisitorsData() {
-            // Visitors List
             const visitorsRef = ref(db, 'visitors');
             onValue(visitorsRef, (snapshot) => {
                 const data = snapshot.val();
@@ -1140,7 +1385,6 @@
                 visitorLogsTable.innerHTML = html;
             });
 
-            // Student Recognition Total Views Live Listener
             const recViewsRef = ref(db, 'recognition_views');
             onValue(recViewsRef, (snapshot) => {
                 const views = snapshot.val();
@@ -1157,7 +1401,6 @@
             }
         });
 
-        // --- EXISTING WINNER LOGIC ---
         function optimizeImgUrl(url) {
             if(!url) return "";
             if(url.includes("cloudinary.com") && !url.includes("f_auto")) {
@@ -1171,7 +1414,6 @@
             const data = snapshot.val();
             if (data) {
                 schoolData = data;
-                console.log("Live Firebase Data Updated:", schoolData);
             }
         });
 
@@ -1302,7 +1544,6 @@
             activeTimers.push(t1);
         }
 
-        /* --- FULL SCREEN EXPANDED WINNER CARD RENDER ENGINE WITH AUTO-SCROLL --- */
         function showSingleWinnerCard(student, container) {
             const isFirst = student.rank === 1;
             const isSecond = student.rank === 2;
@@ -1345,27 +1586,22 @@
             container.innerHTML = `
                 <div id="activeWinnerCard" class="winner-card-fast ${outerBorder} p-6 md:p-10 text-center relative backdrop-blur-3xl bg-gradient-to-b from-slate-900/95 via-slate-950 to-slate-950 rounded-[40px] shadow-2xl overflow-hidden w-full min-h-[80vh] flex flex-col justify-between items-center">
                     
-                    <!-- BACKGROUND HIGH INTENSITY NEON GLOWS -->
                     <div class="absolute -top-20 -left-20 w-64 h-64 ${isFirst ? 'bg-amber-500/30' : 'bg-slate-500/20'} rounded-full blur-3xl pointer-events-none"></div>
                     <div class="absolute -bottom-20 -right-20 w-64 h-64 ${isFirst ? 'bg-yellow-500/30' : 'bg-blue-500/20'} rounded-full blur-3xl pointer-events-none"></div>
 
-                    <!-- FLOATING EXPANDED BADGE -->
                     <div class="inline-flex items-center gap-2 ${badgeGradient} text-xs md:text-sm uppercase tracking-widest px-6 py-2.5 rounded-full mt-2">
                         ${badgeTitle}
                     </div>
 
-                    <!-- LARGE AVATAR WITH NEON RING & CROWN -->
                     <div class="relative w-44 h-44 md:w-52 md:h-52 my-4">
                         ${crownIcon}
                         <img src="${imgUrl}" alt="${student.name}" loading="eager" decoding="async" class="w-full h-full rounded-full object-cover ${avatarGlow} bg-slate-900">
                     </div>
 
-                    <!-- BIG IMPACTFUL NAME & DETAILS -->
                     <div class="w-full">
                         <h3 class="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight font-cinzel drop-shadow-md">${student.name}</h3>
                         <p class="text-sm md:text-base text-amber-300 font-bold uppercase tracking-widest mb-4">S/O ${student.fatherName}</p>
 
-                        <!-- APPRECIATION BANNER -->
                         <div class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3.5 max-w-md mx-auto shadow-inner mb-6">
                             <p class="text-xs md:text-sm text-slate-200 font-medium italic">
                                 "${appreciationMsg}"
@@ -1373,7 +1609,6 @@
                         </div>
                     </div>
 
-                    <!-- FULL-WIDTH STATS HUD -->
                     <div class="grid grid-cols-2 gap-4 w-full max-w-md mb-2">
                         <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 flex flex-col items-center justify-center shadow-lg">
                             <span class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Total Marks</span>
@@ -1385,7 +1620,6 @@
                         </div>
                     </div>
 
-                    <!-- STARS FOOTER -->
                     <div class="flex justify-center gap-1.5 mb-1">
                         ${stars}
                     </div>
@@ -1407,7 +1641,6 @@
             const tableBody = document.getElementById('marksheetTableBody');
 
             document.getElementById('mainHeader').classList.remove('hidden');
-
             document.getElementById('finalClassTitle').innerText = `${className} - Final Results`;
 
             podiumContainer.innerHTML = '';
@@ -1425,8 +1658,7 @@
                             </span>
                             <img src="${imgUrl}" loading="eager" decoding="async" class="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 ${isFirst ? 'border-amber-400' : 'border-slate-700'} bg-slate-800">
                             <h4 class="text-lg font-bold text-white">${student.name}</h4>
-                            <p class="text-xs text-slate-400 mb-3">S/O ${student.fatherName}</p>
-                        </div>
+                    </div>
                         
                         <div class="bg-slate-950/60 rounded-xl p-2.5 border border-slate-800/80 flex justify-between items-center text-xs">
                             <span class="text-slate-400">Marks: <strong class="text-slate-200">${student.marks}</strong></span>
