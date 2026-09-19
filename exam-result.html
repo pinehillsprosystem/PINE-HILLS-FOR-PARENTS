@@ -2,491 +2,771 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Official Progress Report Portal - Pine Hills School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Examination Result Certificate - Pine Hills School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.getfonts.net/style/jameel-noori-nastaleeq" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Core Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
-            --primary-navy: #0a2540;
-            --secondary-blue: #1e3a8a;
-            --accent-gold: #b45309;
-            --bg-light: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #cbd5e1;
-            --success: #15803d;
-            --danger: #b91c1c;
+            --dark-bg: #020617;
+            --dark-card: #0b1329;
+            --dark-surface: #111c38;
+            --gold-light: #fef08a;
+            --gold-mid: #eab308;
+            --gold-dark: #854d0e;
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --glow-gold: #f59e0b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --white: #ffffff;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.8);
+            --transition: all 0.3s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f1f5f9; color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--dark-bg); color: var(--text-light); -webkit-font-smoothing: antialiased; padding-bottom: 50px; min-height: 100vh; }
 
-        .portal-container { max-width: 850px; margin: 40px auto; padding: 0 15px; }
+        header { width: 100%; background: var(--dark-card); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid #1e293b; }
+        .nav-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-img { width: 48px; height: 48px; object-fit: contain; border-radius: 50%; border: 2px solid var(--glow-gold); }
+        .logo-text h1 { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 800; color: var(--white); line-height: 1; letter-spacing: 1px; }
+        .logo-text span { font-size: 10px; font-weight: 700; color: var(--glow-gold); letter-spacing: 2px; display: block; margin-top: 2px; }
+        .nav-links { display: flex; list-style: none; gap: 20px; }
+        .nav-links a { text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 14px; transition: var(--transition); }
+        .nav-links a:hover, .nav-links a.active { color: var(--glow-gold); font-weight: 600; }
+        .menu-toggle { display: none; font-size: 20px; color: var(--white); background: none; border: none; cursor: pointer; }
+
+        .wrapper { max-width: 1100px; margin: 25px auto; padding: 0 15px; }
+        .top-bar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--text-light); text-decoration: none; font-weight: 600; font-size: 14px; background: var(--dark-card); padding: 8px 16px; border-radius: 8px; border: 1px solid #1e293b; transition: var(--transition); }
+        .back-btn:hover { background: var(--gold-gradient); color: #000; }
+
+        .page-header { text-align: center; margin-bottom: 25px; }
+        .page-header h2 { font-family: 'Cinzel', serif; font-size: 30px; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: 1.5px; }
+        .page-header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+        .search-box-card { background: var(--dark-card); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-lg); border: 1px solid #1e293b; margin-bottom: 25px; text-align: center; }
+        .search-group { display: flex; gap: 10px; max-width: 520px; margin: 15px auto 0 auto; }
+        .roll-input { flex: 1; padding: 12px 18px; background: var(--dark-surface); border: 2px solid #1e293b; border-radius: 10px; font-size: 15px; color: #fff; outline: none; transition: var(--transition); }
+        .roll-input:focus { border-color: var(--glow-gold); box-shadow: 0 0 12px rgba(234, 179, 8, 0.3); }
+        .search-btn { background: var(--gold-gradient); color: #0f172a; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(234, 179, 8, 0.5); }
+
+        .print-control-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
+        .print-action-btn { background: var(--gold-gradient); color: #020c1b; border: none; padding: 12px 26px; border-radius: 8px; font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4); }
+
+        #printArea { display: flex; flex-direction: column; gap: 35px; }
+
+        /* ADVANCED CERTIFICATE DESIGN */
+        .certificate-container { 
+            width: 100%;
+            background: var(--dark-card); 
+            border-radius: 20px; 
+            padding: 40px; 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8); 
+            border: 8px double var(--glow-gold);
+            outline: 2px solid rgba(234, 179, 8, 0.3);
+            outline-offset: -12px;
+            position: relative; 
+            box-sizing: border-box; 
+            margin: 0 auto 30px auto;
+            overflow: hidden;
+            color: var(--text-light);
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* CORNER ACCENTS */
+        .corner-ornament {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 2px solid var(--glow-gold);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .corner-tl { top: 16px; left: 16px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 16px; right: 16px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 16px; left: 16px; border-right: none; border-top: none; }
+        .corner-br { bottom: 16px; right: 16px; border-left: none; border-top: none; }
+
+        .sheet-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 2px dashed rgba(234, 179, 8, 0.4);
+            padding-bottom: 18px; 
+            margin-bottom: 22px; 
+            position: relative;
+            z-index: 3;
+        }
         
-        .top-nav { display: flex; justify-content: flex-end; margin-bottom: 25px; }
-        .home-btn {
-            background: #ffffff; color: var(--primary-navy); border: 1px solid var(--border-color);
-            padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;
-        }
-        .home-btn:hover { background: var(--primary-navy); color: #ffffff; border-color: var(--primary-navy); }
+        .sheet-logo-area { display: flex; align-items: center; gap: 16px; }
 
-        .portal-header { text-align: center; margin-bottom: 35px; }
-        .portal-header .badge {
-            background: #e0f2fe; color: #0369a1;
-            padding: 6px 16px; border-radius: 30px; font-size: 11px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 12px;
+        /* LOGO BADGE WITH GOLD EMBELLISHED RING */
+        .logo-badge-frame {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gold-gradient);
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+            flex-shrink: 0;
         }
-        .portal-header h2 { font-size: 30px; font-weight: 800; color: var(--primary-navy); letter-spacing: -0.5px; }
-        .portal-header p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
 
-        /* Search Interface */
-        .search-wrapper {
-            background: #ffffff; border-radius: 16px; padding: 35px;
-            box-shadow: 0 10px 25px -5px rgba(10, 37, 64, 0.05); border: 1px solid #e2e8f0;
-            text-align: center; margin-bottom: 30px;
-        }
-        .search-wrapper h3 { font-size: 15px; color: var(--primary-navy); font-weight: 600; margin-bottom: 15px; }
-        .search-form { display: flex; gap: 10px; max-width: 520px; margin: 0 auto; }
-        
-        .search-form input {
-            flex: 1; padding: 14px 18px; border: 2px solid var(--border-color); border-radius: 10px;
-            font-size: 15px; font-weight: 500; outline: none; transition: border-color 0.2s;
-        }
-        .search-form input:focus { border-color: var(--secondary-blue); }
-        
-        .search-form button {
-            background: var(--primary-navy); color: #ffffff; border: none;
-            padding: 0 26px; border-radius: 10px; font-size: 14px; font-weight: 600;
-            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s;
-        }
-        .search-form button:hover { background: var(--secondary-blue); }
-
-        /* Action Controls */
-        .print-bar { display: none; justify-content: flex-end; margin-bottom: 15px; }
-        .print-btn {
-            background: #0f172a; color: #ffffff; border: none; padding: 11px 22px;
-            border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .print-btn:hover { background: var(--secondary-blue); }
-
-        /* ==========================================================================
-           💎 ULTRA PREMIUM MARKSHEET SYSTEM DESIGN
-           ========================================================================== */
-        .marksheet-card {
-            background: #ffffff; border-radius: 0px; padding: 45px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06); border: 1px solid #94a3b8; 
-            position: relative; display: none; box-sizing: border-box;
-            background-image: radial-gradient(rgba(10, 37, 64, 0.015) 2px, transparent 2px);
-            background-size: 24px 24px;
+        .sheet-school-logo { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            background: var(--dark-surface);
         }
         
-        /* Double Elegant Document Frame Border */
-        .marksheet-card::before {
-            content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px;
-            border: 2px solid var(--primary-navy); pointer-events: none; opacity: 0.85;
+        .school-info h3 { 
+            font-family: 'Cinzel', serif; 
+            font-size: 26px; 
+            color: var(--white);
+            font-weight: 800; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase;
         }
-        .marksheet-card::after {
-            content: ''; position: absolute; top: 18px; left: 18px; right: 18px; bottom: 18px;
-            border: 1px solid var(--accent-gold); pointer-events: none; opacity: 0.4;
-        }
-
-        /* Certificate Verification Header */
-        .security-ribbon {
-            display: flex; justify-content: space-between; background: #f8fafc;
-            border: 1px solid #e2e8f0; padding: 6px 15px; font-size: 10px;
-            color: var(--text-muted); font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-bottom: 20px; position: relative; z-index: 5;
-        }
-        .security-ribbon span i { color: var(--success); margin-right: 4px; }
-
-        /* Branding Setup */
-        .sheet-top {
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 2px solid var(--primary-navy); padding-bottom: 20px; margin-bottom: 25px;
-            position: relative; z-index: 5;
-        }
-        .school-brand { display: flex; align-items: center; gap: 16px; }
-        .school-logo { width: 75px; height: 75px; object-fit: contain; }
-        .school-names h1 { font-size: 24px; font-weight: 800; color: var(--primary-navy); letter-spacing: -0.5px; }
-        .school-names p { font-size: 11.5px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .school-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; margin-top: 2px; }
         
-        .cert-title {
-            border: 2px solid var(--primary-navy); color: var(--primary-navy); 
-            padding: 8px 16px; font-weight: 800; font-size: 13px; letter-spacing: 1px;
-            text-transform: uppercase; background: #ffffff;
+        .report-badge { 
+            background: var(--dark-surface); 
+            color: var(--glow-gold); 
+            padding: 8px 18px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            font-size: 11px; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid var(--glow-gold);
+            white-space: nowrap;
         }
 
-        /* Bio Metadata Layout Block */
-        .bio-showcase {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
-            background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; margin-bottom: 25px;
-            position: relative; z-index: 5;
+        .certificate-title-block { text-align: center; margin-bottom: 25px; position: relative; z-index: 3; }
+        .certificate-title-block h4 { 
+            font-family: 'Cinzel', serif; 
+            font-size: 24px; 
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: 800; 
         }
-        .bio-field { font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #e2e8f0; }
-        .bio-field:last-child { border-bottom: none; }
-        .bio-field strong { color: var(--primary-navy); font-weight: 700; }
+        .certificate-title-block p { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
 
-        /* Table Matrix Fixed & Locked for Screen Width (No Scrolling) */
-        .matrix-box { 
-            width: 100%; margin-bottom: 25px; 
-            border: 1px solid var(--primary-navy); position: relative; z-index: 5;
+        .landscape-main-grid {
+            display: grid;
+            grid-template-columns: 34% 63%;
+            gap: 3%;
+            align-items: start;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 3;
         }
-        .grand-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+
+        .student-bio-card { 
+            background: rgba(17, 28, 56, 0.85); 
+            padding: 18px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(5px);
+        }
         
-        .grand-table th {
-            background-color: var(--primary-navy); color: #ffffff; padding: 12px 16px;
-            font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .grand-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; color: var(--text-main); font-weight: 500; }
-        .grand-table tr:last-child td { border-bottom: none; }
-        .grand-table tr:nth-child(even) { background-color: #f8fafc; }
+        .bio-item { font-size: 12px; color: var(--text-muted); font-weight: 500; border-bottom: 1px dashed rgba(255, 255, 255, 0.08); padding-bottom: 8px; }
+        .bio-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .bio-item strong { color: var(--white); font-weight: 700; display: block; font-size: 14px; margin-top: 2px; word-break: break-word; }
 
-        /* Institutional Analytics Dashboard cards - 3 Columns Layout */
-        .summary-dashboard {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px;
-            position: relative; z-index: 5;
+        .table-responsive-wrapper { width: 100%; border-radius: 12px; overflow-x: auto; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(11, 19, 41, 0.85); backdrop-filter: blur(5px); }
+        .marks-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; min-width: 300px; }
+        
+        .marks-table th { 
+            background: var(--dark-surface); 
+            color: var(--glow-gold); 
+            padding: 12px 16px; 
+            font-weight: 700; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(234, 179, 8, 0.4);
         }
-        .stat-card {
-            background: #ffffff; border: 1px solid #cbd5e1; padding: 14px 10px; text-align: center;
-        }
-        .stat-card p { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card h4 { font-size: 18px; color: var(--primary-navy); font-weight: 800; margin-top: 4px; }
+        
+        .marks-table td { padding: 10px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-light); }
+        .marks-table tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.02); }
 
-        /* Status Verdict Blocks */
-        .verdict-banner {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; border: 1px solid #e2e8f0; margin-bottom: 25px;
-            position: relative; z-index: 5;
-        }
-        .verdict-banner.pass-zone { background: #f0fdf4; color: var(--success); border-left: 4px solid var(--success); }
-        .verdict-banner.fail-zone { background: #fef2f2; color: var(--danger); border-left: 4px solid var(--danger); }
-        .remarks-text { font-size: 13px; font-weight: 600; }
-        .remarks-text span { font-weight: 500; color: var(--text-main); }
-        .final-badge { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
-
-        /* Stamp Signature Blocks Alignment */
-        .stamp-row { display: flex; justify-content: space-between; margin-top: 55px; position: relative; z-index: 5; }
-        .stamp-box { text-align: center; width: 160px; }
-        .line-dash { border-top: 1px solid #64748b; margin-bottom: 8px; }
-        .stamp-box p { font-size: 10.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .err-card {
-            background: #ffffff; padding: 35px; border-radius: 16px; text-align: center;
-            box-shadow: 0 10px 25px -5px rgba(10, 37, 64, 0.05); display: none; color: var(--text-muted); border: 1px solid #e2e8f0;
-        }
-        .err-card i { font-size: 38px; color: var(--danger); margin-bottom: 12px; }
-
-        /* ==========================================================================
-           📱 MOBILE RESPONSIVE ADAPTATION ENGINE
-           ========================================================================== */
-        @media (max-width: 768px) {
-            .portal-container { margin: 20px auto; padding: 0 10px; }
-            .top-nav { justify-content: center; }
-            .portal-header h2 { font-size: 24px; }
-            
-            .search-wrapper { padding: 20px; border-radius: 12px; }
-            .search-form { flex-direction: column; gap: 10px; }
-            .search-form button { padding: 14px; justify-content: center; }
-            
-            .marksheet-card { padding: 25px 15px; }
-            .marksheet-card::before { top: 6px; left: 6px; right: 6px; bottom: 6px; }
-            .marksheet-card::after { top: 10px; left: 10px; right: 10px; bottom: 10px; }
-            
-            .sheet-top { flex-direction: column; gap: 15px; text-align: center; padding-bottom: 15px; }
-            .school-brand { flex-direction: column; gap: 10px; }
-            .cert-title { text-align: center; width: 100%; padding: 10px; }
-            
-            .bio-showcase { grid-template-columns: 1fr; gap: 10px; padding: 15px; }
-            
-            /* Clean Full Width Table Padding on Mobile */
-            .grand-table th, .grand-table td { padding: 10px 12px; font-size: 12px; }
-            
-            .summary-dashboard { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-            .stat-card p { font-size: 9px; }
-            .stat-card h4 { font-size: 14px; }
-            
-            .verdict-banner { flex-direction: column; gap: 10px; text-align: center; padding: 15px; }
-            
-            .stamp-row { flex-direction: column; gap: 40px; align-items: center; margin-top: 40px; }
-            .stamp-box { width: 100%; max-width: 220px; }
+        .sheet-footer { 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            background: rgba(17, 28, 56, 0.9); 
+            color: #ffffff;
+            padding: 16px 24px; 
+            border-radius: 12px; 
+            margin-bottom: 22px; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 15px;
+            position: relative;
+            z-index: 3;
+            backdrop-filter: blur(5px);
         }
 
-        /* ==========================================================================
-           🖨️ ULTRA-ACCURATE A4 PORTRAIT PRINT LAYOUT ENGINE (LOCKED SINGLE PAGE)
-           ========================================================================== */
+        .metrics-block { 
+            display: flex; 
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+            gap: 20px;
+        }
+        
+        .metric-box { text-align: center; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .metric-box span { font-weight: 800; color: var(--gold-light); font-size: 17px; display: block; margin-top: 2px; }
+        
+        .status-pill { 
+            padding: 8px 24px; 
+            border-radius: 20px; 
+            font-weight: 800; 
+            font-size: 13px; 
+            letter-spacing: 1.5px; 
+            text-transform: uppercase; 
+            text-align: center;
+            display: inline-block;
+        }
+        .pass { background: rgba(16, 185, 129, 0.15); color: var(--success-green); border: 1px solid var(--success-green); }
+        .fail { background: rgba(239, 68, 68, 0.15); color: var(--danger-red); border: 1px solid var(--danger-red); }
+
+        .marksheet-note { background: rgba(17, 28, 56, 0.6); border: 1px dashed rgba(234, 179, 8, 0.4); padding: 10px 16px; border-radius: 10px; text-align: center; margin-bottom: 25px; position: relative; z-index: 3; }
+        .marksheet-note p { font-family: 'Jameel Noori Nastaleeq', 'Urdu Typesetting', serif; font-size: 17px; color: var(--gold-light); direction: rtl; line-height: 1.4; }
+
+        .signature-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 0 15px; position: relative; z-index: 3; }
+        .sig-box { text-align: center; width: 150px; }
+        .sig-line { border-top: 2px solid rgba(234, 179, 8, 0.6); margin-bottom: 6px; }
+        .sig-box p { font-size: 11.5px; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 1px; }
+
+        .golden-seal-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .golden-seal {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 24px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+            z-index: 2;
+        }
+
+        .error-message { text-align: center; background: var(--dark-card); border-radius: 16px; padding: 30px; box-shadow: var(--shadow-lg); color: var(--text-muted); border: 1px solid #1e293b; display: none; }
+        .error-message i { font-size: 40px; color: var(--danger-red); margin-bottom: 10px; }
+
+        /* Secret Admin Modal */
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-card { background: var(--dark-card); border-radius: 16px; width: 90%; max-width: 650px; padding: 25px; max-height: 85vh; overflow-y: auto; border: 1px solid #1e293b; color: #fff; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 15px; }
+        .close-btn { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--danger-red); }
+        .stats-badge { background: var(--dark-surface); color: var(--glow-gold); padding: 12px; border-radius: 10px; text-align: center; font-weight: 700; margin-bottom: 15px; font-size: 16px; border: 1px solid #1e293b; }
+        .view-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .view-table th, .view-table td { padding: 10px; border-bottom: 1px solid #1e293b; text-align: left; }
+        .view-table th { background: var(--dark-surface); color: var(--white); }
+
+        /* MOBILE RESPONSIVE MEDIA QUERIES */
+        @media (max-width: 820px) {
+            .menu-toggle { display: block; }
+            .nav-links { position: fixed; top: 70px; left: -100%; width: 100%; height: calc(100vh - 70px); background-color: var(--dark-card); flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; transition: var(--transition); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+            .nav-links.active { left: 0; }
+
+            .search-group { flex-direction: column; gap: 8px; }
+            .search-btn { width: 100%; justify-content: center; }
+
+            .certificate-container { padding: 22px 18px; border-width: 4px; }
+            .sheet-header { flex-direction: column; text-align: center; gap: 12px; }
+            .sheet-logo-area { flex-direction: column; gap: 8px; }
+
+            .landscape-main-grid { grid-template-columns: 1fr; gap: 16px; }
+            .student-bio-card { padding: 15px; }
+
+            .sheet-footer { flex-direction: column; text-align: center; align-items: center; }
+            .metrics-block { flex-direction: column; gap: 12px; width: 100%; }
+
+            .signature-row { width: 100%; }
+            .golden-seal-wrapper { display: none; }
+            .sig-box { width: 45%; }
+        }
+
+        /* PRINT CONFIGURATION */
+        @page { 
+            size: A4 landscape; 
+            margin: 0; 
+        }
+
         @media print {
-            @page { size: A4 portrait; margin: 0 !important; }
-            html, body { 
-                background: #ffffff !important; 
-                color: #000000 !important; 
-                width: 210mm !important; 
-                height: 297mm !important; 
-                overflow: hidden !important; 
-                page-break-inside: avoid !important;
-                page-break-after: avoid !important;
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact; 
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-            .top-nav, .portal-header, .search-wrapper, .print-bar { display: none !important; } 
-            .portal-container { width: 210mm !important; max-width: 210mm !important; margin: 0 !important; padding: 0 !important; }
+
+            header, .top-bar-controls, .page-header, .search-box-card, .print-control-bar, .modal-overlay { display: none !important; }
+            body { background: #020617 !important; color: #fff !important; margin: 0 !important; padding: 0 !important; }
+            .wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
             
-            .marksheet-card { 
-                display: block !important; box-shadow: none !important; background: #ffffff !important; 
-                box-sizing: border-box; page-break-inside: avoid !important; page-break-after: avoid !important; 
-                width: 210mm !important; height: 297mm !important; padding: 12mm 15mm !important; 
-                border: none !important;
+            .certificate-container { 
+                display: block !important; 
+                width: 297mm !important; 
+                height: 209mm !important;
+                box-shadow: none !important; 
+                background: #0b1329 !important;
+                border: 8pt double #eab308 !important; 
+                padding: 10mm 14mm !important; 
+                color: #fff !important;
+                page-break-after: always !important; 
+                box-sizing: border-box !important;
             }
-            .marksheet-card::before { border: 2px solid #0a2540 !important; top: 5mm; left: 5mm; right: 5mm; bottom: 5mm; }
-            .marksheet-card::after { border: 1px solid #b45309 !important; top: 7mm; left: 7mm; right: 7mm; bottom: 7mm; }
-            
-            .security-ribbon { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; margin-bottom: 12px !important; padding: 4px 10px !important; }
-            .sheet-top { padding-bottom: 12px !important; margin-bottom: 15px !important; }
-            .school-logo { width: 60px !important; height: 60px !important; }
-            .school-names h1 { font-size: 20px !important; }
-            .cert-title { border: 2px solid #0a2540 !important; background: #ffffff !important; color: #0a2540 !important; padding: 6px 12px !important; font-size: 11px !important; }
-            .bio-showcase { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; padding: 12px !important; margin-bottom: 15px !important; gap: 10px !important; }
-            .bio-field { padding: 3px 0 !important; font-size: 12px !important; }
-            .matrix-box { border: 1px solid #0a2540 !important; margin-bottom: 15px !important; }
-            .grand-table th { background-color: #0a2540 !important; color: #ffffff !important; padding: 8px 12px !important; font-size: 11px !important; }
-            .grand-table td { padding: 8px 12px !important; font-size: 12px !important; }
-            .summary-dashboard { margin-bottom: 15px !important; gap: 8px !important; }
-            .stat-card { background: #ffffff !important; border: 1px solid #cbd5e1 !important; padding: 8px 5px !important; }
-            .stat-card h4 { font-size: 15px !important; }
-            .verdict-banner { margin-bottom: 15px !important; padding: 10px 15px !important; }
-            .stamp-row { margin-top: 35px !important; }
-            .pass-zone { background-color: #f0fdf4 !important; color: #15803d !important; border-left: 4mm solid #15803d !important; }
-            .fail-zone { background-color: #fef2f2 !important; color: #b91c1c !important; border-left: 4mm solid #b91c1c !important; }
+
+            .student-bio-card { background: #111c38 !important; }
+            .bio-item strong { color: #fff !important; }
+
+            .landscape-main-grid {
+                grid-template-columns: 34% 63% !important;
+                gap: 3% !important;
+            }
+
+            .sheet-header { flex-direction: row !important; text-align: left !important; }
+            .sheet-logo-area { flex-direction: row !important; }
+            .sheet-footer { flex-direction: row !important; background: #111c38 !important; color: #fff !important; justify-content: space-around !important; }
+            .metrics-block { flex-direction: row !important; justify-content: space-around !important; width: 100% !important; }
+            .golden-seal-wrapper { display: flex !important; }
+            .sig-box { width: 150px !important; }
+            .sig-box p { color: #ffffff !important; }
+
+            .marks-table th { background: #111c38 !important; color: #eab308 !important; }
+            .marks-table td { color: #fff !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="portal-container">
-        
-        <div class="top-nav">
-            <a href="index.html" class="home-btn"><i class="fa-solid fa-arrow-left"></i> Back to Homepage</a>
-        </div>
-        
-        <div class="portal-header">
-            <span class="badge">Academic Verification</span>
-            <h2>Examination Result Portal</h2>
-            <p>Verify and download official progress reports from the Pine Hills central registry network.</p>
-        </div>
-
-        <!-- Search Form Component Area -->
-        <div class="search-wrapper" id="searchWrapper">
-            <h3>Enter Student Roll Number</h3>
-            <div class="search-form">
-                <input type="text" id="mainRollInput" placeholder="Enter valid roll number (e.g., 1001, 1002)...">
-                <button onclick="fetchGrandResult()"><i class="fa-solid fa-shield-check"></i> Search Records</button>
-            </div>
-        </div>
-
-        <div class="print-bar" id="printBar">
-            <button class="print-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Marksheet</button>
-        </div>
-
-        <!-- MARKSHEET BLOCK -->
-        <div class="marksheet-card" id="mainMarksheetCard">
-            
-            <!-- Document Top Security Verification Header Ribbon Bar -->
-            <div class="security-ribbon">
-                <span><i class="fa-solid fa-badge-check"></i> Secure Digitally Verified Document</span>
-                <span id="docTimestamp">System ID: PHS-2026-REG</span>
-            </div>
-            
-            <div class="sheet-top">
-                <div class="school-brand">
-                    <img src="real logo copy.jpg" alt="Pine Hills Logo" class="school-logo" onerror="this.src='https://via.placeholder.com/75'">
-                    <div class="school-names">
-                        <h1>PINE HILLS SCHOOL</h1>
-                        <p>Affiliated Academic Board Network | Karachi, Pakistan</p>
-                    </div>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <img src="real logo copy.jpg" alt="Pine Hills Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>PINE HILLS</h1>
+                    <span>EXAMINATION BOARD</span>
                 </div>
-                <div class="cert-title">Progress Report</div>
-            </div>
+            </a>
+            <nav>
+                <ul class="nav-links" id="menuLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="activity.html">Activities</a></li>
+                    <li><a href="monthly-test.html" class="active">Examination Result</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+                <button class="menu-toggle" id="menuBtn"><i class="fa-solid fa-bars"></i></button>
+            </nav>
+        </div>
+    </header>
 
-            <!-- Student Profile Metadata Block -->
-            <div class="bio-showcase">
-                <div>
-                    <div class="bio-field">Student Name: <strong id="studentName">-</strong></div>
-                    <div class="bio-field">Roll Number: <strong id="rollNumber">-</strong></div>
-                    <div class="bio-field">Father Name: <strong id="fatherName">-</strong></div>
-                </div>
-                <div>
-                    <div class="bio-field">Class / Section: <strong id="className">-</strong></div>
-                    <div class="bio-field">Academic Session: <strong id="sessionYear">-</strong></div>
-                    <div class="bio-field">Enrollment ID: <strong id="enrollId">-</strong></div>
-                </div>
-            </div>
+    <div class="wrapper">
+        <div class="top-bar-controls">
+            <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Portal</a>
+        </div>
 
-            <!-- Performance Subject Matrix Grid Table Component -->
-            <div class="matrix-box">
-                <table class="grand-table">
+        <div class="page-header">
+            <h2>Official Examination Result Portal</h2>
+            <p>Enter Roll Number to view and print official certificate.</p>
+        </div>
+
+        <div class="search-box-card">
+            <h4 style="color: var(--white); font-weight: 600; font-size: 15px;">Enter Student Roll Number</h4>
+            <div class="search-group">
+                <input type="text" id="rollNumberInput" class="roll-input" placeholder="e.g., 1002, 1001...">
+                <button class="search-btn" onclick="generateReport()"><i class="fa-solid fa-award"></i> Generate Certificate</button>
+            </div>
+        </div>
+
+        <div class="print-control-bar" id="printControlBar">
+            <button class="print-action-btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Official Certificate</button>
+        </div>
+
+        <div id="printArea">
+            <!-- Marksheet Certificate generated dynamically here -->
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fa-regular fa-circle-xmark"></i>
+            <h3 id="errorTitle">Roll Number Not Found</h3>
+            <p id="errorDesc">Please enter a valid student roll number.</p>
+        </div>
+    </div>
+
+    <!-- Hidden Admin Panel Modal -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Result Views Logs (Admin Panel)</h3>
+                <button class="close-btn" onclick="closeAdminPanel()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="stats-badge" id="totalViewsBadge">Total Views: Loading...</div>
+            <div style="overflow-x:auto;">
+                <table class="view-table">
                     <thead>
                         <tr>
-                            <th style="width: 65%;">Subject Name</th>
-                            <th style="width: 35%; text-align: center;">Obtained Marks</th>
+                            <th>Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Date & Time</th>
                         </tr>
                     </thead>
-                    <tbody id="grandTableBody"></tbody>
+                    <tbody id="viewsTableBody">
+                        <tr><td colspan="3" style="text-align: center;">Loading data...</td></tr>
+                    </tbody>
                 </table>
             </div>
-
-            <!-- Quantitative Summary Analytics Dashboard Widgets Layout Block -->
-            <div class="summary-dashboard">
-                <div class="stat-card">
-                    <p>Grand Total</p>
-                    <h4 id="statTotal">-</h4>
-                </div>
-                <div class="stat-card">
-                    <p>Percentage</p>
-                    <h4 id="statPercentage">-</h4>
-                </div>
-                <div class="stat-card">
-                    <p>Class Position</p>
-                    <h4 id="statPosition">-</h4>
-                </div>
-            </div>
-
-            <!-- Result Status Verdict Signage Banner Card Component -->
-            <div class="verdict-banner" id="verdictBlock">
-                <div class="remarks-text">Remarks: <span id="lblRemarks">-</span></div>
-                <div class="final-badge" id="lblVerdict">-</div>
-            </div>
-
-            <!-- Official Institutional Verification Stamps Line-Dash Component Block Layout -->
-            <div class="stamp-row">
-                <div class="stamp-box">
-                    <div class="line-dash"></div>
-                    <p>Class Incharge</p>
-                </div>
-                <div class="stamp-box">
-                    <div class="line-dash"></div>
-                    <p>Exam Controller</p>
-                </div>
-                <div class="stamp-box">
-                    <div class="line-dash"></div>
-                    <p>Principal Stamp</p>
-                </div>
-            </div>
-
         </div>
-
-        <div class="err-card" id="errorCard">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <h3>Record Not Found</h3>
-            <p>Kripya sahi roll number enter karein. Agar masla hal na ho to admin se rabta karein.</p>
-        </div>
-
     </div>
 
     <script>
-        function getCleanSubjectName(name) {
-            const normalized = name.trim().toLowerCase();
-            if (normalized === 'math' || normalized === 'mathematics') return 'Mathematics';
-            if (normalized === 'sst' || normalized === 'social studies') return 'Social Studies';
-            if (normalized === 'gk' || normalized === 'general knowledge') return 'General Knowledge';
-            if (normalized === 'seerat' || normalized === 'seerat un nabi') return 'Seerat un Nabi';
-            return name;
+        const menuBtn = document.getElementById('menuBtn');
+        const menuLinks = document.getElementById('menuLinks');
+        menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
+        
+        // FIREBASE CONFIGURATION
+        const firebaseConfig = {
+          apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
+          authDomain: "pine-hills-school.firebaseapp.com",
+          projectId: "pine-hills-school",
+          storageBucket: "pine-hills-school.firebasestorage.app",
+          messagingSenderId: "310029732655",
+          appId: "1:310029732655:web:37edd331495239524cefda",
+          databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
 
-                        // ----------------------------past here -----------------------
+        // Secret Shortcut Key Trigger (Ctrl + Shift + A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                e.preventDefault();
+                openAdminPanel();
+            }
+        });
 
+        // Tracking Function
+        function trackResultView(rollNum, studentData) {
+            try {
+                const viewLogRef = firebase.database().ref('resultViews');
+                viewLogRef.push({
+                    rollNumber: rollNum,
+                    studentName: studentData.name || 'Unknown',
+                    timestamp: new Date().toLocaleString()
+                });
+            } catch (err) {
+                console.error("View log trace failed:", err);
+            }
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        
-
-        function fetchGrandResult() {
-            const input = document.getElementById('mainRollInput').value.trim().toLowerCase();
-            const sheet = document.getElementById('mainMarksheetCard');
-            const printBar = document.getElementById('printBar');
-            const err = document.getElementById('errorCard');
-
-            if(input === "") {
-                sheet.style.display = 'none';
-                printBar.style.display = 'none';
-                err.style.display = 'block';
+        // Hidden Admin Panel Functions
+        async function openAdminPanel() {
+            const password = prompt("Admin Secret Password Enter Karein:");
+            if (password !== "Ali 123") {
+                alert("Incorrect Password!");
                 return;
             }
 
-            const data = grandDatabase[input];
+            const modal = document.getElementById('adminModal');
+            const totalBadge = document.getElementById('totalViewsBadge');
+            const tableBody = document.getElementById('viewsTableBody');
 
-            if(data) {
-                err.style.display = 'none';
+            modal.style.display = 'flex';
+            tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Loading logs...</td></tr>';
 
-                document.getElementById('docTimestamp').innerText = `System ID: PHS-2026-${input.toUpperCase()}`;
+            try {
+                const snapshot = await firebase.database().ref('resultViews').once('value');
+                if (!snapshot.exists()) {
+                    totalBadge.innerText = 'Total Views: 0';
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Filhal koi view record nahi mila.</td></tr>';
+                    return;
+                }
 
-                document.getElementById('studentName').innerText = data.name || "-";
-                document.getElementById('rollNumber').innerText = input.toUpperCase();
-                document.getElementById('fatherName').innerText = data.father || "-";
-                document.getElementById('className').innerText = data.class || "-";
-                document.getElementById('sessionYear').innerText = data.session || "-";
-                document.getElementById('enrollId').innerText = data.enroll || "-";
+                let totalCount = 0;
+                let rowsHTML = '';
 
-                document.getElementById('statTotal').innerText = data.grandTotal || "-";
-                document.getElementById('statPercentage').innerText = data.percentage || "-";
-                document.getElementById('statPosition').innerText = data.position || "-";
+                snapshot.forEach(child => {
+                    totalCount++;
+                    const val = child.val();
+                    rowsHTML = `
+                        <tr>
+                            <td><strong>${val.rollNumber.toUpperCase()}</strong></td>
+                            <td>${val.studentName.toUpperCase()}</td>
+                            <td>${val.timestamp}</td>
+                        </tr>
+                    ` + rowsHTML;
+                });
 
-                document.getElementById('lblRemarks').innerText = data.remarks || "No remarks provided.";
-                document.getElementById('lblVerdict').innerText = data.status === "PASS" ? "PASSED / PROMOTED" : "FAILED";
+                totalBadge.innerText = `Total Result Views: ${totalCount}`;
+                tableBody.innerHTML = rowsHTML;
+
+            } catch (err) {
+                console.error("Admin view error:", err);
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Data load karne mein masla hua.</td></tr>';
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminModal').style.display = 'none';
+        }
+
+        function calculateFallbackGrade(pct) {
+            if (isNaN(pct) || pct <= 0) return "Absent";
+            if (pct >= 90) return "A1";
+            if (pct >= 80) return "A";
+            if (pct >= 70) return "B";
+            if (pct >= 60) return "C";
+            if (pct >= 50) return "D";
+            if (pct >= 33) return "E";
+            return "F";
+        }
+
+        function createMarksheetHTML(rollNum, record) {
+            let calculatedTotalMarks = 0;
+            let calculatedObtainedMarks = 0;
+            let totalMarksValid = true;
+
+            const subjectsList = record.subjects || [];
+
+            subjectsList.forEach(sub => {
+                let t = parseInt(sub.total);
+                let o = parseInt(sub.obtained);
+
+                if (!isNaN(t)) calculatedTotalMarks += t;
+                else totalMarksValid = false; 
                 
-                const vBlock = document.getElementById('verdictBlock');
-                if(data.status === "PASS") {
-                    vBlock.className = "verdict-banner pass-zone";
-                } else {
-                    vBlock.className = "verdict-banner fail-zone";
-                }
+                if (!isNaN(o)) calculatedObtainedMarks += o;
+            });
 
-                const tbody = document.getElementById('grandTableBody');
-                tbody.innerHTML = '';
+            const totMarks = totalMarksValid && calculatedTotalMarks > 0 ? calculatedTotalMarks : (parseInt(record.totalMarks) || 0);
+            const obtMarks = calculatedObtainedMarks > 0 ? calculatedObtainedMarks : (parseInt(record.totalObtained) || 0);
 
-                if(data.subjects && data.subjects.length > 0) {
-                    data.subjects.forEach(s => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td style="color: var(--primary-navy); font-weight:600; text-align:left;">${getCleanSubjectName(s.name)}</td>
-                            <td style="font-weight:700; text-align:center; color: var(--primary-navy); font-size: 14px;">${s.total !== undefined ? s.total : "-"}</td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
+            let finalPercentageStr = "-";
+            let numericPercentage = 0;
+            
+            if (totMarks > 0) {
+                numericPercentage = (obtMarks / totMarks) * 100;
+                finalPercentageStr = numericPercentage.toFixed(2) + "%";
+            } else if (record.percentage && record.percentage !== "-") {
+                numericPercentage = parseFloat(record.percentage);
+                finalPercentageStr = isNaN(numericPercentage) ? record.percentage : numericPercentage.toFixed(2) + "%";
+            }
 
-                sheet.style.display = 'block';
-                printBar.style.display = 'flex';
-                sheet.scrollIntoView({ behavior: 'smooth' });
+            let finalGrade = record.grade;
+            if (!finalGrade || finalGrade === "FALSE" || !isNaN(finalGrade)) {
+                finalGrade = calculateFallbackGrade(numericPercentage);
+            }
+            if (obtMarks === 0 && finalGrade !== "Absent" && subjectsList.length > 0 && subjectsList[0].obtained === "A") {
+                finalGrade = "Absent";
+            }
 
+            const currentStatus = record.status || "PASS";
+            const statusClass = (currentStatus.toUpperCase() === "PASS" || currentStatus.toUpperCase() === "PASSED") ? "status-pill pass" : "status-pill fail";
+
+            let subjectsRows = '';
+            if(subjectsList.length === 0) {
+                subjectsRows = `<tr><td colspan="3" style="text-align:center; color:var(--danger-red); font-weight:600; padding:15px;">All Examination Subjects Absent</td></tr>`;
             } else {
-                sheet.style.display = 'none';
-                printBar.style.display = 'none';
-                err.style.display = 'block';
+                subjectsList.forEach(sub => {
+                    subjectsRows += `
+                        <tr>
+                            <td style="font-weight: 600; color: var(--white);">${sub.name}</td>
+                            <td style="font-weight: 600; text-align: center; color: var(--text-muted);">${sub.total || "-"}</td>
+                            <td style="font-weight: 700; text-align: right; color: ${sub.obtained === 'A' ? 'var(--danger-red)' : 'var(--gold-light)'};">${sub.obtained}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            return `
+                <div class="certificate-container" style="display: block;">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="corner-ornament corner-bl"></div>
+                    <div class="corner-ornament corner-br"></div>
+
+                    <div class="sheet-header">
+                        <div class="sheet-logo-area">
+                            <div class="logo-badge-frame">
+                                <img src="real logo copy.jpg" alt="Pine Hills School" class="sheet-school-logo">
+                            </div>
+                            <div class="school-info">
+                                <h3>PINE HILLS SCHOOL</h3>
+                                <p>Karachi, Pakistan | Board of Secondary Education</p>
+                            </div>
+                        </div>
+                        <div class="report-badge"><i class="fa-solid fa-certificate"></i> Official Certificate</div>
+                    </div>
+
+                    <div class="certificate-title-block">
+                        <h4>Certificate of Examination Result</h4>
+                        <p>Academic Transcript for Annual Examination Session</p>
+                    </div>
+
+                    <div class="landscape-main-grid">
+                        <div class="student-bio-card">
+                            <div class="bio-item">Student Name: <strong>${record.name.toUpperCase()}</strong></div>
+                            <div class="bio-item">Roll Number: <strong>${rollNum.toUpperCase()}</strong></div>
+                            <div class="bio-item">Class / Section: <strong>${(record.class || '').toUpperCase()}</strong></div>
+                            <div class="bio-item">Exam Session: <strong>${record.month || '2025-2026 (ANNUAL)'}</strong></div>
+                        </div>
+
+                        <div class="table-responsive-wrapper">
+                            <table class="marks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Title</th>
+                                        <th style="text-align: center;">Max Marks</th>
+                                        <th style="text-align: right;">Obtained</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${subjectsRows}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="sheet-footer">
+                        <div class="metrics-block">
+                            <div class="metric-box">Total Marks <span>${obtMarks} / ${totMarks}</span></div>
+                            <div class="metric-box">Percentage <span>${finalPercentageStr}</span></div>
+                            <div class="metric-box">Final Grade <span>${finalGrade}</span></div>
+                            <div class="${statusClass}">${currentStatus}</div>
+                        </div>
+                    </div>
+
+                    <div class="marksheet-note">
+                        <p>یہ ایک آفیشل برقی ایگزامینیشن سرٹیفکیٹ ہے۔ آن لائن پورٹل سے اس کی تصدیق کی جا سکتی ہے۔</p>
+                    </div>
+
+                    <div class="signature-row">
+                        <div class="sig-box">
+                            <div class="sig-line"></div>
+                            <p>Class Teacher</p>
+                        </div>
+                        <div class="golden-seal-wrapper">
+                            <div class="golden-seal">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                        </div>
+                        <div class="sig-box">
+                            <div class="sig-line"></div>
+                            <p>Controller Exams</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function generateReport() {
+            const inputVal = document.getElementById('rollNumberInput').value.trim().toLowerCase();
+            const printArea = document.getElementById('printArea');
+            const printBar = document.getElementById('printControlBar');
+            const errorBlock = document.getElementById('errorMessage');
+            const errorTitle = document.getElementById('errorTitle');
+            const errorDesc = document.getElementById('errorDesc');
+
+            printArea.innerHTML = '';
+            printBar.style.display = 'none';
+            errorBlock.style.display = 'none';
+
+            if(inputVal === "") {
+                errorTitle.innerText = "Roll Number Empty";
+                errorDesc.innerText = "Please enter a valid roll number.";
+                errorBlock.style.display = 'block';
+                return;
+            }
+
+            if (typeof firebase.database !== 'function') {
+                setTimeout(generateReport, 200);
+                return;
+            }
+
+            const dbRef = firebase.database().ref('reportDatabase');
+
+            if(inputVal === "print-all") {
+                try {
+                    const snapshot = await dbRef.once('value');
+                    if(!snapshot.exists()) {
+                        errorTitle.innerText = "Database Empty";
+                        errorDesc.innerText = "No student records found in database.";
+                        errorBlock.style.display = 'block';
+                        return;
+                    }
+
+                    let masterHTML = '';
+                    snapshot.forEach(childSnapshot => {
+                        masterHTML += createMarksheetHTML(childSnapshot.key, childSnapshot.val());
+                    });
+
+                    printArea.innerHTML = masterHTML;
+                    printBar.style.display = 'flex';
+                    
+                    setTimeout(() => { window.print(); }, 600);
+                } catch (err) {
+                    console.error("Firebase fetch error:", err);
+                    errorTitle.innerText = "Server Error";
+                    errorDesc.innerText = "Failed to load data, please check your internet connection.";
+                    errorBlock.style.display = 'block';
+                }
+                return;
+            }
+
+            try {
+                const snapshot = await dbRef.child(inputVal).once('value');
+
+                if (snapshot.exists()) {
+                    const studentData = snapshot.val();
+                    printArea.innerHTML = createMarksheetHTML(inputVal, studentData);
+                    printBar.style.display = 'flex';
+                    
+                    trackResultView(inputVal, studentData);
+                } else {
+                    errorTitle.innerText = "Roll Number Not Found";
+                    errorDesc.innerText = "This roll number is not registered in the database.";
+                    errorBlock.style.display = 'block';
+                }
+            } catch (err) {
+                console.error("Firebase transaction error:", err);
+                errorTitle.innerText = "Connection Failed";
+                errorDesc.innerText = "Failed to fetch data from Firebase server.";
+                errorBlock.style.display = 'block';
             }
         }
     </script>
