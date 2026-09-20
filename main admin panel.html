@@ -20,88 +20,117 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Poppins', sans-serif; }
+        
         .watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 5rem;
-            color: rgba(30, 58, 138, 0.03);
+            font-size: 3.5rem;
+            color: rgba(30, 58, 138, 0.04);
             font-weight: 800;
             pointer-events: none;
             white-space: nowrap;
             z-index: 0;
         }
-        /* Custom Styles for Video Panel */
-        .video-dark-bg { background-color: #121212; color: #fff; }
-        .video-admin-box {
-            background: #1e1e1e;
-            padding: 25px;
-            border-radius: 12px;
-            width: 100%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
+
+        /* Custom Styles for Video Portal & Upload Components */
         .progress-container {
             width: 100%;
-            background-color: #333;
+            background-color: #e2e8f0;
             border-radius: 6px;
             margin-top: 10px;
             display: none;
+            overflow: hidden;
         }
         .progress-bar {
             width: 0%;
             height: 8px;
-            background-color: #fe2c55;
+            background-color: #2563eb;
             border-radius: 6px;
             transition: width 0.1s;
         }
         .status-msg {
             font-size: 13px;
-            color: #00ffcc;
+            color: #1d4ed8;
             margin-top: 5px;
             display: none;
-            font-weight: bold;
+            font-weight: 600;
         }
         .video-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #f1f5f9;
         }
         .video-item:last-child { border-bottom: none; }
+
         /* Exam Panels Styles */
-        .excel-dropzone { border: 2px dashed #1d4ed8; background: #f0f7ff; padding: 30px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .excel-dropzone { 
+            border: 2px dashed #1d4ed8; 
+            background: #f0f7ff; 
+            padding: 30px; 
+            border-radius: 12px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
         .excel-dropzone:hover { background: #e0f0ff; }
-        .file-status { display: none; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 15px; text-align: center; }
+        .file-status { 
+            display: none; 
+            background: #ecfdf5; 
+            border: 1px solid #a7f3d0; 
+            color: #065f46; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            margin-top: 15px; 
+            text-align: center; 
+        }
+
+        /* Responsive Tab Active/Inactive States */
+        .tab-btn-active {
+            background-color: #f59e0b !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .tab-btn-inactive {
+            background-color: #1e3a8a !important;
+            color: #cbd5e1 !important;
+        }
+        .tab-btn-inactive:hover {
+            background-color: #1d4ed8 !important;
+            color: #ffffff !important;
+        }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
+<body class="bg-slate-100 min-h-screen text-slate-800 antialiased">
 
     <!-- MASTER TOP NAVIGATION BAR -->
     <nav class="bg-blue-950 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-            <div class="flex items-center gap-3">
-                <i class="fa-solid fa-graduation-cap text-amber-400 text-2xl"></i>
-                <div>
-                    <h1 class="text-lg font-bold leading-tight">PINE HILLS ACADEMY</h1>
-                    <p class="text-xs text-slate-300">Unified Admin Portal</p>
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3 w-full md:w-auto justify-center md:justify-start">
+                <i class="fa-solid fa-graduation-cap text-amber-400 text-3xl"></i>
+                <div class="text-center md:text-left">
+                    <h1 class="text-lg font-bold leading-tight tracking-wide">PINE HILLS ACADEMY</h1>
+                    <p class="text-xs text-slate-300 font-medium">Unified Admin Portal</p>
                 </div>
             </div>
             
             <!-- MASTER TABS -->
-            <div class="flex flex-wrap justify-center gap-2">
-                <button onclick="switchMasterTab('feesTab')" id="btn-feesTab" class="master-tab-btn bg-amber-500 text-blue-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
-                    <i class="fa-solid fa-receipt"></i> Admin Fees
+            <div class="flex flex-wrap justify-center gap-2 w-full md:w-auto">
+                <button onclick="switchMasterTab('feesTab')" id="btn-feesTab" class="master-tab-btn tab-btn-active px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2">
+                    <i class="fa-solid fa-receipt"></i> <span>Admin Fees</span>
                 </button>
-                <button onclick="switchMasterTab('activityTab')" id="btn-activityTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-video"></i> Video Portal
+                <button onclick="switchMasterTab('activityTab')" id="btn-activityTab" class="master-tab-btn tab-btn-inactive px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2">
+                    <i class="fa-solid fa-video"></i> <span>Video Portal</span>
                 </button>
-                <button onclick="switchMasterTab('examTab')" id="btn-examTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-file-signature"></i> Admin Exam
+                <button onclick="switchMasterTab('examTab')" id="btn-examTab" class="master-tab-btn tab-btn-inactive px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature"></i> <span>Admin Exam</span>
                 </button>
-                <button onclick="switchMasterTab('monthlyTestTab')" id="btn-monthlyTestTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-chart-line"></i> Monthly Test
+                <button onclick="switchMasterTab('monthlyTestTab')" id="btn-monthlyTestTab" class="master-tab-btn tab-btn-inactive px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i> <span>Monthly Test</span>
                 </button>
             </div>
         </div>
@@ -114,25 +143,27 @@
         <!-- SECTION 1: ADMIN FEES                      -->
         <!-- ========================================== -->
         <section id="feesTab" class="master-tab-content space-y-6">
-            <!-- Top Navigation / Header Tabs -->
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-md border border-slate-200">
-                <div>
-                    <h2 class="text-xl font-bold text-blue-900">🏫 Pine Hills Academy Portal</h2>
-                    <p class="text-xs text-slate-500">Fee Receipt Generator & Defaulters Tracker (Cloud Synced)</p>
+            <!-- Header Tabs -->
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 gap-4">
+                <div class="text-center sm:text-left">
+                    <h2 class="text-xl font-bold text-blue-950 flex items-center justify-center sm:justify-start gap-2">
+                        <i class="fa-solid fa-school text-amber-500"></i> Pine Hills Academy Portal
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Fee Receipt Generator & Defaulters Tracker (Cloud Synced)</p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="switchFeeTab('generator')" id="tabGenBtn" class="bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition">⚡ Receipt Generator</button>
-                    <button onclick="switchFeeTab('defaulters')" id="tabDefBtn" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition">📋 Pending Dues List (<span id="badgeCount">0</span>)</button>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="switchFeeTab('generator')" id="tabGenBtn" class="flex-1 sm:flex-none bg-blue-950 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow transition">⚡ Receipt Generator</button>
+                    <button onclick="switchFeeTab('defaulters')" id="tabDefBtn" class="flex-1 sm:flex-none bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-300 transition">📋 Pending Dues List (<span id="badgeCount">0</span>)</button>
                 </div>
             </div>
 
             <!-- RECEIPT GENERATOR -->
-            <div id="generatorSection" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div id="generatorSection" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <!-- Input Form Section -->
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                    <h3 class="text-xl font-bold text-blue-900 mb-5 border-b pb-3 flex items-center justify-between">
-                        <span>📝 Fee Receipt Entry</span>
-                        <span class="text-xs font-normal bg-blue-50 text-blue-800 px-2.5 py-1 rounded-full border border-blue-200">Partial Payment Support</span>
+                <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-200">
+                    <h3 class="text-lg sm:text-xl font-bold text-blue-950 mb-5 border-b pb-3 flex flex-wrap items-center justify-between gap-2">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-file-invoice text-blue-900"></i> Fee Receipt Entry</span>
+                        <span class="text-[11px] font-semibold bg-blue-50 text-blue-800 px-3 py-1 rounded-full border border-blue-200">Partial Payment Support</span>
                     </h3>
                     
                     <form id="receiptForm" class="space-y-4">
@@ -191,8 +222,10 @@
                         </div>
 
                         <!-- Fees Calculation Section -->
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
-                            <p class="text-xs font-bold text-blue-900 uppercase">💰 Fee, Arrears & Payment Tracking</p>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                            <p class="text-xs font-bold text-blue-950 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-calculator text-amber-500"></i> Fee, Arrears & Payment Tracking
+                            </p>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 <div>
                                     <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Current Fee (Rs.)</label>
@@ -205,7 +238,7 @@
                                            class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
                                 </div>
                                 <div>
-                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pending Months Name</label>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pending Months</label>
                                     <input type="text" id="pendingMonthsText" placeholder="e.g. Nov" value="0"
                                            class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
                                 </div>
@@ -246,21 +279,22 @@
                         </div>
 
                         <button type="submit" 
-                                class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg flex items-center justify-center gap-2">
-                            <span>⚡ Generate Pro Receipt & Sync Cloud Dues</span>
+                                class="w-full bg-blue-950 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt text-amber-400"></i>
+                            <span>Generate Receipt & Sync Cloud Dues</span>
                         </button>
                     </form>
                 </div>
 
                 <!-- Receipt Preview Section -->
-                <div class="flex flex-col items-center">
-                    <div id="receiptCard" class="bg-white p-6 rounded-2xl shadow-2xl border-4 border-blue-900 w-full max-w-md relative overflow-hidden">
+                <div class="flex flex-col items-center w-full">
+                    <div id="receiptCard" class="bg-white p-5 sm:p-6 rounded-2xl shadow-xl border-4 border-blue-950 w-full max-w-md relative overflow-hidden">
                         <div class="watermark">PINE HILLS</div>
                         
-                        <div class="flex items-center gap-3 border-b-2 border-blue-900 pb-3 mb-4 relative z-10">
-                            <img id="logoImg" src="real logo copy.jpg" alt="Logo" crossorigin="anonymous" class="w-16 h-16 object-contain rounded-full border-2 border-blue-900 shadow-sm">
+                        <div class="flex items-center gap-3 border-b-2 border-blue-950 pb-3 mb-4 relative z-10">
+                            <img id="logoImg" src="real logo copy.jpg" alt="Logo" crossorigin="anonymous" class="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-full border-2 border-blue-950 shadow-sm shrink-0">
                             <div>
-                                <h1 class="text-base font-extrabold text-blue-900 leading-tight">PINE HILLS CHILDREN ACADEMY</h1>
+                                <h1 class="text-sm sm:text-base font-extrabold text-blue-950 leading-tight">PINE HILLS CHILDREN ACADEMY</h1>
                                 <p class="text-[11px] text-amber-600 font-bold uppercase tracking-wider">English Medium - Abidabad</p>
                                 <p class="text-[9px] text-slate-500 font-medium">OFFICIAL COMPUTERIZED FEE VOUCHER</p>
                             </div>
@@ -274,7 +308,7 @@
                         <div class="space-y-2 text-xs text-slate-800 relative z-10">
                             <div class="flex justify-between border-b border-dashed pb-1">
                                 <span class="font-semibold text-slate-500">Student Name:</span>
-                                <span id="outName" class="font-bold text-blue-900 text-sm">----------</span>
+                                <span id="outName" class="font-bold text-blue-950 text-sm">----------</span>
                             </div>
                             <div class="flex justify-between border-b border-dashed pb-1">
                                 <span class="font-semibold text-slate-500">Class:</span>
@@ -302,7 +336,7 @@
                                     <span>Concession / Discount:</span>
                                     <span id="outDiscount" class="font-medium">- Rs. 0</span>
                                 </div>
-                                <div class="flex justify-between font-bold text-blue-900 border-t pt-1">
+                                <div class="flex justify-between font-bold text-blue-950 border-t pt-1">
                                     <span>Total Payable Bill:</span>
                                     <span id="outTotalBill">Rs. 0</span>
                                 </div>
@@ -342,45 +376,49 @@
 
                     <div class="w-full max-w-md mt-6 space-y-3">
                         <button id="sendBtn" disabled
-                                class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition cursor-pointer text-sm">
-                            <span>📲 Download Image & Send via WhatsApp</span>
+                                class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition cursor-pointer text-sm">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Download Image & Send via WhatsApp</span>
                         </button>
                         <button id="printBtn" disabled
                                 class="w-full bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition cursor-pointer text-sm flex items-center justify-center gap-2">
-                            <span>🖨️ Direct Print Receipt</span>
+                            <i class="fa-solid fa-print"></i>
+                            <span>Direct Print Receipt</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- DEFAULTERS LIST -->
-            <div id="defaultersSection" class="hidden bg-white p-6 rounded-2xl shadow-xl border border-slate-200 space-y-4">
+            <div id="defaultersSection" class="hidden bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-200 space-y-4">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
                     <div>
-                        <h3 class="text-xl font-bold text-blue-900">📋 Students with Pending Dues (Bakaya Record - Live Cloud)</h3>
+                        <h3 class="text-lg sm:text-xl font-bold text-blue-950 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-list text-amber-500"></i> Students with Pending Dues (Bakaya Record)
+                        </h3>
                         <p class="text-xs text-slate-500 mt-0.5">Yeh list duniya ke kisi bhi user ke paas real-time mein same update nazar aaye gi.</p>
                     </div>
-                    <div class="flex items-center gap-2 w-full md:w-auto">
+                    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
                         <input type="text" id="searchDefaulter" onkeyup="filterDefaulters()" placeholder="🔍 Search by Name or Class..." 
-                               class="px-3 py-2 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none w-full md:w-64 bg-slate-50">
-                        <button onclick="clearAllDefaulters()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-semibold px-3 py-2 rounded-lg transition whitespace-nowrap">Clear All</button>
+                               class="px-3 py-2 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none w-full sm:w-64 bg-slate-50">
+                        <button onclick="clearAllDefaulters()" class="w-full sm:w-auto bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold px-3 py-2 rounded-lg transition">Clear All</button>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-left border-collapse text-sm min-w-[600px]">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold">
-                                <th class="p-3 rounded-l-lg">Student Name</th>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold border-b border-slate-200">
+                                <th class="p-3">Student Name</th>
                                 <th class="p-3">Class</th>
                                 <th class="p-3">WhatsApp No</th>
                                 <th class="p-3">Pending Months</th>
                                 <th class="p-3">Remaining Balance</th>
                                 <th class="p-3">Date Logged</th>
-                                <th class="p-3 rounded-r-lg text-center">Action</th>
+                                <th class="p-3 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="defaultersTableBody" class="divide-y divide-slate-200 text-slate-700 text-xs"></tbody>
+                        <tbody id="defaultersTableBody" class="divide-y divide-slate-100 text-slate-700 text-xs"></tbody>
                     </table>
                     <div id="noDataMsg" class="text-center py-12 text-slate-400 hidden">
                         <p class="text-base font-semibold">Koi pending dues record mojood nahi hai! ✨</p>
@@ -392,39 +430,52 @@
         <!-- ========================================== -->
         <!-- SECTION 2: ADMIN ACTIVITY (VIDEO PORTAL)   -->
         <!-- ========================================== -->
-        <section id="activityTab" class="master-tab-content hidden">
-            <div class="video-dark-bg p-6 rounded-2xl shadow-xl space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
+        <section id="activityTab" class="master-tab-content hidden space-y-6">
+            <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-200">
+                <div class="mb-6 border-b pb-4">
+                    <h2 class="text-xl font-bold text-blue-950 flex items-center gap-2">
+                        <i class="fa-solid fa-video text-rose-500"></i> Video Portal Management
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Upload and manage school activity videos & media content</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     <!-- Upload Box -->
-                    <div class="video-admin-box">
-                        <h2 class="text-xl font-bold text-center text-rose-500 mb-5">Upload Video to Portal</h2>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="text-base font-bold text-blue-950 flex items-center gap-2 border-b border-slate-200 pb-3">
+                            <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i> Upload Video to Portal
+                        </h3>
                         
-                        <div class="mb-4">
-                            <label class="block text-xs text-slate-400 mb-1">Select Video File (.mp4, .mov)</label>
-                            <input type="file" id="videoFile" accept="video/*" class="w-full text-sm text-slate-300 bg-neutral-800 p-2 rounded-md border border-neutral-700">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Select Video File (.mp4, .mov)</label>
+                            <input type="file" id="videoFile" accept="video/*" class="w-full text-xs text-slate-700 bg-white p-2 rounded-lg border border-slate-300">
                             <div class="progress-container" id="progressContainer">
                                 <div class="progress-bar" id="progressBar"></div>
                             </div>
                             <div id="uploadStatus" class="status-msg">Starting upload...</div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-xs text-slate-400 mb-1">Username</label>
-                            <input type="text" id="username" placeholder="@ali_developer" class="w-full text-sm text-white bg-neutral-800 p-2.5 rounded-md border border-neutral-700 outline-none">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Username</label>
+                            <input type="text" id="username" placeholder="@ali_developer" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
                         </div>
                         
-                        <div class="mb-4">
-                            <label class="block text-xs text-slate-400 mb-1">Description & Hashtags</label>
-                            <textarea id="description" placeholder="Write video description here..." class="w-full text-sm text-white bg-neutral-800 p-2.5 rounded-md border border-neutral-700 h-24 outline-none resize-y"></textarea>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Description & Hashtags</label>
+                            <textarea id="description" placeholder="Write video description here..." class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white h-24 resize-y"></textarea>
                         </div>
                         
-                        <button id="submitBtn" onclick="handlePublish()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-md transition text-base">Publish Video</button>
+                        <button id="submitBtn" onclick="handlePublish()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition text-sm shadow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Publish Video
+                        </button>
                     </div>
 
                     <!-- Video List Box -->
-                    <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-                        <h3 class="text-lg font-bold text-white mb-4 border-b border-neutral-800 pb-2">Manage Uploaded Videos</h3>
-                        <div id="listContainer" class="text-sm text-slate-400 space-y-2">Loading videos...</div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-base font-bold text-blue-950 mb-4 border-b border-slate-200 pb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600"></i> Manage Uploaded Videos
+                        </h3>
+                        <div id="listContainer" class="text-xs text-slate-500 space-y-2 max-h-[420px] overflow-y-auto pr-1">Loading videos...</div>
                     </div>
                 </div>
             </div>
@@ -434,13 +485,13 @@
         <!-- SECTION 3: ADMIN EXAM                     -->
         <!-- ========================================== -->
         <section id="examTab" class="master-tab-content hidden">
-            <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                <div class="text-center mb-6 border-b pb-4">
-                    <h2 class="text-xl font-bold text-blue-900">PINE HILLS SCHOOL - EXAM ADMIN PANEL</h2>
+            <div class="max-w-xl mx-auto bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-200 space-y-5">
+                <div class="text-center border-b pb-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-blue-950">PINE HILLS SCHOOL - EXAM ADMIN PANEL</h2>
                     <p class="text-xs text-slate-500">Direct Firebase Live Sync Cloud System</p>
                 </div>
                 <div class="space-y-4">
-                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-blue-950 flex items-center gap-2">
                         <i class="fa-solid fa-cloud-bolt text-amber-500"></i> Live Update Settings
                     </h3>
                     <div>
@@ -457,7 +508,7 @@
                         <i class="fa-solid fa-circle-check"></i> <span id="statusText1">Loaded!</span>
                     </div>
 
-                    <button class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn1" onclick="uploadExamDataToFirebase(1)">
+                    <button class="w-full bg-blue-950 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn1" onclick="uploadExamDataToFirebase(1)">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Update Live Database
                     </button>
                 </div>
@@ -468,13 +519,13 @@
         <!-- SECTION 4: ADMIN MONTHLY TEST             -->
         <!-- ========================================== -->
         <section id="monthlyTestTab" class="master-tab-content hidden">
-            <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                <div class="text-center mb-6 border-b pb-4">
-                    <h2 class="text-xl font-bold text-blue-900">PINE HILLS SCHOOL - MONTHLY TEST ADMIN PANEL</h2>
+            <div class="max-w-xl mx-auto bg-white p-5 sm:p-6 rounded-2xl shadow-md border border-slate-200 space-y-5">
+                <div class="text-center border-b pb-4">
+                    <h2 class="text-lg sm:text-xl font-bold text-blue-950">PINE HILLS SCHOOL - MONTHLY TEST ADMIN PANEL</h2>
                     <p class="text-xs text-slate-500">Direct Firebase Live Sync Cloud System</p>
                 </div>
                 <div class="space-y-4">
-                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-blue-950 flex items-center gap-2">
                         <i class="fa-solid fa-cloud-bolt text-amber-500"></i> Live Update Settings
                     </h3>
                     <div>
@@ -491,7 +542,7 @@
                         <i class="fa-solid fa-circle-check"></i> <span id="statusText2">Loaded!</span>
                     </div>
 
-                    <button class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn2" onclick="uploadExamDataToFirebase(2)">
+                    <button class="w-full bg-blue-950 hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn2" onclick="uploadExamDataToFirebase(2)">
                         <i class="fa-solid fa-cloud-arrow-up"></i> Update Live Database
                     </button>
                 </div>
@@ -506,12 +557,12 @@
         function switchMasterTab(tabId) {
             document.querySelectorAll('.master-tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.master-tab-btn').forEach(btn => {
-                btn.className = "master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5";
+                btn.className = "master-tab-btn tab-btn-inactive px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2";
             });
 
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.className = "master-tab-btn bg-amber-500 text-blue-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+            activeBtn.className = "master-tab-btn tab-btn-active px-3.5 py-2 rounded-xl text-xs font-bold transition duration-200 flex items-center gap-2";
         }
 
         // ==========================================
@@ -572,13 +623,13 @@
             if(tab === 'generator') {
                 genSec.classList.remove('hidden');
                 defSec.classList.add('hidden');
-                tabGenBtn.className = "bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition";
-                tabDefBtn.className = "bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition";
+                tabGenBtn.className = "flex-1 sm:flex-none bg-blue-950 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow transition";
+                tabDefBtn.className = "flex-1 sm:flex-none bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-300 transition";
             } else {
                 genSec.classList.add('hidden');
                 defSec.classList.remove('hidden');
-                tabDefBtn.className = "bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition";
-                tabGenBtn.className = "bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition";
+                tabDefBtn.className = "flex-1 sm:flex-none bg-blue-950 text-white px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow transition";
+                tabGenBtn.className = "flex-1 sm:flex-none bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-300 transition";
             }
         }
 
@@ -711,7 +762,7 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
                 tr.innerHTML = `
-                    <td class="p-3 font-bold text-blue-900">${item.name}</td>
+                    <td class="p-3 font-bold text-blue-950">${item.name}</td>
                     <td class="p-3 font-medium">${item.sClass}</td>
                     <td class="p-3">${item.phone}</td>
                     <td class="p-3 font-semibold text-amber-600">${item.pendingMonths}</td>
@@ -764,7 +815,7 @@
         document.getElementById('printBtn').addEventListener('click', function() {
             const printContent = document.getElementById('receiptCard').innerHTML;
             const originalContent = document.body.innerHTML;
-            document.body.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; height: 100vh;"><div style="width: 400px; padding: 20px; border: 2px solid #1e3a8a; border-radius: 12px; font-family: 'Poppins', sans-serif;">${printContent}</div></div>`;
+            document.body.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; height: 100vh;"><div style="width: 400px; padding: 20px; border: 2px solid #0f172a; border-radius: 12px; font-family: 'Poppins', sans-serif;">${printContent}</div></div>`;
             window.print();
             document.body.innerHTML = originalContent;
             window.location.reload();
@@ -873,7 +924,7 @@
             const data = snapshot.val();
             
             if(!data) {
-                container.innerHTML = 'No videos uploaded yet.';
+                container.innerHTML = '<p class="text-slate-400 py-4 text-center">No videos uploaded yet.</p>';
                 return;
             }
 
@@ -884,13 +935,13 @@
             
             videoArray.reverse().forEach(video => {
                 const item = document.createElement('div');
-                item.className = 'video-item';
+                item.className = 'video-item bg-white p-3 rounded-lg border border-slate-200 mb-2 shadow-sm';
                 item.innerHTML = `
                     <div>
-                        <strong class="text-white">${video.username}</strong><br>
-                        <span style="font-size:12px; color:#888;">${video.description.substring(0, 30)}...</span>
+                        <strong class="text-blue-950 font-bold">${video.username}</strong><br>
+                        <span class="text-xs text-slate-500">${video.description.substring(0, 35)}...</span>
                     </div>
-                    <button class="bg-rose-700 text-white border-0 px-2 py-1 rounded text-xs cursor-pointer" onclick="deleteVideo('${video.id}')">Delete</button>
+                    <button class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-2.5 py-1 rounded-md text-xs font-semibold transition" onclick="deleteVideo('${video.id}')">Delete</button>
                 `;
                 container.appendChild(item);
             });
