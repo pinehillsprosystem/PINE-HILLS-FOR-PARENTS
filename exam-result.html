@@ -458,15 +458,16 @@
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
         
         // FIREBASE CONFIGURATION
-        const firebaseConfig = {
-          apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
-          authDomain: "pine-hills-school.firebaseapp.com",
-          projectId: "pine-hills-school",
-          storageBucket: "pine-hills-school.firebasestorage.app",
-          messagingSenderId: "310029732655",
-          appId: "1:310029732655:web:37edd331495239524cefda",
-          databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com"
-        };
+const firebaseConfig = {
+  apiKey: "AIzaSyDSwMtyMhnxNfHPO1BEGAx_pQusxaxNjjY",
+  authDomain: "exam-report-dd3fa.firebaseapp.com",
+  databaseURL: "https://exam-report-dd3fa-default-rtdb.firebaseio.com",
+  projectId: "exam-report-dd3fa",
+  storageBucket: "exam-report-dd3fa.firebasestorage.app",
+  messagingSenderId: "938227117967",
+  appId: "1:938227117967:web:6541927b1525f044cb25fa"
+};
+
 
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
