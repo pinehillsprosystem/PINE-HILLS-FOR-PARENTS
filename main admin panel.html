@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pine Hills Academy - Master Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- html2canvas Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- XLSX Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Firebase v8/v9 Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem;
+            color: rgba(30, 58, 138, 0.03);
+            font-weight: 800;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 0;
+        }
+        /* Custom Styles for Video Panel */
+        .video-dark-bg { background-color: #121212; color: #fff; }
+        .video-admin-box {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #333;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 8px;
+            background-color: #fe2c55;
+            border-radius: 6px;
+            transition: width 0.1s;
+        }
+        .status-msg {
+            font-size: 13px;
+            color: #00ffcc;
+            margin-top: 5px;
+            display: none;
+            font-weight: bold;
+        }
+        .video-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #333;
+        }
+        .video-item:last-child { border-bottom: none; }
+        /* Exam Panels Styles */
+        .excel-dropzone { border: 2px dashed #1d4ed8; background: #f0f7ff; padding: 30px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .excel-dropzone:hover { background: #e0f0ff; }
+        .file-status { display: none; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 15px; text-align: center; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <!-- MASTER TOP NAVIGATION BAR -->
+    <nav class="bg-blue-950 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-amber-400 text-2xl"></i>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">PINE HILLS ACADEMY</h1>
+                    <p class="text-xs text-slate-300">Unified Admin Portal</p>
+                </div>
+            </div>
+            
+            <!-- MASTER TABS -->
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="switchMasterTab('feesTab')" id="btn-feesTab" class="master-tab-btn bg-amber-500 text-blue-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-receipt"></i> Admin Fees
+                </button>
+                <button onclick="switchMasterTab('activityTab')" id="btn-activityTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-video"></i> Video Portal
+                </button>
+                <button onclick="switchMasterTab('examTab')" id="btn-examTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-signature"></i> Admin Exam
+                </button>
+                <button onclick="switchMasterTab('monthlyTestTab')" id="btn-monthlyTestTab" class="master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-line"></i> Monthly Test
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTAINER FOR ALL SECTIONS -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: ADMIN FEES                      -->
+        <!-- ========================================== -->
+        <section id="feesTab" class="master-tab-content space-y-6">
+            <!-- Top Navigation / Header Tabs -->
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-md border border-slate-200">
+                <div>
+                    <h2 class="text-xl font-bold text-blue-900">🏫 Pine Hills Academy Portal</h2>
+                    <p class="text-xs text-slate-500">Fee Receipt Generator & Defaulters Tracker (Cloud Synced)</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="switchFeeTab('generator')" id="tabGenBtn" class="bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition">⚡ Receipt Generator</button>
+                    <button onclick="switchFeeTab('defaulters')" id="tabDefBtn" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition">📋 Pending Dues List (<span id="badgeCount">0</span>)</button>
+                </div>
+            </div>
+
+            <!-- RECEIPT GENERATOR -->
+            <div id="generatorSection" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Input Form Section -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
+                    <h3 class="text-xl font-bold text-blue-900 mb-5 border-b pb-3 flex items-center justify-between">
+                        <span>📝 Fee Receipt Entry</span>
+                        <span class="text-xs font-normal bg-blue-50 text-blue-800 px-2.5 py-1 rounded-full border border-blue-200">Partial Payment Support</span>
+                    </h3>
+                    
+                    <form id="receiptForm" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Student Name</label>
+                                <input type="text" id="studentName" placeholder="e.g. Ali Ahmed" required 
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Class</label>
+                                <select id="studentClass" required class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                                    <option value="">Select Class</option>
+                                    <option value="Playgroup">Playgroup</option>
+                                    <option value="KG1">KG1</option>
+                                    <option value="KG2">KG2</option>
+                                    <option value="Nursery">Nursery</option>
+                                    <option value="Prep">Prep</option>
+                                    <option value="Class 1">Class 1</option>
+                                    <option value="Class 2">Class 2</option>
+                                    <option value="Class 3">Class 3</option>
+                                    <option value="Class 4">Class 4</option>
+                                    <option value="Class 5">Class 5</option>
+                                    <option value="Class 6">Class 6</option>
+                                    <option value="Class 7">Class 7</option>
+                                    <option value="Class 8">Class 8</option>
+                                    <option value="Class 9">Class 9</option>
+                                    <option value="Class 10">Class 10</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fee Month (Current)</label>
+                                <select id="feeMonth" required class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                                    <option value="January">January</option>
+                                    <option value="February">February</option>
+                                    <option value="March">March</option>
+                                    <option value="April">April</option>
+                                    <option value="May">May</option>
+                                    <option value="June">June</option>
+                                    <option value="July">July</option>
+                                    <option value="August">August</option>
+                                    <option value="September">September</option>
+                                    <option value="October">October</option>
+                                    <option value="November">November</option>
+                                    <option value="December" selected>December</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Parent's WhatsApp No</label>
+                                <input type="tel" id="whatsappNo" placeholder="03001234567" required 
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Fees Calculation Section -->
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-3">
+                            <p class="text-xs font-bold text-blue-900 uppercase">💰 Fee, Arrears & Payment Tracking</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Current Fee (Rs.)</label>
+                                    <input type="number" id="currentFee" placeholder="0" required value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Previous Arrears (Rs.)</label>
+                                    <input type="number" id="arrearsFee" placeholder="0" value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Pending Months Name</label>
+                                    <input type="text" id="pendingMonthsText" placeholder="e.g. Nov" value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Other / Annual (Rs.)</label>
+                                    <input type="number" id="otherFee" placeholder="0" value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Discount (Rs.)</label>
+                                    <input type="number" id="discount" placeholder="0" value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-emerald-700 uppercase mb-1">Amount Paid Now (Rs.)</label>
+                                    <input type="number" id="amountPaidNow" placeholder="0" required value="0"
+                                           class="w-full px-3 py-2 text-sm rounded-lg border border-emerald-400 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-emerald-50/50 font-bold text-emerald-900">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Method</label>
+                                <select id="payMethod" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                                    <option value="Cash">Cash</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="JazzCash / EasyPaisa">JazzCash / EasyPaisa</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Remarks / Note</label>
+                                <input type="text" id="remarks" placeholder="e.g. Half payment received" 
+                                       class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg flex items-center justify-center gap-2">
+                            <span>⚡ Generate Pro Receipt & Sync Cloud Dues</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Receipt Preview Section -->
+                <div class="flex flex-col items-center">
+                    <div id="receiptCard" class="bg-white p-6 rounded-2xl shadow-2xl border-4 border-blue-900 w-full max-w-md relative overflow-hidden">
+                        <div class="watermark">PINE HILLS</div>
+                        
+                        <div class="flex items-center gap-3 border-b-2 border-blue-900 pb-3 mb-4 relative z-10">
+                            <img id="logoImg" src="real logo copy.jpg" alt="Logo" crossorigin="anonymous" class="w-16 h-16 object-contain rounded-full border-2 border-blue-900 shadow-sm">
+                            <div>
+                                <h1 class="text-base font-extrabold text-blue-900 leading-tight">PINE HILLS CHILDREN ACADEMY</h1>
+                                <p class="text-[11px] text-amber-600 font-bold uppercase tracking-wider">English Medium - Abidabad</p>
+                                <p class="text-[9px] text-slate-500 font-medium">OFFICIAL COMPUTERIZED FEE VOUCHER</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200 relative z-10">
+                            <div><span class="text-slate-500 font-semibold">Receipt No:</span> <span id="recNo" class="font-bold text-slate-800">PH-1001</span></div>
+                            <div class="text-right"><span class="text-slate-500 font-semibold">Date:</span> <span id="recDate" class="font-medium text-slate-800">--/--/----</span></div>
+                        </div>
+
+                        <div class="space-y-2 text-xs text-slate-800 relative z-10">
+                            <div class="flex justify-between border-b border-dashed pb-1">
+                                <span class="font-semibold text-slate-500">Student Name:</span>
+                                <span id="outName" class="font-bold text-blue-900 text-sm">----------</span>
+                            </div>
+                            <div class="flex justify-between border-b border-dashed pb-1">
+                                <span class="font-semibold text-slate-500">Class:</span>
+                                <span id="outClass" class="font-medium text-slate-800">----------</span>
+                            </div>
+                            <div class="flex justify-between border-b border-dashed pb-1">
+                                <span class="font-semibold text-slate-500">Fee Month:</span>
+                                <span id="outMonth" class="font-semibold text-emerald-700">----------</span>
+                            </div>
+
+                            <div class="mt-3 pt-2 border-t border-slate-300 space-y-1">
+                                <div class="flex justify-between text-slate-700">
+                                    <span>Current Month Fee:</span>
+                                    <span id="outCurrent" class="font-medium">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between text-amber-700 bg-amber-50 px-2 py-1 rounded">
+                                    <span>Previous Arrears (<span id="outPendingLabel">0</span>):</span>
+                                    <span id="outArrears" class="font-semibold">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Other Charges / Annual:</span>
+                                    <span id="outOther" class="font-medium">Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between text-rose-600">
+                                    <span>Concession / Discount:</span>
+                                    <span id="outDiscount" class="font-medium">- Rs. 0</span>
+                                </div>
+                                <div class="flex justify-between font-bold text-blue-900 border-t pt-1">
+                                    <span>Total Payable Bill:</span>
+                                    <span id="outTotalBill">Rs. 0</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 bg-slate-900 text-white p-3 rounded-xl shadow-inner my-3 text-center">
+                                <div class="border-r border-slate-700 pr-1">
+                                    <span class="block text-[9px] uppercase text-emerald-300 font-semibold">Amount Paid</span>
+                                    <span id="outPaidNow" class="font-extrabold text-sm text-emerald-400">Rs. 0</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[9px] uppercase text-rose-300 font-semibold">Balance Remaining</span>
+                                    <span id="outRemaining" class="font-extrabold text-sm text-rose-400">Rs. 0</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1">
+                                <div><span class="font-semibold">Payment Mode:</span> <span id="outMethod" class="font-medium">Cash</span></div>
+                                <div class="text-right"><span class="font-semibold">Remarks:</span> <span id="outRemarks" class="font-medium">-</span></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-t-2 border-dashed border-slate-300 flex justify-between items-end text-xs relative z-10">
+                            <div>
+                                <div id="badgeContainer" class="space-y-1">
+                                    <span id="badgeStatus" class="inline-block bg-emerald-100 text-emerald-800 font-extrabold px-3 py-1 rounded-full border border-emerald-300 text-[11px] shadow-sm">
+                                        ✓ FULLY PAID
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="border-b border-slate-500 w-28 mb-1"></div>
+                                <p class="text-[10px] text-slate-600 font-bold">Principal Signature</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full max-w-md mt-6 space-y-3">
+                        <button id="sendBtn" disabled
+                                class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition cursor-pointer text-sm">
+                            <span>📲 Download Image & Send via WhatsApp</span>
+                        </button>
+                        <button id="printBtn" disabled
+                                class="w-full bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition cursor-pointer text-sm flex items-center justify-center gap-2">
+                            <span>🖨️ Direct Print Receipt</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEFAULTERS LIST -->
+            <div id="defaultersSection" class="hidden bg-white p-6 rounded-2xl shadow-xl border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-900">📋 Students with Pending Dues (Bakaya Record - Live Cloud)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Yeh list duniya ke kisi bhi user ke paas real-time mein same update nazar aaye gi.</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <input type="text" id="searchDefaulter" onkeyup="filterDefaulters()" placeholder="🔍 Search by Name or Class..." 
+                               class="px-3 py-2 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none w-full md:w-64 bg-slate-50">
+                        <button onclick="clearAllDefaulters()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-semibold px-3 py-2 rounded-lg transition whitespace-nowrap">Clear All</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 text-xs uppercase font-bold">
+                                <th class="p-3 rounded-l-lg">Student Name</th>
+                                <th class="p-3">Class</th>
+                                <th class="p-3">WhatsApp No</th>
+                                <th class="p-3">Pending Months</th>
+                                <th class="p-3">Remaining Balance</th>
+                                <th class="p-3">Date Logged</th>
+                                <th class="p-3 rounded-r-lg text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="defaultersTableBody" class="divide-y divide-slate-200 text-slate-700 text-xs"></tbody>
+                    </table>
+                    <div id="noDataMsg" class="text-center py-12 text-slate-400 hidden">
+                        <p class="text-base font-semibold">Koi pending dues record mojood nahi hai! ✨</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: ADMIN ACTIVITY (VIDEO PORTAL)   -->
+        <!-- ========================================== -->
+        <section id="activityTab" class="master-tab-content hidden">
+            <div class="video-dark-bg p-6 rounded-2xl shadow-xl space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
+                    <!-- Upload Box -->
+                    <div class="video-admin-box">
+                        <h2 class="text-xl font-bold text-center text-rose-500 mb-5">Upload Video to Portal</h2>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs text-slate-400 mb-1">Select Video File (.mp4, .mov)</label>
+                            <input type="file" id="videoFile" accept="video/*" class="w-full text-sm text-slate-300 bg-neutral-800 p-2 rounded-md border border-neutral-700">
+                            <div class="progress-container" id="progressContainer">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                            <div id="uploadStatus" class="status-msg">Starting upload...</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-xs text-slate-400 mb-1">Username</label>
+                            <input type="text" id="username" placeholder="@ali_developer" class="w-full text-sm text-white bg-neutral-800 p-2.5 rounded-md border border-neutral-700 outline-none">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs text-slate-400 mb-1">Description & Hashtags</label>
+                            <textarea id="description" placeholder="Write video description here..." class="w-full text-sm text-white bg-neutral-800 p-2.5 rounded-md border border-neutral-700 h-24 outline-none resize-y"></textarea>
+                        </div>
+                        
+                        <button id="submitBtn" onclick="handlePublish()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-md transition text-base">Publish Video</button>
+                    </div>
+
+                    <!-- Video List Box -->
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
+                        <h3 class="text-lg font-bold text-white mb-4 border-b border-neutral-800 pb-2">Manage Uploaded Videos</h3>
+                        <div id="listContainer" class="text-sm text-slate-400 space-y-2">Loading videos...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: ADMIN EXAM                     -->
+        <!-- ========================================== -->
+        <section id="examTab" class="master-tab-content hidden">
+            <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
+                <div class="text-center mb-6 border-b pb-4">
+                    <h2 class="text-xl font-bold text-blue-900">PINE HILLS SCHOOL - EXAM ADMIN PANEL</h2>
+                    <p class="text-xs text-slate-500">Direct Firebase Live Sync Cloud System</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-bolt text-amber-500"></i> Live Update Settings
+                    </h3>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Examination Month Title</label>
+                        <input type="text" id="examMonth1" value="June 2026 (MONTHLY TEST)" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    </div>
+                    <div class="excel-dropzone" onclick="document.getElementById('excelFileInput1').click()">
+                        <i class="fa-solid fa-file-excel text-3xl text-blue-600 mb-2"></i>
+                        <p class="text-sm font-semibold text-slate-700">Upload Result Excel File</p>
+                    </div>
+                    <input type="file" id="excelFileInput1" accept=".xlsx, .xls" onchange="handleExcelUploadGeneric(this, 1)" class="hidden">
+                    
+                    <div id="fileStatusBadge1" class="file-status">
+                        <i class="fa-solid fa-circle-check"></i> <span id="statusText1">Loaded!</span>
+                    </div>
+
+                    <button class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn1" onclick="uploadExamDataToFirebase(1)">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Update Live Database
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 4: ADMIN MONTHLY TEST             -->
+        <!-- ========================================== -->
+        <section id="monthlyTestTab" class="master-tab-content hidden">
+            <div class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
+                <div class="text-center mb-6 border-b pb-4">
+                    <h2 class="text-xl font-bold text-blue-900">PINE HILLS SCHOOL - MONTHLY TEST ADMIN PANEL</h2>
+                    <p class="text-xs text-slate-500">Direct Firebase Live Sync Cloud System</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold text-blue-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-bolt text-amber-500"></i> Live Update Settings
+                    </h3>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Examination Month Title</label>
+                        <input type="text" id="examMonth2" value="June 2026 (MONTHLY TEST)" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:outline-none">
+                    </div>
+                    <div class="excel-dropzone" onclick="document.getElementById('excelFileInput2').click()">
+                        <i class="fa-solid fa-file-excel text-3xl text-blue-600 mb-2"></i>
+                        <p class="text-sm font-semibold text-slate-700">Upload Result Excel File</p>
+                    </div>
+                    <input type="file" id="excelFileInput2" accept=".xlsx, .xls" onchange="handleExcelUploadGeneric(this, 2)" class="hidden">
+                    
+                    <div id="fileStatusBadge2" class="file-status">
+                        <i class="fa-solid fa-circle-check"></i> <span id="statusText2">Loaded!</span>
+                    </div>
+
+                    <button class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 rounded-xl transition shadow flex items-center justify-center gap-2" id="syncBtn2" onclick="uploadExamDataToFirebase(2)">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Update Live Database
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- INTEGRATED JAVASCRIPT LOGIC -->
+    <script>
+        // --- MASTER TAB SWITCHING LOGIC ---
+        function switchMasterTab(tabId) {
+            document.querySelectorAll('.master-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.master-tab-btn').forEach(btn => {
+                btn.className = "master-tab-btn bg-blue-900 hover:bg-blue-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5";
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.className = "master-tab-btn bg-amber-500 text-blue-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+        }
+
+        // ==========================================
+        // FIREBASE INITIALIZATIONS FOR APPS
+        // ==========================================
+
+        // 1. App 1: Fees App
+        const feesConfig = {
+            apiKey: "AIzaSyDzhxCq5yMVupmPm-uynge87xF4kjYDnKk",
+            authDomain: "fees-ea69b.firebaseapp.com",
+            databaseURL: "https://fees-ea69b-default-rtdb.firebaseio.com",
+            projectId: "fees-ea69b",
+            storageBucket: "fees-ea69b.firebasestorage.app",
+            messagingSenderId: "205573742406",
+            appId: "1:205573742406:web:db2c19c6b5925270fe0f47"
+        };
+        const feesApp = firebase.initializeApp(feesConfig, "feesApp");
+        const feesDb = feesApp.database();
+
+        // 2. App 2: Video Portal / Pine Hills Main Database
+        const activityConfig = {
+            apiKey: "AIzaSyDATM3pz-eauXtxt6t3V_shp-WBhuTuovI",
+            authDomain: "pine-hills-school.firebaseapp.com",
+            databaseURL: "https://pine-hills-school-default-rtdb.firebaseio.com",
+            projectId: "pine-hills-school",
+            storageBucket: "pine-hills-school.firebasestorage.app",
+            messagingSenderId: "310029732655",
+            appId: "1:310029732655:web:37edd331495239524cefda"
+        };
+        const activityApp = firebase.initializeApp(activityConfig, "activityApp");
+        const activityDb = activityApp.database();
+
+        // 3. App 3: Exam Database
+        const examConfig = {
+            apiKey: "AIzaSyDSwMtyMhnxNfHPO1BEGAx_pQusxaxNjjY",
+            authDomain: "exam-report-dd3fa.firebaseapp.com",
+            databaseURL: "https://exam-report-dd3fa-default-rtdb.firebaseio.com",
+            projectId: "exam-report-dd3fa",
+            storageBucket: "exam-report-dd3fa.firebasestorage.app",
+            messagingSenderId: "938227117967",
+            appId: "1:938227117967:web:6541927b1525f044cb25fa"
+        };
+        const examApp = firebase.initializeApp(examConfig, "examApp");
+        const examDb = examApp.database();
+
+        // ==========================================
+        // 1. ADMIN FEES SCRIPT LOGIC
+        // ==========================================
+        let targetPhone = '';
+        let globalDefaultersList = [];
+
+        function switchFeeTab(tab) {
+            const genSec = document.getElementById('generatorSection');
+            const defSec = document.getElementById('defaultersSection');
+            const tabGenBtn = document.getElementById('tabGenBtn');
+            const tabDefBtn = document.getElementById('tabDefBtn');
+
+            if(tab === 'generator') {
+                genSec.classList.remove('hidden');
+                defSec.classList.add('hidden');
+                tabGenBtn.className = "bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition";
+                tabDefBtn.className = "bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition";
+            } else {
+                genSec.classList.add('hidden');
+                defSec.classList.remove('hidden');
+                tabDefBtn.className = "bg-blue-900 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow transition";
+                tabGenBtn.className = "bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-slate-300 transition";
+            }
+        }
+
+        feesDb.ref('pineHillsDefaulters').on('value', (snapshot) => {
+            const data = snapshot.val();
+            globalDefaultersList = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    globalDefaultersList.push({ dbKey: key, ...data[key] });
+                });
+            }
+            document.getElementById('badgeCount').innerText = globalDefaultersList.length;
+            renderDefaultersTable(globalDefaultersList);
+        });
+
+        document.getElementById('receiptForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('studentName').value;
+            const sClass = document.getElementById('studentClass').value;
+            const month = document.getElementById('feeMonth').value;
+            const rawPhone = document.getElementById('whatsappNo').value.trim();
+            
+            const currentFee = Number(document.getElementById('currentFee').value) || 0;
+            const arrearsFee = Number(document.getElementById('arrearsFee').value) || 0;
+            const pendingText = document.getElementById('pendingMonthsText').value || '0';
+            const other = Number(document.getElementById('otherFee').value) || 0;
+            const discount = Number(document.getElementById('discount').value) || 0;
+            const amountPaidNow = Number(document.getElementById('amountPaidNow').value) || 0;
+            
+            const totalBill = (currentFee + arrearsFee + other) - discount;
+            const remainingBalance = totalBill - amountPaidNow;
+
+            const method = document.getElementById('payMethod').value;
+            const remarks = document.getElementById('remarks').value || 'None';
+            const currentDateStr = new Date().toLocaleDateString('en-GB');
+
+            let phone = rawPhone.replace(/[^0-9]/g, '');
+            if(phone.startsWith('0')) {
+                phone = '92' + phone.slice(1);
+            }
+            targetPhone = phone;
+
+            document.getElementById('outName').innerText = name;
+            document.getElementById('outClass').innerText = sClass;
+            document.getElementById('outMonth').innerText = month;
+            document.getElementById('outCurrent').innerText = 'Rs. ' + currentFee.toLocaleString();
+            document.getElementById('outArrears').innerText = 'Rs. ' + arrearsFee.toLocaleString();
+            document.getElementById('outPendingLabel').innerText = pendingText;
+            document.getElementById('outOther').innerText = 'Rs. ' + other.toLocaleString();
+            document.getElementById('outDiscount').innerText = '- Rs. ' + discount.toLocaleString();
+            document.getElementById('outTotalBill').innerText = 'Rs. ' + totalBill.toLocaleString();
+            
+            document.getElementById('outPaidNow').innerText = 'Rs. ' + amountPaidNow.toLocaleString();
+            document.getElementById('outRemaining').innerText = 'Rs. ' + remainingBalance.toLocaleString();
+            
+            const badgeContainer = document.getElementById('badgeContainer');
+            if(remainingBalance > 0) {
+                badgeContainer.innerHTML = `
+                    <span class="inline-block bg-amber-100 text-amber-800 font-extrabold px-3 py-1 rounded-full border border-amber-300 text-[11px] shadow-sm">
+                        ⚠ PARTIAL PAID
+                    </span>
+                `;
+            } else {
+                badgeContainer.innerHTML = `
+                    <span class="inline-block bg-emerald-100 text-emerald-800 font-extrabold px-3 py-1 rounded-full border border-emerald-300 text-[11px] shadow-sm">
+                        ✓ FULLY PAID
+                    </span>
+                    <div class="mt-1">
+                        <span class="inline-flex items-center gap-1 bg-amber-400 text-amber-950 font-extrabold px-2.5 py-0.5 rounded-full border border-amber-500 text-[10px] shadow-sm uppercase tracking-wider">
+                            ⭐ Star Customer
+                        </span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('outMethod').innerText = method;
+            document.getElementById('outRemarks').innerText = remarks;
+            document.getElementById('recDate').innerText = currentDateStr;
+            document.getElementById('recNo').innerText = 'PH-' + Math.floor(1000 + Math.random() * 9000);
+
+            const existingRecord = globalDefaultersList.find(d => d.name.toLowerCase() === name.toLowerCase() && d.sClass === sClass);
+
+            if (remainingBalance > 0) {
+                const recordObj = {
+                    name: name,
+                    sClass: sClass,
+                    phone: rawPhone,
+                    pendingMonths: month + ' (Bal)',
+                    remainingAmount: remainingBalance,
+                    date: currentDateStr
+                };
+
+                if (existingRecord) {
+                    feesDb.ref('pineHillsDefaulters/' + existingRecord.dbKey).set(recordObj);
+                } else {
+                    feesDb.ref('pineHillsDefaulters').push(recordObj);
+                }
+            } else {
+                if (existingRecord) {
+                    feesDb.ref('pineHillsDefaulters/' + existingRecord.dbKey).remove();
+                }
+            }
+
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('printBtn').disabled = false;
+            alert("Receipt generated and cloud records updated successfully!");
+        });
+
+        function renderDefaultersTable(dataArray) {
+            const tbody = document.getElementById('defaultersTableBody');
+            const noDataMsg = document.getElementById('noDataMsg');
+            const searchQuery = document.getElementById('searchDefaulter').value.toLowerCase();
+
+            tbody.innerHTML = '';
+
+            const filteredData = dataArray.filter(item => 
+                item.name.toLowerCase().includes(searchQuery) || 
+                item.sClass.toLowerCase().includes(searchQuery)
+            );
+
+            if(filteredData.length === 0) {
+                noDataMsg.classList.remove('hidden');
+                return;
+            } else {
+                noDataMsg.classList.add('hidden');
+            }
+
+            filteredData.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-blue-900">${item.name}</td>
+                    <td class="p-3 font-medium">${item.sClass}</td>
+                    <td class="p-3">${item.phone}</td>
+                    <td class="p-3 font-semibold text-amber-600">${item.pendingMonths}</td>
+                    <td class="p-3 font-extrabold text-rose-600">Rs. ${Number(item.remainingAmount).toLocaleString()}</td>
+                    <td class="p-3 text-slate-500">${item.date}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="removeDefaulter('${item.dbKey}')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-2.5 py-1 rounded-md text-[11px] transition shadow-sm">✓ Mark Cleared</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterDefaulters() { renderDefaultersTable(globalDefaultersList); }
+        function removeDefaulter(dbKey) {
+            if(confirm("Kya aap is student ko clear karna chahte hain?")) {
+                feesDb.ref('pineHillsDefaulters/' + dbKey).remove();
+            }
+        }
+        function clearAllDefaulters() {
+            if(confirm("Kya aap saare pending dues records delete karna chahte hain?")) {
+                feesDb.ref('pineHillsDefaulters').remove();
+            }
+        }
+
+        document.getElementById('sendBtn').addEventListener('click', async function() {
+            const receiptElement = document.getElementById('receiptCard');
+            const studentName = document.getElementById('outName').innerText;
+            const feeMonth = document.getElementById('outMonth').innerText;
+            const paidAmount = document.getElementById('outPaidNow').innerText;
+            const remainingAmount = document.getElementById('outRemaining').innerText;
+
+            try {
+                const canvas = await html2canvas(receiptElement, { scale: 2, useCORS: true, allowTaint: true });
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.download = `Receipt_${studentName}_${feeMonth}.png`;
+                link.href = image;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                const textMessage = `Assalam-o-Alaikum! PINE HILLS CHILDREN ACADEMY ki taraf se ${studentName} ki ${feeMonth} ki fee slip. Ada ki gayi rakam: ${paidAmount}, Baqi raqam (Remaining): ${remainingAmount}. Shukriya!`;
+                const waUrl = `https://api.whatsapp.com/send?phone=${targetPhone}&text=${encodeURIComponent(textMessage)}`;
+                
+                setTimeout(() => { window.open(waUrl, '_blank'); }, 400);
+            } catch (err) { alert("Error: " + err.message); }
+        });
+
+        document.getElementById('printBtn').addEventListener('click', function() {
+            const printContent = document.getElementById('receiptCard').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<div style="display: flex; justify-content: center; align-items: center; height: 100vh;"><div style="width: 400px; padding: 20px; border: 2px solid #1e3a8a; border-radius: 12px; font-family: 'Poppins', sans-serif;">${printContent}</div></div>`;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload();
+        });
+
+
+        // ==========================================
+        // 2. ADMIN ACTIVITY (VIDEO PORTAL) SCRIPT
+        // ==========================================
+        const CLOUDINARY_CLOUD_NAME = "xjpshinc"; 
+        const CLOUDINARY_UPLOAD_PRESET = "gcapzkqk";
+
+        function handlePublish() {
+            const fileInput = document.getElementById('videoFile');
+            const user = document.getElementById('username').value.trim();
+            const desc = document.getElementById('description').value.trim();
+            const statusMsg = document.getElementById('uploadStatus');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (fileInput.files.length === 0 || !user || !desc) {
+                alert("Please fill all fields and select a video file!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (file.size > 100 * 1024 * 1024) {
+                alert("Video size is too large! Please upload a file under 100MB for better performance.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            statusMsg.style.display = "block";
+            progressContainer.style.display = "block";
+            statusMsg.innerText = "Preparing file...";
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`, true);
+
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = Math.round((e.loaded / e.total) * 100);
+                    progressBar.style.width = percentComplete + '%';
+                    statusMsg.innerText = `Uploading to Cloudinary: ${percentComplete}%`;
+                }
+            };
+
+            xhr.onload = async function() {
+                if (xhr.status === 200) {
+                    const cloudData = JSON.parse(xhr.responseText);
+                    let optimizedUrl = cloudData.secure_url;
+                    if(optimizedUrl.includes("/upload/")) {
+                        optimizedUrl = optimizedUrl.replace("/upload/", "/upload/q_auto,f_auto/");
+                    }
+
+                    statusMsg.innerText = "Cloudinary optimization done! Saving to Firebase...";
+
+                    try {
+                        const newVideoRef = activityDb.ref('videos').push();
+                        await newVideoRef.set({
+                            videoUrl: optimizedUrl,
+                            username: user,
+                            description: desc,
+                            likes: Math.floor(Math.random() * 10) + "K",
+                            comments: Math.floor(Math.random() * 100),
+                            timestamp: Date.now()
+                        });
+
+                        alert("Video uploaded and published successfully!");
+                        fileInput.value = '';
+                        document.getElementById('username').value = '';
+                        document.getElementById('description').value = '';
+                        statusMsg.style.display = "none";
+                        progressContainer.style.display = "none";
+                        progressBar.style.width = "0%";
+                    } catch (firebaseError) {
+                        alert("Firebase Sync Error: " + firebaseError.message);
+                    }
+                } else {
+                    const errorData = JSON.parse(xhr.responseText);
+                    alert("Cloudinary Error: " + (errorData.error ? errorData.error.message : "Upload failed"));
+                    statusMsg.style.display = "none";
+                    progressContainer.style.display = "none";
+                }
+                submitBtn.disabled = false;
+            };
+
+            xhr.onerror = function() {
+                alert("Network error occurred during upload.");
+                statusMsg.style.display = "none";
+                progressContainer.style.display = "none";
+                submitBtn.disabled = false;
+            };
+
+            xhr.send(formData);
+        }
+
+        activityDb.ref('videos').orderByChild('timestamp').on('value', (snapshot) => {
+            const container = document.getElementById('listContainer');
+            container.innerHTML = '';
+            const data = snapshot.val();
+            
+            if(!data) {
+                container.innerHTML = 'No videos uploaded yet.';
+                return;
+            }
+
+            const videoArray = [];
+            for(let id in data) {
+                videoArray.push({ id, ...data[id] });
+            }
+            
+            videoArray.reverse().forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                item.innerHTML = `
+                    <div>
+                        <strong class="text-white">${video.username}</strong><br>
+                        <span style="font-size:12px; color:#888;">${video.description.substring(0, 30)}...</span>
+                    </div>
+                    <button class="bg-rose-700 text-white border-0 px-2 py-1 rounded text-xs cursor-pointer" onclick="deleteVideo('${video.id}')">Delete</button>
+                `;
+                container.appendChild(item);
+            });
+        });
+
+        function deleteVideo(id) {
+            if(confirm("Are you sure you want to delete this video from database?")) {
+                activityDb.ref('videos/' + id).remove();
+            }
+        }
+
+
+        // ==========================================
+        // 3 & 4. EXAM & MONTHLY TEST SHARED LOGIC
+        // ==========================================
+        let excelRowsMap = { 1: [], 2: [] };
+
+        function handleExcelUploadGeneric(input, id) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                excelRowsMap[id] = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+                document.getElementById('statusText' + id).innerText = `Successfully read ${excelRowsMap[id].length} records! Ready to Sync.`;
+                document.getElementById('fileStatusBadge' + id).style.display = 'block';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function getExcelValue(rowObj, possibleKeys) {
+            const cleanRow = {};
+            Object.keys(rowObj).forEach(k => {
+                const cleanKey = k.toString().toLowerCase().replace(/[^a-z0-9]/g, '');
+                cleanRow[cleanKey] = rowObj[k];
+            });
+            for (let key of possibleKeys) {
+                const targetKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                if (cleanRow[targetKey] !== undefined && cleanRow[targetKey].toString().trim() !== "") {
+                    return cleanRow[targetKey].toString().trim();
+                }
+            }
+            return null;
+        }
+
+        async function uploadExamDataToFirebase(id) {
+            const monthText = document.getElementById('examMonth' + id).value.trim();
+            const rows = excelRowsMap[id];
+
+            if (!rows || rows.length === 0) { alert("Excel file upload karein!"); return; }
+
+            const syncBtn = document.getElementById('syncBtn' + id);
+            syncBtn.disabled = true;
+            syncBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Syncing Data...`;
+
+            let finalDatabasePayload = {};
+
+            rows.forEach((row, index) => {
+                const rollNo = getExcelValue(row, ['RollNo', 'Roll Number', 'Roll_No', 'ID']) || (100 + index + 1).toString();
+                const name = getExcelValue(row, ['Name', 'Student Name']) || 'Unknown Student';
+                const sClass = getExcelValue(row, ['Class', 'Grade']) || 'N/A';
+                const totalMarks = getExcelValue(row, ['TotalMarks', 'Total Marks', 'Total']) || "0";
+                const totalObtained = getExcelValue(row, ['ObtainedMarks', 'Obtained Marks', 'Obtained']) || "0";
+
+                let tempActiveSubjects = [];
+                const subjectsList = [
+                    { name: "English", keys: ['English', 'Eng'], totalKeys: ['English Total', 'Eng Total', 'EnglishTotal'] },
+                    { name: "Urdu", keys: ['Urdu', 'Urd'], totalKeys: ['Urdu Total', 'Urd Total', 'UrduTotal'] },
+                    { name: "Mathematics", keys: ['Math', 'Mathematics', 'Maths'], totalKeys: ['Math Total', 'Mathematics Total', 'MathTotal'] },
+                    { name: "Islamiyat", keys: ['Islamiyat', 'Isl'], totalKeys: ['Islamiyat Total', 'Isl Total', 'IslamiyatTotal'] },
+                    { name: "Social Studies", keys: ['SST', 'Social Studies', 's-st'], totalKeys: ['SST Total', 'Social Studies Total', 'ssttotal'] },
+                    { name: "Science", keys: ['Science', 'Sci'], totalKeys: ['Science Total', 'Sci Total', 'ScienceTotal'] },
+                    { name: "General Knowledge", keys: ['GK', 'General Knowledge', 'G.K'], totalKeys: ['GK Total', 'General Knowledge Total', 'gktotal'] },
+                    { name: "Seerat un Nabi", keys: ['Seerat', 'Seerat un Nabi', 'Seerat-un-Nabi'], totalKeys: ['Seerat Total', 'Seerat un Nabi Total'] }
+                ];
+
+                subjectsList.forEach(sub => {
+                    const mark = getExcelValue(row, sub.keys);
+                    if (mark !== null) {
+                        let subTotal = getExcelValue(row, sub.totalKeys);
+                        tempActiveSubjects.push({ name: sub.name, obtained: mark, explicitTotal: subTotal });
+                    }
+                });
+
+                let activeCount = tempActiveSubjects.length;
+                let calculatedSubTotal = "-";
+                if (activeCount > 0 && parseInt(totalMarks) > 0) {
+                    calculatedSubTotal = Math.round(parseInt(totalMarks) / activeCount).toString();
+                }
+
+                let subjectsArray = [];
+                tempActiveSubjects.forEach(sub => {
+                    let finalSubTotal = sub.explicitTotal || calculatedSubTotal;
+                    subjectsArray.push({
+                        name: sub.name,
+                        total: finalSubTotal,
+                        obtained: sub.obtained
+                    });
+                });
+
+                let percentageValue = getExcelValue(row, ['Percentage', 'Percent', 'Per%']) || "-";
+                if (percentageValue !== "-" && !percentageValue.includes('%')) {
+                    if(parseFloat(percentageValue) <= 1 && parseFloat(percentageValue) > 0) {
+                        percentageValue = (parseFloat(percentageValue) * 100).toFixed(1) + "%";
+                    } else {
+                        percentageValue += "%";
+                    }
+                }
+                const finalGrade = getExcelValue(row, ['Grade']) || "-";
+                const statusStr = getExcelValue(row, ['Status']) || "PASS";
+
+                finalDatabasePayload[rollNo.toLowerCase()] = {
+                    name: name,
+                    class: sClass,
+                    month: monthText,
+                    subjects: subjectsArray,
+                    totalMarks: totalMarks,
+                    totalObtained: totalObtained,
+                    percentage: percentageValue,
+                    grade: finalGrade.toUpperCase(),
+                    status: statusStr.toUpperCase()
+                };
+            });
+
+            try {
+                // Choice of DB according to Section
+                const targetDb = (id === 1) ? examDb : activityDb;
+                await targetDb.ref('reportDatabase').set(finalDatabasePayload);
+                alert("Boom! Data Firebase pr successfully update ho gya hy.");
+            } catch (error) {
+                console.error(error);
+                alert("Error updating database: " + error.message);
+            } finally {
+                syncBtn.disabled = false;
+                syncBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Update Live Database`;
+            }
+        }
+    </script>
+</body>
+</html>
