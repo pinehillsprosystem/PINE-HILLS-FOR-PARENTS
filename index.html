@@ -1176,18 +1176,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, push, set, remove, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyD8pe1_IzhWzKJNoo1HcSyHpauzt4c1rQQ",
-          authDomain: "student-winner.firebaseapp.com",
-          projectId: "student-winner",
-          storageBucket: "student-winner.firebasestorage.app",
-          messagingSenderId: "297237646499",
-          appId: "1:297237646499:web:c92fdf71470f066c8e8316",
-          measurementId: "G-WNWTC1M0G7"
-        };
+const firebaseConfig = {
+  apiKey: "AIzaSyChCo6P7x2Vx6Q4K8AoBb60wAtOuUZlY2g",
+  authDomain: "student-winner-5c701.firebaseapp.com",
+  projectId: "student-winner-5c701",
+  storageBucket: "student-winner-5c701.firebasestorage.app",
+  messagingSenderId: "126732124926",
+  appId: "1:126732124926:web:f85aee7494cdf064d99baf"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+// Initialize Firebase for winner user view
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.database();
 
         let schoolData = {};
         let activeTimers = [];
