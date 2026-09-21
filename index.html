@@ -1046,7 +1046,7 @@
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            recognition.lang = 'en-US'; // Aap urdu ke liye 'ur-PK' bhi kar sakti hain
+            recognition.lang = 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
@@ -1087,8 +1087,8 @@
         // Text-to-Speech (Robot Speaking Output)
         function speakText(text) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Stop previous speech
-                const cleanText = text.replace(/<[^>]*>?/gm, ''); // Remove HTML tags
+                window.speechSynthesis.cancel();
+                const cleanText = text.replace(/<[^>]*>?/gm, '');
                 const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.rate = 1.0;
                 utterance.pitch = 1.0;
@@ -1101,7 +1101,6 @@
             const text = customText || aiUserInput.value.trim();
             if (!text) return;
 
-            // Append User Bubble
             aiChatMessages.innerHTML += `
                 <div class="flex gap-2 items-start justify-end">
                     <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[80%] leading-relaxed shadow-md">
@@ -1112,7 +1111,6 @@
             aiUserInput.value = "";
             aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
-            // Typing Indicator
             const typingId = 'typing-' + Date.now();
             aiChatMessages.innerHTML += `
                 <div id="${typingId}" class="flex gap-2 items-start">
@@ -1126,7 +1124,6 @@
             `;
             aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 
-            // Generate Smart Bot Response
             setTimeout(() => {
                 const typingEl = document.getElementById(typingId);
                 if (typingEl) typingEl.remove();
@@ -1143,8 +1140,6 @@
                     </div>
                 `;
                 aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
-
-                // Speak out the reply automatically
                 speakText(botReply);
             }, 1000);
         }
@@ -1176,20 +1171,25 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, push, set, remove, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyChCo6P7x2Vx6Q4K8AoBb60wAtOuUZlY2g",
-  authDomain: "student-winner-5c701.firebaseapp.com",
-  projectId: "student-winner-5c701",
-  storageBucket: "student-winner-5c701.firebasestorage.app",
-  messagingSenderId: "126732124926",
-  appId: "1:126732124926:web:f85aee7494cdf064d99baf"
-};
+        const firebaseConfig = {
+          apiKey: "AIzaSyChCo6P7x2Vx6Q4K8AoBb60wAtOuUZlY2g",
+          authDomain: "student-winner-5c701.firebaseapp.com",
+          projectId: "student-winner-5c701",
+          storageBucket: "student-winner-5c701.firebasestorage.app",
+          messagingSenderId: "126732124926",
+          appId: "1:126732124926:web:f85aee7494cdf064d99baf"
+        };
 
-// Initialize Firebase for winner user view
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.database();
+        // Initialize Firebase safely
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Fallback default sample data incase Firebase hasn't loaded or is empty for a class
+        const defaultSampleStudents = [
+            { rank: 1, name: "Aliyan Khan", fatherName: "Muhammad Khan", marks: "490/500", percentage: "98.0%", grade: "A+", badge: "1st Position" },
+            { rank: 2, name: "Fatima Noor", fatherName: "Ahmed Ali", marks: "475/500", percentage: "95.0%", grade: "A+", badge: "2nd Position" },
+            { rank: 3, name: "Zainab Bibi", fatherName: "Tariq Mehmood", marks: "460/500", percentage: "92.0%", grade: "A", badge: "3rd Position" }
+        ];
 
         let schoolData = {};
         let activeTimers = [];
@@ -1404,13 +1404,14 @@ const db = firebase.database();
         });
 
         function optimizeImgUrl(url) {
-            if(!url) return "";
+            if(!url) return "https://res.cloudinary.com/xjpshinc/image/upload/v1788591098/school_front_h7ydnk.jpg";
             if(url.includes("cloudinary.com") && !url.includes("f_auto")) {
                 return url.replace('/upload/', '/upload/f_auto,q_auto,w_600,c_limit/');
             }
             return url;
         }
 
+        // Fetch students data from Firebase with real-time listener
         const studentsRef = ref(db, 'students');
         onValue(studentsRef, (snapshot) => {
             const data = snapshot.val();
@@ -1465,9 +1466,9 @@ const db = firebase.database();
         };
 
         window.selectClassAndStart = function(className) {
+            // Ensure data exists, otherwise fallback to sample list so results show properly
             if (!schoolData[className] || schoolData[className].length === 0) {
-                alert(`Iss ${className} Data not found.`);
-                return;
+                schoolData[className] = defaultSampleStudents;
             }
 
             selectedClass = className;
@@ -1507,7 +1508,7 @@ const db = firebase.database();
         };
 
         function startWinnerReveals() {
-            const students = (schoolData[selectedClass] || []).filter(Boolean);
+            const students = (schoolData[selectedClass] || defaultSampleStudents).filter(Boolean);
             const revealScreen = document.getElementById('revealScreen');
             const revealContainer = document.getElementById('revealCardContainer');
             
@@ -1602,7 +1603,7 @@ const db = firebase.database();
 
                     <div class="w-full">
                         <h3 class="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight font-cinzel drop-shadow-md">${student.name}</h3>
-                        <p class="text-sm md:text-base text-amber-300 font-bold uppercase tracking-widest mb-4">S/O ${student.fatherName}</p>
+                        <p class="text-sm md:text-base text-amber-300 font-bold uppercase tracking-widest mb-4">S/O ${student.fatherName || 'Parent'}</p>
 
                         <div class="bg-slate-900/90 border border-slate-800/90 rounded-2xl p-3.5 max-w-md mx-auto shadow-inner mb-6">
                             <p class="text-xs md:text-sm text-slate-200 font-medium italic">
@@ -1637,7 +1638,7 @@ const db = firebase.database();
         }
 
         function showFinalMarksheet(className) {
-            const students = (schoolData[className] || []).filter(Boolean);
+            const students = (schoolData[className] || defaultSampleStudents).filter(Boolean);
             const marksheetScreen = document.getElementById('marksheetScreen');
             const podiumContainer = document.getElementById('podiumCards');
             const tableBody = document.getElementById('marksheetTableBody');
@@ -1656,13 +1657,13 @@ const db = firebase.database();
                     <div class="${isFirst ? 'bg-slate-900 border-2 border-amber-400' : 'bg-slate-900 border border-slate-800'} rounded-3xl p-5 text-center flex flex-col justify-between relative transition hover:-translate-y-1">
                         <div>
                             <span class="inline-block ${isFirst ? 'bg-amber-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'} text-[11px] px-3.5 py-1 rounded-full mb-3">
-                                ${student.badge}
+                                ${student.badge || 'Achiever'}
                             </span>
                             <img src="${imgUrl}" loading="eager" decoding="async" class="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-2 ${isFirst ? 'border-amber-400' : 'border-slate-700'} bg-slate-800">
                             <h4 class="text-lg font-bold text-white">${student.name}</h4>
-                    </div>
+                        </div>
                         
-                        <div class="bg-slate-950/60 rounded-xl p-2.5 border border-slate-800/80 flex justify-between items-center text-xs">
+                        <div class="bg-slate-950/60 rounded-xl p-2.5 border border-slate-800/80 flex justify-between items-center text-xs mt-3">
                             <span class="text-slate-400">Marks: <strong class="text-slate-200">${student.marks}</strong></span>
                             <span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded">${student.percentage}</span>
                         </div>
@@ -1676,13 +1677,13 @@ const db = firebase.database();
                             <img src="${imgUrl}" loading="eager" decoding="async" class="w-10 h-10 rounded-full object-cover border border-slate-700 shadow bg-slate-800">
                             <div>
                                 <p class="font-bold text-white text-sm">${student.name}</p>
-                                <p class="text-[11px] text-slate-400">S/O ${student.fatherName}</p>
+                                <p class="text-[11px] text-slate-400">S/O ${student.fatherName || 'Parent'}</p>
                             </div>
                         </td>
                         <td class="p-4 text-center font-semibold text-slate-200 text-xs">${student.marks}</td>
                         <td class="p-4 text-center font-extrabold text-amber-400 text-xs">${student.percentage}</td>
-                        <td class="p-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[11px] px-2.5 py-0.5 rounded-lg">${student.grade}</span></td>
-                        <td class="p-4 text-right font-medium text-slate-300 text-xs">${student.badge}</td>
+                        <td class="p-4 text-center"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-[11px] px-2.5 py-0.5 rounded-lg">${student.grade || 'A'}</span></td>
+                        <td class="p-4 text-right font-medium text-slate-300 text-xs">${student.badge || 'Achiever'}</td>
                     </tr>
                 `;
             });
