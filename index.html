@@ -50,7 +50,6 @@
     </script>
 
     <style>
-        /* --- ULTRA-NEXT DESIGN SYSTEM & LIGHTING ENGINE --- */
         :root {
             --primary-dark: #030712;
             --accent-blue: #2563eb;
@@ -83,7 +82,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- LIGHTING TOP ANNOUNCEMENT BAR --- */
         .top-announcement-bar {
             background: linear-gradient(90deg, #dc2626, #ef4444, #f97316, #dc2626);
             background-size: 200% 100%;
@@ -102,7 +100,6 @@
             z-index: 1001;
         }
 
-        /* --- STICKY GLASSMORPHISM NAVIGATION --- */
         header#siteHeader {
             width: 100%;
             background: rgba(255, 255, 255, 0.85);
@@ -212,7 +209,6 @@
             border: none;
         }
 
-        /* --- FUTURISTIC HERO BANNER --- */
         .hero-section {
             width: 100%;
             display: flex;
@@ -297,7 +293,6 @@
             mask-image: linear-gradient(to right, transparent, black 30%);
         }
 
-        /* --- LIGHTING NOTICE BOARD SECTION --- */
         .notice-section {
             max-width: 1280px;
             margin: -45px auto 0 auto;
@@ -384,7 +379,6 @@
             font-weight: 500;
         }
 
-        /* --- CYBER-GLOW CARDS SECTION --- */
         .services-section {
             max-width: 1280px;
             margin: 0 auto;
@@ -509,7 +503,6 @@
             background: linear-gradient(90deg, var(--neon-cyan), var(--accent-blue));
         }
 
-        /* --- PREMIUM ULTRA 3D WINNER CARD STYLES --- */
         .font-cinzel {
             font-family: 'Cinzel', serif;
         }
@@ -530,7 +523,6 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* --- AI ASSISTANT ROBOT WIDGET STYLES --- */
         .ai-robot-float {
             position: fixed;
             bottom: 25px;
@@ -595,7 +587,6 @@
             animation: micListening 1.5s infinite;
         }
 
-        /* --- RESPONSIVE BREAKPOINTS --- */
         @media (max-width: 912px) {
             .hero-section { flex-direction: column; }
             .hero-left { padding: 60px 30px; text-align: center; align-items: center; }
@@ -658,7 +649,6 @@
         </div>
     </header>
 
-    <!-- MAIN HOME WEBSITE CONTENT -->
     <div id="mainWebsiteWrapper">
         <section class="hero-section">
             <div class="hero-left">
@@ -737,7 +727,6 @@
         </section>
     </div>
 
-    <!-- STUDENT RECOGNITION PORTAL CONTAINER -->
     <div id="recognitionPortalWrapper" class="hidden bg-slate-950 text-slate-100 min-h-screen py-4 px-2 md:px-6 flex flex-col justify-between">
         
         <header id="mainHeader" class="hidden bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-2xl sticky top-2 z-50 shadow-2xl mb-6 p-4">
@@ -854,7 +843,6 @@
         </main>
     </div>
 
-    <!-- PINE HILLS AI ASSISTANT ROBOT WIDGET WITH VOICE SUPPORT -->
     <div class="ai-robot-float" id="aiRobotToggle" title="Chat with Pine Hills AI Robot">
         <i class="fa-solid fa-robot"></i>
     </div>
@@ -897,7 +885,6 @@
         </div>
     </div>
 
-    <!-- SECRET ADMIN PANEL MODAL -->
     <div id="secretAdminModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[9999] hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-5xl w-full p-6 text-slate-100 shadow-2xl flex flex-col max-h-[90vh]">
             
@@ -916,7 +903,6 @@
                 </button>
             </div>
 
-            <!-- LOGIN VIEW -->
             <div id="adminLoginSection" class="py-12 flex flex-col items-center justify-center text-center">
                 <div class="p-4 bg-slate-800/60 rounded-full mb-4 border border-slate-700">
                     <i class="fa-solid fa-lock text-3xl text-amber-400"></i>
@@ -930,7 +916,6 @@
                 <p id="adminLoginErr" class="text-red-400 text-xs mt-3 hidden font-semibold"></p>
             </div>
 
-            <!-- DATA VIEW -->
             <div id="adminDataSection" class="hidden flex-col flex-grow overflow-hidden pt-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
@@ -971,7 +956,6 @@
     </div>
 
     <script>
-        // --- Mobile Menu Toggle Logic ---
         const menuBtn = document.getElementById('menuBtn');
         const menuLinks = document.getElementById('menuLinks');
         menuBtn.addEventListener('click', () => {
@@ -981,7 +965,6 @@
             icon.classList.toggle('fa-xmark');
         });
 
-        // --- Local Notice Board Data Engine ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedText = localStorage.getItem('school_notice_text');
             const savedTag = localStorage.getItem('school_notice_type');
@@ -997,7 +980,6 @@
             }
         });
 
-        // --- Portal Switcher Logic ---
         function showRecognitionPortal() {
             document.getElementById('siteHeader').classList.add('hidden');
             document.getElementById('announcementBar').classList.add('hidden');
@@ -1019,7 +1001,6 @@
             window.scrollTo(0,0);
         }
 
-        // --- PINE HILLS AI ASSISTANT ROBOT LOGIC WITH VOICE (SPEECH) ---
         const aiRobotToggle = document.getElementById('aiRobotToggle');
         const aiChatModal = document.getElementById('aiChatModal');
         const aiCloseBtn = document.getElementById('aiCloseBtn');
@@ -1041,7 +1022,6 @@
             if (e.key === 'Enter') handleUserMessage();
         });
 
-        // Speech-to-Text (Mic Voice Input Integration)
         let recognition = null;
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1084,7 +1064,6 @@
             }
         });
 
-        // Text-to-Speech (Robot Speaking Output)
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -1166,7 +1145,6 @@
         }
     </script>
 
-    <!-- FIREBASE, WINNER RECOGNITION & VISITOR TRACKING LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, onValue, push, set, remove, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -1180,16 +1158,8 @@
           appId: "1:126732124926:web:f85aee7494cdf064d99baf"
         };
 
-        // Initialize Firebase safely
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        // Fallback default sample data incase Firebase hasn't loaded or is empty for a class
-        const defaultSampleStudents = [
-            { rank: 1, name: "Aliyan Khan", fatherName: "Muhammad Khan", marks: "490/500", percentage: "98.0%", grade: "A+", badge: "1st Position" },
-            { rank: 2, name: "Fatima Noor", fatherName: "Ahmed Ali", marks: "475/500", percentage: "95.0%", grade: "A+", badge: "2nd Position" },
-            { rank: 3, name: "Zainab Bibi", fatherName: "Tariq Mehmood", marks: "460/500", percentage: "92.0%", grade: "A", badge: "3rd Position" }
-        ];
 
         let schoolData = {};
         let activeTimers = [];
@@ -1411,12 +1381,14 @@
             return url;
         }
 
-        // Fetch students data from Firebase with real-time listener
+        // Firebase se data load karna (Ab koi fake dummy data load nahi hoga)
         const studentsRef = ref(db, 'students');
         onValue(studentsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 schoolData = data;
+            } else {
+                schoolData = {};
             }
         });
 
@@ -1466,9 +1438,10 @@
         };
 
         window.selectClassAndStart = function(className) {
-            // Ensure data exists, otherwise fallback to sample list so results show properly
-            if (!schoolData[className] || schoolData[className].length === 0) {
-                schoolData[className] = defaultSampleStudents;
+            // Check karein ke firebase mein is class ka data mojood hai ya nahi
+            if (!schoolData[className] || !Array.isArray(schoolData[className]) || schoolData[className].length === 0) {
+                alert("Is class ki koi report abhi admin panel se upload nahi ki gayi!");
+                return;
             }
 
             selectedClass = className;
@@ -1508,7 +1481,7 @@
         };
 
         function startWinnerReveals() {
-            const students = (schoolData[selectedClass] || defaultSampleStudents).filter(Boolean);
+            const students = (schoolData[selectedClass] || []).filter(Boolean);
             const revealScreen = document.getElementById('revealScreen');
             const revealContainer = document.getElementById('revealCardContainer');
             
@@ -1638,7 +1611,7 @@
         }
 
         function showFinalMarksheet(className) {
-            const students = (schoolData[className] || defaultSampleStudents).filter(Boolean);
+            const students = (schoolData[className] || []).filter(Boolean);
             const marksheetScreen = document.getElementById('marksheetScreen');
             const podiumContainer = document.getElementById('podiumCards');
             const tableBody = document.getElementById('marksheetTableBody');
