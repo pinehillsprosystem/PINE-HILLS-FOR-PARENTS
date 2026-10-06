@@ -148,9 +148,30 @@
         }
 
         @media print {
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
             header, .top-bar-controls, .page-header, .search-box-card, .print-control-bar, .modal-overlay { display: none !important; }
             .wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .marksheet-container { display: block !important; box-shadow: none !important; border: 1px solid #000 !important; padding: 15mm !important; background: #fff !important; page-break-after: always !important; }
+            
+            /* 2-in-1 Landscape Grid Layout */
+            #printArea {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15mm !important;
+                width: 100% !important;
+            }
+
+            .marksheet-container { 
+                display: block !important; 
+                box-shadow: none !important; 
+                border: 1px solid #000 !important; 
+                padding: 12mm !important; 
+                background: #fff !important; 
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
             .marks-table th { background-color: var(--white) !important; color: var(--primary-blue) !important; border-bottom: 2px solid #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
     </style>
@@ -398,7 +419,7 @@
             }
 
             return `
-                <div class="marksheet-container" style="display: block; margin-bottom: 30px;">
+                <div class="marksheet-container" style="display: block;">
                     <div class="sheet-header">
                         <div class="sheet-logo-area">
                             <img src="real logo copy.jpg" alt="Pine Hills School" class="sheet-school-logo">
