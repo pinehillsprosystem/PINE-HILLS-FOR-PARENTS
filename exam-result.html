@@ -67,7 +67,7 @@
 
         #printArea { display: flex; flex-direction: column; gap: 35px; }
 
-        /* ADVANCED CERTIFICATE DESIGN */
+        /* ADVANCED CERTIFICATE DESIGN (WEBSITE VERSION) */
         .certificate-container { 
             width: 100%;
             background: var(--dark-card); 
@@ -82,8 +82,6 @@
             margin: 0 auto 30px auto;
             overflow: hidden;
             color: var(--text-light);
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
         }
 
         /* CORNER ACCENTS */
@@ -113,7 +111,6 @@
         
         .sheet-logo-area { display: flex; align-items: center; gap: 16px; }
 
-        /* LOGO BADGE WITH GOLD EMBELLISHED RING */
         .logo-badge-frame {
             width: 80px;
             height: 80px;
@@ -321,7 +318,7 @@
             .sig-box { width: 45%; }
         }
 
-        /* PRINT CONFIGURATION */
+        /* PRINT CONFIGURATION - PURE WHITE CLEAN MODERN PREMIUM DESIGN (ZERO BLACK BACKGROUND, ZERO INK WASTE) */
         @page { 
             size: A4 landscape; 
             margin: 0; 
@@ -334,7 +331,7 @@
             }
 
             header, .top-bar-controls, .page-header, .search-box-card, .print-control-bar, .modal-overlay { display: none !important; }
-            body { background: #020617 !important; color: #fff !important; margin: 0 !important; padding: 0 !important; }
+            body { background: #ffffff !important; color: #111827 !important; margin: 0 !important; padding: 0 !important; }
             .wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
             
             .certificate-container { 
@@ -342,32 +339,110 @@
                 width: 297mm !important; 
                 height: 209mm !important;
                 box-shadow: none !important; 
-                background: #0b1329 !important;
-                border: 8pt double #eab308 !important; 
+                background: #ffffff !important;
+                border: 3pt solid #111827 !important; 
+                outline: 1pt solid #9ca3af !important;
+                outline-offset: -6px !important;
                 padding: 10mm 14mm !important; 
-                color: #fff !important;
+                color: #111827 !important;
                 page-break-after: always !important; 
                 box-sizing: border-box !important;
             }
 
-            .student-bio-card { background: #111c38 !important; }
-            .bio-item strong { color: #fff !important; }
+            .corner-ornament { border-color: #111827 !important; }
+
+            .sheet-header { 
+                border-bottom: 2px solid #111827 !important; 
+                flex-direction: row !important; 
+                text-align: left !important; 
+            }
+            .sheet-logo-area { flex-direction: row !important; }
+            
+            .logo-badge-frame {
+                background: #111827 !important;
+                box-shadow: none !important;
+            }
+
+            .school-info h3 { color: #111827 !important; }
+            .school-info p { color: #4b5563 !important; }
+            
+            .report-badge { 
+                background: #f3f4f6 !important; 
+                color: #111827 !important; 
+                border: 1.5px solid #111827 !important; 
+            }
+
+            .certificate-title-block h4 { 
+                background: none !important;
+                -webkit-text-fill-color: #111827 !important;
+                color: #111827 !important; 
+            }
+            .certificate-title-block p { color: #4b5563 !important; }
 
             .landscape-main-grid {
                 grid-template-columns: 34% 63% !important;
                 gap: 3% !important;
             }
 
-            .sheet-header { flex-direction: row !important; text-align: left !important; }
-            .sheet-logo-area { flex-direction: row !important; }
-            .sheet-footer { flex-direction: row !important; background: #111c38 !important; color: #fff !important; justify-content: space-around !important; }
-            .metrics-block { flex-direction: row !important; justify-content: space-around !important; width: 100% !important; }
-            .golden-seal-wrapper { display: flex !important; }
-            .sig-box { width: 150px !important; }
-            .sig-box p { color: #ffffff !important; }
+            .student-bio-card { 
+                background: #f9fafb !important; 
+                border: 1px solid #e5e7eb !important; 
+                box-shadow: none !important;
+            }
+            .bio-item { color: #4b5563 !important; border-bottom: 1px dashed #e5e7eb !important; }
+            .bio-item strong { color: #111827 !important; }
 
-            .marks-table th { background: #111c38 !important; color: #eab308 !important; }
-            .marks-table td { color: #fff !important; }
+            .table-responsive-wrapper { 
+                background: #ffffff !important; 
+                border: 1px solid #d1d5db !important; 
+            }
+            .marks-table th { 
+                background: #111827 !important; 
+                color: #ffffff !important; 
+                border-bottom: 2px solid #111827 !important;
+            }
+            .marks-table td { color: #1f2937 !important; border-bottom: 1px solid #e5e7eb !important; }
+            .marks-table tr:nth-child(even) { background-color: #f9fafb !important; }
+
+            .sheet-footer { 
+                background: #f3f4f6 !important; 
+                color: #111827 !important; 
+                border: 1px solid #d1d5db !important;
+                flex-direction: row !important; 
+                justify-content: space-around !important; 
+            }
+            .metrics-block { flex-direction: row !important; justify-content: space-around !important; width: 100% !important; }
+            .metric-box { color: #4b5563 !important; }
+            .metric-box span { color: #111827 !important; }
+
+            .status-pill.pass {
+                background: #ecfdf5 !important;
+                color: #065f46 !important;
+                border: 1px solid #059669 !important;
+            }
+            .status-pill.fail {
+                background: #fef2f2 !important;
+                color: #991b1b !important;
+                border: 1px solid #dc2626 !important;
+            }
+
+            .marksheet-note { 
+                background: #f9fafb !important; 
+                border: 1px dashed #9ca3af !important; 
+            }
+            .marksheet-note p { color: #1f2937 !important; }
+
+            .golden-seal-wrapper { display: flex !important; }
+            .golden-seal {
+                background: #e5e7eb !important;
+                color: #111827 !important;
+                border: 2px solid #111827 !important;
+                box-shadow: none !important;
+            }
+
+            .sig-line { border-top: 2px solid #111827 !important; }
+            .sig-box { width: 150px !important; }
+            .sig-box p { color: #111827 !important; }
         }
     </style>
 </head>
@@ -458,16 +533,15 @@
         menuBtn.addEventListener('click', () => { menuLinks.classList.toggle('active'); });
         
         // FIREBASE CONFIGURATION
-const firebaseConfig = {
-  apiKey: "AIzaSyDSwMtyMhnxNfHPO1BEGAx_pQusxaxNjjY",
-  authDomain: "exam-report-dd3fa.firebaseapp.com",
-  databaseURL: "https://exam-report-dd3fa-default-rtdb.firebaseio.com",
-  projectId: "exam-report-dd3fa",
-  storageBucket: "exam-report-dd3fa.firebasestorage.app",
-  messagingSenderId: "938227117967",
-  appId: "1:938227117967:web:6541927b1525f044cb25fa"
-};
-
+        const firebaseConfig = {
+          apiKey: "AIzaSyDSwMtyMhnxNfHPO1BEGAx_pQusxaxNjjY",
+          authDomain: "exam-report-dd3fa.firebaseapp.com",
+          databaseURL: "https://exam-report-dd3fa-default-rtdb.firebaseio.com",
+          projectId: "exam-report-dd3fa",
+          storageBucket: "exam-report-dd3fa.firebasestorage.app",
+          messagingSenderId: "938227117967",
+          appId: "1:938227117967:web:6541927b1525f044cb25fa"
+        };
 
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
@@ -606,9 +680,9 @@ const firebaseConfig = {
                 subjectsList.forEach(sub => {
                     subjectsRows += `
                         <tr>
-                            <td style="font-weight: 600; color: var(--white);">${sub.name}</td>
-                            <td style="font-weight: 600; text-align: center; color: var(--text-muted);">${sub.total || "-"}</td>
-                            <td style="font-weight: 700; text-align: right; color: ${sub.obtained === 'A' ? 'var(--danger-red)' : 'var(--gold-light)'};">${sub.obtained}</td>
+                            <td style="font-weight: 600;">${sub.name}</td>
+                            <td style="font-weight: 600; text-align: center;">${sub.total || "-"}</td>
+                            <td style="font-weight: 700; text-align: right;">${sub.obtained}</td>
                         </tr>
                     `;
                 });
