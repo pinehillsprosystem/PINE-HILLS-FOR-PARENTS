@@ -380,7 +380,7 @@
             font-weight: 500;
         }
 
-        /* MOBILE OPTIMIZED SCHOOL ANTHEM SECTION */
+        /* YOUTUBE VIDEO LINK SECTION */
         .anthem-section {
             max-width: 1280px;
             margin: 0 auto;
@@ -437,38 +437,17 @@
             background: #020617;
             border-radius: 16px;
             overflow: hidden;
-            border: 2px dashed rgba(56, 189, 248, 0.4);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        .video-container video, .video-container iframe {
+        .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: none;
             border-radius: 14px;
-        }
-        .video-placeholder-text {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #64748b;
-            text-align: center;
-            padding: 16px;
-            pointer-events: none;
-        }
-        .video-placeholder-text i {
-            font-size: 38px;
-            color: var(--neon-cyan);
-            margin-bottom: 10px;
-            opacity: 0.8;
         }
 
         .services-section {
@@ -769,7 +748,7 @@
             </div>
         </section>
 
-        <!-- SCHOOL ANTHEM / NAGHMA VIDEO SECTION -->
+        <!-- SCHOOL ANTHEM / YOUTUBE VIDEO LINK SECTION -->
         <section class="anthem-section">
             <div class="anthem-wrapper">
                 <div class="anthem-info">
@@ -778,15 +757,8 @@
                     <p>Hamare school ka khubsurat naghma jisme bachon ka jazba, umeed aur school ki roshni jhalakti hai. Is video ko play kar ke is khoobsurat naghme se lut andoz hon.</p>
                 </div>
                 <div class="video-container">
-                    <video controls>
-                        <source src="school.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="video-placeholder-text">
-                        <i class="fa-solid fa-clapperboard"></i>
-                        <span class="text-xs font-semibold">Yahan School Ka Naghma Video Aayega</span>
-                        <span class="text-[10px] text-slate-400 mt-1">(Aap src mein apni video link daal dein)</span>
-                    </div>
+                    <!-- Yahan src mein apni YouTube video ka embed link daal dein (e.g., https://www.youtube.com/embed/YOUR_VIDEO_ID) -->
+                    <iframe src="https://youtu.be/8QA2rH0sg2c?si=cBaOAThB1AQUkom-" title="School Naghma" allowfullscreen></iframe>
                 </div>
             </div>
         </section>
@@ -1719,7 +1691,7 @@
             setTimeout(() => {
                 const cardEl = document.getElementById('activeWinnerCard');
                 if (cardEl) {
-                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' );
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 50);
         }
